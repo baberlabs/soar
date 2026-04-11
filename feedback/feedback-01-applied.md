@@ -19,3 +19,9 @@
 #TODO (later) 3.2 Use relevant imagery instead of default imagery.
 
 ---
+
+4.1 CREATE page now allow images, videos, audio and document uploads.
+
+4.2 Uploaded media is now viewable/watchable/readable.
+
+---
