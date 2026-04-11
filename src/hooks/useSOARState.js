@@ -66,7 +66,7 @@ const normalizeStore = (candidate) => {
       ...(candidate?.session ?? {}),
     },
     members: (candidate?.members ?? []).map(normalizeMember),
-    subjects: candidate?.subjects?.length ? candidate.subjects : defaults.subjects,
+    subjects: defaults.subjects,
     forum: candidate?.forum ?? [],
     connections: candidate?.connections ?? [],
     newsletterSubscribers: candidate?.newsletterSubscribers ?? [],
@@ -97,7 +97,7 @@ const migrateLegacyStore = (legacyState) => {
     ...defaults,
     session: { currentUserId: legacyUser?.id ?? null },
     members: legacyUser ? [legacyUser] : [],
-    subjects: legacyState.subjects?.length ? legacyState.subjects : defaults.subjects,
+    subjects: defaults.subjects,
     forum: legacyState.forum ?? [],
     connections: [],
     newsletterSubscribers: legacyState.newsletterSubscribers ?? [],
@@ -119,7 +119,8 @@ const loadInitialState = () => {
 };
 
 const getCurrentMember = (state) =>
-  state.members.find((member) => member.id === state.session.currentUserId) ?? null;
+  state.members.find((member) => member.id === state.session.currentUserId) ??
+  null;
 
 const updateCurrentMember = (state, updater) => {
   const currentUserId = state.session.currentUserId;
@@ -230,7 +231,10 @@ const soarReducer = (state, action) => {
 
     case "COMPLETE_LESSON":
       return updateCurrentMember(state, (member) => {
-        const subject = getSubjectById(action.payload.subjectId, state.subjects);
+        const subject = getSubjectById(
+          action.payload.subjectId,
+          state.subjects,
+        );
 
         return {
           ...member,
@@ -294,10 +298,7 @@ const soarReducer = (state, action) => {
         ...member,
         reflections: {
           ...member.reflections,
-          visionBoards: [
-            ...member.reflections.visionBoards,
-            action.payload,
-          ],
+          visionBoards: [...member.reflections.visionBoards, action.payload],
         },
       }));
 
@@ -449,13 +450,19 @@ const deriveState = (store) => {
     creations: user?.creations ?? [],
     reflections: user?.reflections ?? DEFAULT_REFLECTIONS,
     connections: userId
-      ? store.connections.filter((connection) => connection.members.includes(userId))
+      ? store.connections.filter((connection) =>
+          connection.members.includes(userId),
+        )
       : [],
   };
 };
 
 export const SOARProvider = ({ children }) => {
-  const [store, dispatch] = useReducer(soarReducer, undefined, loadInitialState);
+  const [store, dispatch] = useReducer(
+    soarReducer,
+    undefined,
+    loadInitialState,
+  );
 
   useEffect(() => {
     try {
