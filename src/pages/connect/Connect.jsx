@@ -98,8 +98,7 @@ export function Connect() {
           </h1>
           <p className="max-w-3xl font-body text-base leading-relaxed text-brand/80">
             Build meaningful connections with members who share your goals and
-            interests. Requests and messages stay in your local prototype state
-            for now.
+            interests.
           </p>
         </header>
 

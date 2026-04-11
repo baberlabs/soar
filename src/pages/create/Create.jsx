@@ -200,9 +200,7 @@ export function Create() {
             <div className="space-y-2">
               <h2 className="font-ui text-3xl text-brand">Share a creation</h2>
               <p className="font-body text-sm leading-relaxed text-brand/72">
-                This is still a local prototype, so files are represented by
-                filename only. The point here is to keep evidence of your work
-                attached to a subject path.
+                Keep evidence of your work attached to a subject path.
               </p>
             </div>
 
@@ -219,8 +217,7 @@ export function Create() {
                       Drag a file here or click to browse
                     </p>
                     <p className="font-body text-xs text-brand/62">
-                      Images, audio, video, PDFs, or documents all work in this
-                      prototype flow.
+                      Images, audio, video, PDFs, notes, or documents.
                     </p>
                     <input
                       type="file"

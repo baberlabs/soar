@@ -72,39 +72,12 @@ export const About = () => (
         </div>
       </section>
 
-      <section className="rounded-3xl border border-brand/12 bg-page p-6 md:p-7">
-        <h2 className="font-ui text-3xl text-brand">
-          What this prototype does today
-        </h2>
-        <div className="mt-5 grid gap-4 md:grid-cols-2">
-          <ul className="space-y-3">
-            <Bullet text="Local sign up and log in" />
-            <Bullet text="Onboarding with learning preferences and interests" />
-            <Bullet text="Learn, Create, Reflect, Connect, and Forum flows" />
-          </ul>
-          <ul className="space-y-3">
-            <Bullet text="No live payment processing" />
-            <Bullet text="No real distributed storage nodes yet" />
-            <Bullet text="No production moderation/compliance systems" />
-          </ul>
-        </div>
-      </section>
-
       <footer className="flex flex-wrap gap-3 pt-2">
         <Link
           to="/join"
           className={getButtonClasses({ variant: "primary", fullWidth: false })}
         >
-          Join The Prototype
-        </Link>
-        <Link
-          to="/learn"
-          className={getButtonClasses({
-            variant: "secondary",
-            fullWidth: false,
-          })}
-        >
-          Explore Learning Paths
+          Join the Platform
         </Link>
       </footer>
     </article>

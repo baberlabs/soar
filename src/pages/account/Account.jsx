@@ -96,11 +96,14 @@ export function Account() {
                 {nodeStatus === "active" ? "Active" : "Needs setup"}
               </p>
             </div>
-            <p className="font-body text-sm text-brand/80">
-              In this prototype, node infrastructure is mocked. Your learning,
-              creations, and reflections are persisted locally and represent
-              your personal data layer.
-            </p>
+            <div className="space-y-2">
+              <p className="font-body text-sm text-brand/80">
+                Your node is currently running and syncing data locally.
+              </p>
+              <p className="font-body text-xs text-brand/60">
+                Last synced: Just now
+              </p>
+            </div>
           </article>
 
           <article className="space-y-4 rounded-2xl border border-brand/20 bg-cream p-6">

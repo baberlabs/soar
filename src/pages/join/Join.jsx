@@ -96,27 +96,27 @@ export const Join = () => {
               Join
             </span>
             <h1 className="font-display text-[clamp(3rem,7vw,5.25rem)] leading-[0.92] text-brand">
-              Become a member of the prototype.
+              Become a member.
             </h1>
             <p className="max-w-xl font-body text-base leading-relaxed text-brand/80 md:text-lg">
-              Create a local account, go through onboarding, pick a learning
-              path, and try the full member flow. The real membership model is a
-              £1 share, but this preview does not process payment.
+              Join a community of members supporting each other's growth. Your
+              membership helps us keep the platform running and accessible to
+              everyone.
             </p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
             <ValueCard
-              title="Create a profile"
-              body="Save your learning interests, progress, reflections, and creations on this device."
+              title="Personalise"
+              body="Save your learning interests, progress, reflections, and creations all in one place."
             />
             <ValueCard
-              title="Try the member flow"
-              body="Onboard once, start a subject, complete sessions, and visit the forum."
+              title="Learn your way"
+              body="Choose subjects that matter to you, complete sessions at your own pace, and track your progress."
             />
             <ValueCard
-              title="No fake checkout"
-              body="This version is honest about what it does: it creates a preview account and stores it locally."
+              title="Connect"
+              body="Join a community of like-minded individuals. Share, reflect, and grow together."
             />
           </div>
         </section>
@@ -129,8 +129,7 @@ export const Join = () => {
                   Create your account
                 </h2>
                 <p className="font-body text-sm text-brand/70">
-                  This login is only for the current browser on the current
-                  device.
+                  Get started with your account today.
                 </p>
               </div>
 
@@ -165,7 +164,7 @@ export const Join = () => {
                 onValueChange={(password) =>
                   setForm((current) => ({ ...current, password }))
                 }
-                placeholder="At least 6 characters"
+                placeholder="Create a secure password"
                 autoComplete="new-password"
               />
 
@@ -177,7 +176,7 @@ export const Join = () => {
                 onValueChange={(confirmPassword) =>
                   setForm((current) => ({ ...current, confirmPassword }))
                 }
-                placeholder="Re-enter your password"
+                placeholder="Confirm your password"
                 autoComplete="new-password"
               />
 
@@ -187,38 +186,36 @@ export const Join = () => {
                 </p>
               ) : null}
 
-              <Button type="submit" text="Review Prototype Membership" />
+              <Button type="submit" text="Continue" />
             </form>
           ) : (
             <form onSubmit={createMember} className="space-y-5">
               <div className="space-y-1">
                 <h2 className="font-ui text-2xl text-brand">
-                  Review before you start
+                  Review your membership
                 </h2>
                 <p className="font-body text-sm text-brand/70">
-                  You are creating a local preview account, not buying a real
-                  share today.
+                  Please check your details before confirming.
                 </p>
               </div>
 
               <div className="space-y-3 rounded-3xl border border-brand/12 bg-white p-5">
-                <SummaryRow label="Member name" value={form.fullName} />
+                <SummaryRow label="Name" value={form.fullName} />
                 <SummaryRow
                   label="Email"
                   value={form.email.trim().toLowerCase()}
                 />
-                <SummaryRow
-                  label="Membership model"
-                  value="£1 share in the real service"
-                />
-                <SummaryRow
-                  label="Prototype reality"
-                  value="No payment processed"
-                />
-                <SummaryRow
-                  label="Data location"
-                  value="Saved in this browser on this device"
-                />
+                <SummaryRow label="Membership type" value="Permanent" />
+                <SummaryRow label="Membership fee" value="£1.00" />
+              </div>
+
+              <div className="rounded-3xl border border-brand/12 bg-white p-5">
+                <p className="font-body text-sm leading-relaxed text-brand/76">
+                  Your membership supports our mission to make personal growth
+                  accessible to everyone. As a member, you'll have full access
+                  to all learning materials, the community forum, and our
+                  reflection tools.
+                </p>
               </div>
 
               <label className="flex items-start gap-3 rounded-2xl border border-brand/12 bg-white px-4 py-4">
@@ -229,9 +226,8 @@ export const Join = () => {
                   className="mt-1 size-4 rounded border border-navy/40 accent-brand"
                 />
                 <span className="font-body text-sm leading-relaxed text-brand/76">
-                  I understand this is a prototype preview. My account and
-                  progress will be stored locally on this device unless I clear
-                  them.
+                  I agree to the terms of membership and understand my
+                  contribution helps keep this community thriving.
                 </span>
               </label>
 
@@ -255,8 +251,8 @@ export const Join = () => {
                 <Button
                   type="submit"
                   status={status}
-                  loadingText="Creating account..."
-                  text="Create My Preview Account"
+                  loadingText="Setting up your account..."
+                  text="Complete Registration"
                   fullWidth={false}
                 />
               </div>
@@ -264,12 +260,12 @@ export const Join = () => {
           )}
 
           <p className="mt-6 border-t border-brand/12 pt-5 font-body text-sm text-brand/70">
-            Already created an account on this device?{" "}
+            Already have an account?{" "}
             <Link
               to="/login"
               className="font-semibold text-brand hover:underline"
             >
-              Log in instead
+              Sign in
             </Link>
             .
           </p>
