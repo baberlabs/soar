@@ -11,6 +11,7 @@ export const InputField = ({
   autoComplete,
   required = true,
   className = "",
+  ...props
 }) => {
   const generatedId = useId();
   const inputId = name ?? generatedId;
@@ -34,6 +35,7 @@ export const InputField = ({
         value={value}
         onChange={handleChange}
         required={required}
+        {...props}
         className={`w-full rounded-2xl border border-black/15 bg-cream px-4 py-3 font-body text-base text-navy outline-none placeholder:text-navy/35 transition duration-200 focus:border-brand focus:ring-2 focus:ring-brand/15 ${className}`}
       />
     </div>

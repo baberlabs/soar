@@ -8,6 +8,7 @@ import { NavIcons } from "../assets/icons";
 export const PUBLIC_NAV_ITEMS = [
   { type: "link", label: "Home", icon: NavIcons.home, to: "/" },
   { type: "link", label: "About", icon: NavIcons.about, to: "/about" },
+  { type: "link", label: "Donate", icon: NavIcons.donate, to: "/donate" },
   { type: "separator", id: "sep-0" },
   { type: "link", label: "Join", icon: NavIcons.account, to: "/join" },
   { type: "link", label: "Log In", icon: NavIcons.feedback, to: "/login" },
@@ -17,6 +18,7 @@ export const PUBLIC_NAV_ITEMS = [
 export const MEMBER_NAV_ITEMS = [
   { type: "link", label: "Home", icon: NavIcons.home, to: "/" },
   { type: "link", label: "About", icon: NavIcons.about, to: "/about" },
+  { type: "link", label: "Donate", icon: NavIcons.donate, to: "/donate" },
   { type: "link", label: "Forum", icon: NavIcons.feedback, to: "/forum" },
   { type: "separator", id: "sep-1" },
   { type: "link", label: "Learn", icon: NavIcons.learn, to: "/learn" },

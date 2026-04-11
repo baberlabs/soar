@@ -5,3 +5,7 @@
 1.2 Removed EXPLORE LEARNING PATHS button from ABOUT page because it is redundant. When a user joins the platform and logs in, they can see all the learning paths in the LEARN page.
 
 1.3 Removed prototypal language from JOIN, CREATE, CONNECT and ACCOUNT page.
+
+---
+
+2.0 Add DONATION page that accepts a minimum of £1 and a maximum of £5000 donations using various payment methods including visa card, bank transfer, Apple/Google Pay, PayPal and Bitcoin transactions.
