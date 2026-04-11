@@ -18,7 +18,14 @@ const STORAGE_KEY = "soar_state";
 const DEFAULT_REFLECTIONS = {
   visionBoards: [],
   letters: [],
+  lessonEntries: [],
 };
+
+const normalizeReflections = (reflections) => ({
+  visionBoards: reflections?.visionBoards ?? [],
+  letters: reflections?.letters ?? [],
+  lessonEntries: reflections?.lessonEntries ?? [],
+});
 
 const SOARStateContext = createContext(null);
 
@@ -47,7 +54,7 @@ const normalizeMember = (member) => ({
   interests: member.interests ?? [],
   curriculum: member.curriculum ?? [],
   creations: member.creations ?? [],
-  reflections: member.reflections ?? DEFAULT_REFLECTIONS,
+  reflections: normalizeReflections(member.reflections),
 });
 
 const sanitizeMember = (member) => {
@@ -89,7 +96,7 @@ const migrateLegacyStore = (legacyState) => {
         ...legacyState.user,
         curriculum: legacyState.curriculum ?? [],
         creations: legacyState.creations ?? [],
-        reflections: legacyState.reflections ?? DEFAULT_REFLECTIONS,
+        reflections: normalizeReflections(legacyState.reflections),
       })
     : null;
 
@@ -297,8 +304,11 @@ const soarReducer = (state, action) => {
       return updateCurrentMember(state, (member) => ({
         ...member,
         reflections: {
-          ...member.reflections,
-          visionBoards: [...member.reflections.visionBoards, action.payload],
+          ...normalizeReflections(member.reflections),
+          visionBoards: [
+            ...normalizeReflections(member.reflections).visionBoards,
+            action.payload,
+          ],
         },
       }));
 
@@ -306,10 +316,44 @@ const soarReducer = (state, action) => {
       return updateCurrentMember(state, (member) => ({
         ...member,
         reflections: {
-          ...member.reflections,
-          letters: [...member.reflections.letters, action.payload],
+          ...normalizeReflections(member.reflections),
+          letters: [
+            ...normalizeReflections(member.reflections).letters,
+            action.payload,
+          ],
         },
       }));
+
+    case "UPSERT_LESSON_REFLECTION":
+      return updateCurrentMember(state, (member) => {
+        const reflections = normalizeReflections(member.reflections);
+        const existingEntries = reflections.lessonEntries;
+        const existingIndex = existingEntries.findIndex(
+          (entry) =>
+            entry.subjectId === action.payload.subjectId &&
+            entry.lessonId === action.payload.lessonId,
+        );
+
+        const nextEntry = {
+          ...action.payload,
+          savedAt: new Date().toISOString(),
+        };
+
+        const lessonEntries =
+          existingIndex === -1
+            ? [...existingEntries, nextEntry]
+            : existingEntries.map((entry, index) =>
+                index === existingIndex ? { ...entry, ...nextEntry } : entry,
+              );
+
+        return {
+          ...member,
+          reflections: {
+            ...reflections,
+            lessonEntries,
+          },
+        };
+      });
 
     case "ADD_CONNECTION": {
       const existingConnection = state.connections.find((connection) => {
@@ -448,7 +492,7 @@ const deriveState = (store) => {
     user: user ? sanitizeMember(user) : null,
     curriculum: user?.curriculum ?? [],
     creations: user?.creations ?? [],
-    reflections: user?.reflections ?? DEFAULT_REFLECTIONS,
+    reflections: normalizeReflections(user?.reflections),
     connections: userId
       ? store.connections.filter((connection) =>
           connection.members.includes(userId),

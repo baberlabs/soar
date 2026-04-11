@@ -14,7 +14,7 @@ import { Account } from "./pages/account/Account";
 import { Dashboard } from "./pages/dashboard";
 import { Create } from "./pages/create";
 import { Donate } from "./pages/donate";
-import { Learn, SubjectRoom } from "./pages/learn";
+import { Learn, SubjectRoom, SessionPage } from "./pages/learn";
 import { Reflect } from "./pages/reflect";
 import { Connect } from "./pages/connect";
 import { Forum } from "./pages/forum";
@@ -79,6 +79,14 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <SubjectRoom />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/learn/:subjectId/sessions/:lessonId"
+            element={
+              <ProtectedRoute>
+                <SessionPage />
               </ProtectedRoute>
             }
           />

@@ -9,3 +9,13 @@
 ---
 
 2.0 Add DONATION page that accepts a minimum of £1 and a maximum of £5000 donations using various payment methods including visa card, bank transfer, Apple/Google Pay, PayPal and Bitcoin transactions.
+
+---
+
+3.1 Add separate SESSION page for each lession with content, highlighted key facts, a quiz and a reflection prompt.
+
+3.2 Provided default imagery is used in SESSION pages.
+
+#TODO (later) 3.2 Use relevant imagery instead of default imagery.
+
+---

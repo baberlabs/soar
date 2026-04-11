@@ -14,7 +14,6 @@ export const SubjectRoom = () => {
   const [targetDate, setTargetDate] = useState("");
   const [learningNotes, setLearningNotes] = useState("");
   const [status, setStatus] = useState("idle");
-  const [lessonStatus, setLessonStatus] = useState("idle");
 
   const subject = getSubjectById(subjectId, state.subjects);
   const enrollment = state.curriculum.find(
@@ -23,8 +22,6 @@ export const SubjectRoom = () => {
 
   const completedLessonIds = enrollment?.completedLessonIds ?? [];
   const completedCount = completedLessonIds.length;
-  const nextLesson = subject?.lessons[completedCount] ?? null;
-
   const lessonCards = subject
     ? subject.lessons.map((lesson, index) => {
         const isComplete = completedLessonIds.includes(lesson.id);
@@ -58,21 +55,6 @@ export const SubjectRoom = () => {
 
     setStatus("success");
     setTimeout(() => setStatus("idle"), 600);
-  };
-
-  const handleCompleteLesson = async () => {
-    if (!nextLesson) return;
-
-    setLessonStatus("loading");
-    dispatch({
-      type: "COMPLETE_LESSON",
-      payload: {
-        subjectId: subject.id,
-        lessonId: nextLesson.id,
-      },
-    });
-    setLessonStatus("success");
-    setTimeout(() => setLessonStatus("idle"), 600);
   };
 
   return (
@@ -211,8 +193,8 @@ export const SubjectRoom = () => {
           <div className="space-y-1">
             <h2 className="font-ui text-3xl text-brand">Sessions</h2>
             <p className="font-body text-sm text-brand/72">
-              Work through one session at a time. Completing the current session
-              updates your progress immediately.
+              Open each session in its own learning page with content,
+              highlighted facts, and a quick check-in quiz.
             </p>
           </div>
 
@@ -220,10 +202,12 @@ export const SubjectRoom = () => {
             {lessonCards.map((lesson) => (
               <LessonCard
                 key={lesson.id}
+                subjectId={subject.id}
                 lesson={lesson}
-                canComplete={Boolean(enrollment) && lesson.status === "current"}
-                isBusy={lessonStatus === "loading"}
-                onComplete={handleCompleteLesson}
+                canOpen={
+                  Boolean(enrollment) &&
+                  (lesson.status === "current" || lesson.status === "complete")
+                }
               />
             ))}
           </div>
@@ -290,8 +274,9 @@ const STATUS_STYLES = {
   },
 };
 
-const LessonCard = ({ lesson, canComplete, isBusy, onComplete }) => {
+const LessonCard = ({ subjectId, lesson, canOpen }) => {
   const style = STATUS_STYLES[lesson.status];
+  const sessionLink = `/learn/${subjectId}/sessions/${lesson.id}`;
 
   return (
     <article className={`rounded-[1.75rem] border p-5 ${style.panel}`}>
@@ -313,16 +298,20 @@ const LessonCard = ({ lesson, canComplete, isBusy, onComplete }) => {
           </p>
         </div>
 
-        {canComplete ? (
-          <Button
-            size="sm"
-            fullWidth={false}
-            status={isBusy ? "loading" : "idle"}
-            loadingText="Saving..."
-            text="Complete Session"
-            onClick={onComplete}
-          />
-        ) : null}
+        {canOpen ? (
+          <Link
+            to={sessionLink}
+            className={getButtonClasses({
+              variant: "primary",
+              size: "sm",
+              fullWidth: false,
+            })}
+          >
+            Open Session
+          </Link>
+        ) : (
+          <Button size="sm" fullWidth={false} disabled text="Locked" />
+        )}
       </div>
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">
