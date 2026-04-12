@@ -16,7 +16,7 @@
 
 3.2 Provided default imagery is used in SESSION pages.
 
-#TODO (later) 3.2 Use relevant imagery instead of default imagery.
+#TODO 3.2 Use relevant imagery instead of default imagery. Deferred to next iteration.
 
 ---
 
@@ -25,3 +25,33 @@
 4.2 Uploaded media is now viewable/watchable/readable.
 
 ---
+
+5.1 REFLECT > Letters now limited to one per target month (monthly letters).
+
+5.2 Letters support sealed state that hides content by default with blur effect.
+
+5.3 Letters support lifecycle: draft → seal → unlock (auto on target month) → review → reviewed state.
+
+5.4 Users can edit draft/unlocked letters, seal to prevent changes, and add reviews when unlocked.
+
+5.5 Sealed letters include blur toggle button to reveal/hide content on demand.
+
+---
+
+6.1 REFLECT > Vision board renamed and redesigned as "Moodboard" with monthly lifecycle state.
+
+6.2 Moodboard supports mixed content types: images, text notes, with category chips (Images, Film/TV, Books, Activities, Goals, Music, Recipes, Hobbies, Events).
+
+6.3 Moodboard items are draggable for free-arrange positioning on the collage canvas.
+
+6.4 Moodboard items are individually editable and deletable with inline controls.
+
+6.5 Moodboards can be created with title, target month, focus statement, and optional playlist note.
+
+6.6 Saved moodboards display as indexed gallery with collage preview and full edit/delete capability.
+
+---
+
+#TODO 7. Deferred to next iteration
+#TODO 8. Deferred to next iteration
+#TODO 10. Deferred to next iteration

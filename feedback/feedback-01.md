@@ -43,8 +43,8 @@ Personal feedback:
    - Extend support to include video uploads, voice recordings, and document attachments
 
 5. **Reflect Module > Letters**
-   - Implement a one-month limit for future letters
-   - Build a seal mechanism that hides future letters from view until explicitly "broken" by the user
+   - Implement a one-month limit for future letters. These letters are "Letter to the Future Self in a Month"
+   - Build a seal mechanism that hides future letters from view until explicitly "broken" by the user. It should use a nice animation.
 
 6. **Reflect Module > Moodboard**
    - Create a "Moodboard" feature as an interactive board where users can pin photos, recipes, places, books, notes, and other visual elements

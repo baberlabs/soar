@@ -312,6 +312,36 @@ const soarReducer = (state, action) => {
         },
       }));
 
+    case "UPDATE_VISION_BOARD":
+      return updateCurrentMember(state, (member) => ({
+        ...member,
+        reflections: {
+          ...normalizeReflections(member.reflections),
+          visionBoards: normalizeReflections(
+            member.reflections,
+          ).visionBoards.map((board) =>
+            board.id === action.payload.id
+              ? {
+                  ...board,
+                  ...action.payload,
+                  updatedAt: new Date().toISOString(),
+                }
+              : board,
+          ),
+        },
+      }));
+
+    case "REMOVE_VISION_BOARD":
+      return updateCurrentMember(state, (member) => ({
+        ...member,
+        reflections: {
+          ...normalizeReflections(member.reflections),
+          visionBoards: normalizeReflections(
+            member.reflections,
+          ).visionBoards.filter((board) => board.id !== action.payload),
+        },
+      }));
+
     case "ADD_LETTER":
       return updateCurrentMember(state, (member) => ({
         ...member,
@@ -323,6 +353,118 @@ const soarReducer = (state, action) => {
           ],
         },
       }));
+
+    case "UPSERT_MONTHLY_LETTER":
+      return updateCurrentMember(state, (member) => {
+        const reflections = normalizeReflections(member.reflections);
+        const letters = reflections.letters;
+        const existingIndex = letters.findIndex(
+          (letter) => letter.id === action.payload.id,
+        );
+
+        const nextLetter = {
+          ...action.payload,
+          updatedAt: new Date().toISOString(),
+        };
+
+        const nextLetters =
+          existingIndex === -1
+            ? [...letters, nextLetter]
+            : letters.map((letter, index) =>
+                index === existingIndex ? { ...letter, ...nextLetter } : letter,
+              );
+
+        return {
+          ...member,
+          reflections: {
+            ...reflections,
+            letters: nextLetters,
+          },
+        };
+      });
+
+    case "SEAL_MONTHLY_LETTER":
+      return updateCurrentMember(state, (member) => {
+        const reflections = normalizeReflections(member.reflections);
+
+        return {
+          ...member,
+          reflections: {
+            ...reflections,
+            letters: reflections.letters.map((letter) =>
+              letter.id === action.payload
+                ? {
+                    ...letter,
+                    status: "sealed",
+                    sealedAt: letter.sealedAt ?? new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                  }
+                : letter,
+            ),
+          },
+        };
+      });
+
+    case "MARK_MONTHLY_LETTER_OPENED":
+      return updateCurrentMember(state, (member) => {
+        const reflections = normalizeReflections(member.reflections);
+
+        return {
+          ...member,
+          reflections: {
+            ...reflections,
+            letters: reflections.letters.map((letter) =>
+              letter.id === action.payload
+                ? {
+                    ...letter,
+                    status:
+                      letter.status === "reviewed" ? "reviewed" : "unlocked",
+                    openedAt: letter.openedAt ?? new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                  }
+                : letter,
+            ),
+          },
+        };
+      });
+
+    case "MARK_MONTHLY_LETTER_REVIEWED":
+      return updateCurrentMember(state, (member) => {
+        const reflections = normalizeReflections(member.reflections);
+
+        return {
+          ...member,
+          reflections: {
+            ...reflections,
+            letters: reflections.letters.map((letter) =>
+              letter.id === action.payload.id
+                ? {
+                    ...letter,
+                    status: "reviewed",
+                    review: action.payload.review,
+                    reviewedAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                  }
+                : letter,
+            ),
+          },
+        };
+      });
+
+    case "REMOVE_MONTHLY_LETTER":
+      return updateCurrentMember(state, (member) => {
+        const reflections = normalizeReflections(member.reflections);
+
+        return {
+          ...member,
+          reflections: {
+            ...reflections,
+            letters: reflections.letters.filter(
+              (letter) => letter.id !== action.payload,
+            ),
+          },
+        };
+      });
 
     case "UPSERT_LESSON_REFLECTION":
       return updateCurrentMember(state, (member) => {
