@@ -8,7 +8,7 @@ import { ProgressBar } from "../../components/ProgressBar";
 import { getSubjectById } from "../../data/subjects";
 import { useSOARState } from "../../hooks/useSOARState";
 
-export const SubjectRoom = () => {
+export default function SubjectRoom() {
   const { subjectId } = useParams();
   const [state, dispatch] = useSOARState();
   const [targetDate, setTargetDate] = useState("");
@@ -254,7 +254,7 @@ export const SubjectRoom = () => {
       </div>
     </main>
   );
-};
+}
 
 const STATUS_STYLES = {
   complete: {

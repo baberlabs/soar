@@ -19,7 +19,7 @@ import LearnCreateImage from "./imagery/create imagery .jpg";
 import LearnMeditationImage from "./imagery/meditation image .jpg";
 import LearnPhotographyImage from "./imagery/photography image .jpg";
 
-export const SessionPage = () => {
+export default function SessionPage() {
   const { subjectId, lessonId } = useParams();
   const [state, dispatch] = useSOARState();
   const [selectedAnswer, setSelectedAnswer] = useState(null);
@@ -442,7 +442,7 @@ export const SessionPage = () => {
       </div>
     </main>
   );
-};
+}
 
 const buildKeyFacts = (subject, lesson, lessonContent) => [
   {

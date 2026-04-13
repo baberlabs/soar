@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { getButtonClasses } from "../../components/buttonStyles";
 import { useSOARState } from "../../hooks/useSOARState";
 
-export const NotFound = () => {
+export default function NotFound() {
   const [state] = useSOARState();
 
   return (
@@ -40,4 +40,4 @@ export const NotFound = () => {
       </section>
     </main>
   );
-};
+}

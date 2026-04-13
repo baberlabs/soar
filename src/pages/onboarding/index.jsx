@@ -6,7 +6,7 @@ import { useSOARState } from "../../hooks/useSOARState";
 
 const STEP_ORDER = ["welcome", "setup", "vark", "interests"];
 
-export const Onboarding = () => {
+export default function Onboarding() {
   const [state, dispatch] = useSOARState();
   const navigate = useNavigate();
   const [step, setStep] = useState("welcome");
@@ -100,7 +100,7 @@ export const Onboarding = () => {
       </main>
     </div>
   );
-};
+}
 
 const OnboardingWelcome = ({ onNext }) => (
   <article className="grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-start">

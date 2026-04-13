@@ -5,7 +5,7 @@ import { Button } from "../../components/Button";
 import { InputField } from "../../components/InputField";
 import { useSOARState } from "../../hooks/useSOARState";
 
-export const Login = () => {
+export default function Login() {
   const [state, dispatch, { authenticateMember }] = useSOARState();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -148,4 +148,4 @@ export const Login = () => {
       </div>
     </main>
   );
-};
+}

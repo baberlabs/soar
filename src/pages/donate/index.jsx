@@ -18,7 +18,7 @@ const PAYMENT_METHODS = [
   { id: "bitcoin", label: "Bitcoin", description: "Wallet transfer" },
 ];
 
-export function Donate() {
+export default function Donate() {
   const [state] = useSOARState();
   const [step, setStep] = useState("amount");
   const [amountChoice, setAmountChoice] = useState("25");

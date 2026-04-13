@@ -11,7 +11,7 @@ const countCompletedSessions = (curriculum) =>
     0,
   );
 
-export const Learn = () => {
+export default function Learn() {
   const [state] = useSOARState();
   const [filter, setFilter] = useState("recommended");
 
@@ -176,7 +176,7 @@ export const Learn = () => {
       </div>
     </main>
   );
-};
+}
 
 const StatCard = ({ label, value }) => (
   <div className="rounded-3xl border border-brand/12 bg-page p-5">

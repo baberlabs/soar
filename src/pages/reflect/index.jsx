@@ -3,7 +3,7 @@ import { useSOARState } from "../../hooks/useSOARState";
 import { InputField } from "../../components/InputField";
 import { Button } from "../../components/Button";
 
-export function Reflect() {
+export default function Reflect() {
   const [state, dispatch] = useSOARState();
   const [tab, setTab] = useState("vision");
 

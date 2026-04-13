@@ -4,7 +4,7 @@ import { SubjectCard } from "../../components/SubjectCard";
 import { EnrollmentForm } from "../../components/EnrollmentForm";
 import { Button } from "../../components/Button";
 
-export function Dashboard() {
+export default function Dashboard() {
   const [state, dispatch] = useSOARState();
   const [enrollmentSubject, setEnrollmentSubject] = useState(null);
   const [filterInterests, setFilterInterests] = useState(false);

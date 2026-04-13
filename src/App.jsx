@@ -5,21 +5,23 @@ import { Newsletter } from "./layout/Newsletter";
 import { Footer } from "./layout/Footer";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
-import { Home } from "./pages/home";
-import { About } from "./pages/about/About";
-import { Join } from "./pages/join/Join";
-import { Login } from "./pages/login/Login";
-import { Onboarding } from "./pages/onboarding/Onboarding";
-import { Account } from "./pages/account/Account";
-import { Dashboard } from "./pages/dashboard";
-import { Create } from "./pages/create";
-import { Donate } from "./pages/donate";
-import { Learn, SubjectRoom, SessionPage } from "./pages/learn";
-import { Reflect } from "./pages/reflect";
-import { Connect } from "./pages/connect";
-import { Forum } from "./pages/forum";
-import { PrinciplePage } from "./pages/principles/PrinciplePage";
-import { NotFound } from "./pages/not-found/NotFound";
+import About from "./pages/about";
+import Account from "./pages/account";
+import Connect from "./pages/connect";
+import Create from "./pages/create";
+import Dashboard from "./pages/dashboard";
+import Donate from "./pages/donate";
+import Forum from "./pages/forum";
+import Home from "./pages/home";
+import Join from "./pages/join";
+import Learn from "./pages/learn";
+import Login from "./pages/login";
+import NotFound from "./pages/not-found";
+import Onboarding from "./pages/onboarding";
+import Principles from "./pages/principles";
+import Reflect from "./pages/reflect";
+import Session from "./pages/session";
+import Subject from "./pages/subject";
 
 const App = () => (
   <BrowserRouter>
@@ -36,15 +38,15 @@ const App = () => (
           <Route path="/donate" element={<Donate />} />
           <Route
             path="/principles/no-scroll"
-            element={<PrinciplePage slug="no-scroll" />}
+            element={<Principles slug="no-scroll" />}
           />
           <Route
             path="/principles/data-ownership"
-            element={<PrinciplePage slug="data-ownership" />}
+            element={<Principles slug="data-ownership" />}
           />
           <Route
             path="/principles/governance"
-            element={<PrinciplePage slug="governance" />}
+            element={<Principles slug="governance" />}
           />
 
           {/* Auth flows */}
@@ -78,7 +80,7 @@ const App = () => (
             path="/learn/:subjectId"
             element={
               <ProtectedRoute>
-                <SubjectRoom />
+                <Subject />
               </ProtectedRoute>
             }
           />
@@ -86,7 +88,7 @@ const App = () => (
             path="/learn/:subjectId/sessions/:lessonId"
             element={
               <ProtectedRoute>
-                <SessionPage />
+                <Session />
               </ProtectedRoute>
             }
           />

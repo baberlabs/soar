@@ -65,7 +65,7 @@ const PRINCIPLES = {
   },
 };
 
-export const PrinciplePage = ({ slug }) => {
+export default function PrinciplePage({ slug }) {
   const principle = PRINCIPLES[slug];
 
   if (!principle) {
@@ -124,4 +124,4 @@ export const PrinciplePage = ({ slug }) => {
       </article>
     </main>
   );
-};
+}

@@ -5,7 +5,7 @@ import { Button } from "../../components/Button";
 import { InputField } from "../../components/InputField";
 import { useSOARState } from "../../hooks/useSOARState";
 
-export function Create() {
+export default function Create() {
   const [state, dispatch] = useSOARState();
   const [searchParams] = useSearchParams();
   const requestedSubject = searchParams.get("subject");

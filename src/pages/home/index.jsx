@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 import BackgroundLayer1Image from "../../assets/images/background-layer-1.svg";
 import BackgroundLayer2Image from "../../assets/images/background-layer-2.svg";
 
-export const Home = () => (
-  <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-16 md:pb-32 md:pt-28">
-    <HeroSection />
-  </main>
-);
+export default function Home() {
+  return (
+    <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-16 md:pb-32 md:pt-28">
+      <HeroSection />
+    </main>
+  );
+}
 
 /* ── Sections ────────────────────────────────────────────── */
 

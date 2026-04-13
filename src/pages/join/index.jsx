@@ -5,7 +5,7 @@ import { Button } from "../../components/Button";
 import { InputField } from "../../components/InputField";
 import { useSOARState } from "../../hooks/useSOARState";
 
-export const Join = () => {
+export default function Join() {
   const [state, dispatch] = useSOARState();
   const navigate = useNavigate();
   const [step, setStep] = useState("details");
@@ -273,7 +273,7 @@ export const Join = () => {
       </div>
     </main>
   );
-};
+}
 
 const ValueCard = ({ title, body }) => (
   <article className="rounded-3xl border border-brand/12 bg-page p-4">

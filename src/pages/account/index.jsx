@@ -4,7 +4,7 @@ import { useSOARState } from "../../hooks/useSOARState";
 import { InputField } from "../../components/InputField";
 import { Button } from "../../components/Button";
 
-export function Account() {
+export default function Account() {
   const [state, dispatch] = useSOARState();
   const navigate = useNavigate();
 

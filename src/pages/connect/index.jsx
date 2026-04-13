@@ -40,7 +40,7 @@ function generateMembers(interests = []) {
   });
 }
 
-export function Connect() {
+export default function Connect() {
   const [state, dispatch] = useSOARState();
   const [messageDrafts, setMessageDrafts] = useState({});
   const currentUserId = state.user?.id;

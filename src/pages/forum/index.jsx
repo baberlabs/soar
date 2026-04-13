@@ -3,7 +3,7 @@ import { useSOARState } from "../../hooks/useSOARState";
 import { InputField } from "../../components/InputField";
 import { Button } from "../../components/Button";
 
-export function Forum() {
+export default function Forum() {
   const [state, dispatch] = useSOARState();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
