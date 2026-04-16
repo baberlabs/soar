@@ -1,7 +1,8 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 
 import { Header } from "./layout/Header";
 import { Newsletter } from "./layout/Newsletter";
+import { Donation } from "./layout/Donation";
 import { Footer } from "./layout/Footer";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -23,8 +24,10 @@ import Reflect from "./pages/reflect";
 import Session from "./pages/session";
 import Subject from "./pages/subject";
 
-const App = () => (
-  <BrowserRouter>
+const App = () => {
+  const location = useLocation();
+  const showDonation = location.pathname !== "/donate";
+  return (
     <div className="relative isolate flex min-h-dvh flex-col overflow-x-hidden bg-page text-navy">
       <Header />
 
@@ -145,10 +148,11 @@ const App = () => (
         </Routes>
       </div>
 
+      {showDonation && <Donation />}
       <Newsletter />
       <Footer />
     </div>
-  </BrowserRouter>
-);
+  );
+};
 
 export default App;
