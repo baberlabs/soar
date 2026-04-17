@@ -4,6 +4,8 @@
 
 ---
 
+2.1 #TODO
+
 ---
 
 3.0 Expanded Moodboard support to explicitly handle images, notes, and links.
@@ -29,3 +31,25 @@
 4.1 Replace "member(s)" terminology with "peer(s)" across all pages.
 
 ---
+
+5.1 Expand About page content to better explain mission and platform flow
+
+---
+
+6.1 #TODO
+
+---
+
+7.1 #TODO
+
+---
+
+8.1 #TODO
+
+---
+
+9.1 #TODO
+
+---
+
+10.1 #TODO
