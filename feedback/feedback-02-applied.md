@@ -1,6 +1,6 @@
 # Feedback #02 Applied
 
-1.0 Added the donation banner below Newsletter and linked it to the donation page.
+1.1 Added the donation banner below Newsletter and linked it to the donation page.
 
 ---
 
@@ -23,5 +23,9 @@
 3.6 Only one letter for the future self is allowed.
 
 3.7 Users can archive draft, sealed and previously sealed letters.
+
+---
+
+4.1 Replace "member(s)" terminology with "peer(s)" across all pages.
 
 ---

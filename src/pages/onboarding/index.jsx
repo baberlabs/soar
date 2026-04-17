@@ -48,7 +48,7 @@ export default function Onboarding() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="font-ui text-[0.72rem] tracking-[0.16em] text-brand/58">
-                Member setup
+                Peer setup
               </p>
               <p className="mt-1 font-body text-sm text-brand/72">
                 Step {stepIndex + 1} of {STEP_ORDER.length}

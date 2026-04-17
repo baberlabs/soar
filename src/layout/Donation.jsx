@@ -16,7 +16,7 @@ export const Donation = () => {
 
           <p className="font-body text-base leading-relaxed text-navy/80 md:text-lg">
             Donations support the ongoing operation of the platform, including
-            hosting, maintenance, moderation, and member services required for
+            hosting, maintenance, moderation, and peer services required for
             day-to-day use.
           </p>
 

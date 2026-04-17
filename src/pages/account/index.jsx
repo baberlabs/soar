@@ -107,9 +107,9 @@ export default function Account() {
           </article>
 
           <article className="space-y-4 rounded-2xl border border-brand/20 bg-cream p-6">
-            <h2 className="font-ui text-2xl text-brand">Membership</h2>
+            <h2 className="font-ui text-2xl text-brand">Peership</h2>
             <p className="font-body text-sm text-brand/80">
-              Share ownership: <strong>1 member share</strong>.
+              Share ownership: <strong>1 peer share</strong>.
             </p>
             <p className="font-body text-sm text-brand/80">
               Voting rights: <strong>enabled</strong>.

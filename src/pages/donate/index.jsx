@@ -246,7 +246,7 @@ export default function Donate() {
             <ul className="space-y-3">
               <InfoBullet text="Community events and local gatherings." />
               <InfoBullet text="New learning paths, sessions, and tools." />
-              <InfoBullet text="Member-led ideas, governance, and improvements." />
+              <InfoBullet text="Peer-led ideas, governance, and improvements." />
             </ul>
           </aside>
         </section>
@@ -266,9 +266,9 @@ export default function Donate() {
               Keep the community moving.
             </h1>
             <p className="max-w-2xl font-body text-base leading-relaxed text-brand/82 md:text-lg">
-              SOAR runs on member support. Donations help keep the platform
-              open, fund experiments, and back the next round of useful things
-              for the community.
+              SOAR runs on peer support. Donations help keep the platform open,
+              fund experiments, and back the next round of useful things for the
+              community.
             </p>
 
             <div className="grid gap-3 sm:grid-cols-3">
@@ -291,7 +291,7 @@ export default function Donate() {
             <h2 className="font-ui text-2xl text-brand">Why donate</h2>
             <p className="mt-3 font-body text-sm leading-relaxed text-brand/76">
               Your support helps SOAR stay alive, improve steadily, and try new
-              things without losing its focus on members.
+              things without losing its focus on peers.
             </p>
             <div className="mt-5 space-y-3">
               <ImpactRow
@@ -304,7 +304,7 @@ export default function Donate() {
               />
               <ImpactRow
                 title="Independence"
-                body="Keep SOAR member-led and resilient."
+                body="Keep SOAR peer-led and resilient."
               />
             </div>
           </div>

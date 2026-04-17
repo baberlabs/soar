@@ -28,8 +28,8 @@ export default function Join() {
     );
   }
 
-  const emailTaken = state.members.some(
-    (member) => member.email.toLowerCase() === form.email.trim().toLowerCase(),
+  const emailTaken = state.peers.some(
+    (peer) => peer.email.toLowerCase() === form.email.trim().toLowerCase(),
   );
 
   const moveToReview = (event) => {
@@ -63,7 +63,7 @@ export default function Join() {
     setStep("review");
   };
 
-  const createMember = async (event) => {
+  const createPeer = async (event) => {
     event.preventDefault();
 
     if (!acknowledged) {
@@ -76,7 +76,7 @@ export default function Join() {
     setStatus("loading");
 
     dispatch({
-      type: "REGISTER_MEMBER",
+      type: "REGISTER_PEER",
       payload: {
         fullName: form.fullName.trim(),
         email: form.email.trim().toLowerCase(),
@@ -96,11 +96,11 @@ export default function Join() {
               Join
             </span>
             <h1 className="font-display text-[clamp(3rem,7vw,5.25rem)] leading-[0.92] text-brand">
-              Become a member.
+              Become a peer.
             </h1>
             <p className="max-w-xl font-body text-base leading-relaxed text-brand/80 md:text-lg">
-              Join a community of members supporting each other's growth. Your
-              membership helps us keep the platform running and accessible to
+              Join a community of peers supporting each other's growth. Your
+              peership helps us keep the platform running and accessible to
               everyone.
             </p>
           </div>
@@ -189,10 +189,10 @@ export default function Join() {
               <Button type="submit" text="Continue" />
             </form>
           ) : (
-            <form onSubmit={createMember} className="space-y-5">
+            <form onSubmit={createPeer} className="space-y-5">
               <div className="space-y-1">
                 <h2 className="font-ui text-2xl text-brand">
-                  Review your membership
+                  Review your peership
                 </h2>
                 <p className="font-body text-sm text-brand/70">
                   Please check your details before confirming.
@@ -205,15 +205,15 @@ export default function Join() {
                   label="Email"
                   value={form.email.trim().toLowerCase()}
                 />
-                <SummaryRow label="Membership type" value="Permanent" />
-                <SummaryRow label="Membership fee" value="£1.00" />
+                <SummaryRow label="Peership type" value="Permanent" />
+                <SummaryRow label="Peership fee" value="£1.00" />
               </div>
 
               <div className="rounded-3xl border border-brand/12 bg-white p-5">
                 <p className="font-body text-sm leading-relaxed text-brand/76">
-                  Your membership supports our mission to make personal growth
-                  accessible to everyone. As a member, you'll have full access
-                  to all learning materials, the community forum, and our
+                  Your peership supports our mission to make personal growth
+                  accessible to everyone. As a peer, you'll have full access to
+                  all learning materials, the community forum, and our
                   reflection tools.
                 </p>
               </div>
@@ -226,7 +226,7 @@ export default function Join() {
                   className="mt-1 size-4 rounded border border-navy/40 accent-brand"
                 />
                 <span className="font-body text-sm leading-relaxed text-brand/76">
-                  I agree to the terms of membership and understand my
+                  I agree to the terms of peership and understand my
                   contribution helps keep this community thriving.
                 </span>
               </label>

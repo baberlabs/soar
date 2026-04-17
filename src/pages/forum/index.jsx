@@ -72,7 +72,7 @@ export default function Forum() {
           </h1>
           <p className="max-w-3xl font-body text-base leading-relaxed text-brand/80">
             Propose improvements, vote on decisions, and shape SOAR as a
-            member-owned platform.
+            peer-owned platform.
           </p>
         </header>
 
@@ -102,7 +102,7 @@ export default function Forum() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows="6"
-                placeholder="Describe what should change and why it benefits members."
+                placeholder="Describe what should change and why it benefits peers."
                 className="w-full rounded-xl border border-black/20 px-4 py-3 font-body text-navy outline-none placeholder:text-navy/30 transition duration-200 focus:border-navy focus:ring-2 focus:ring-navy/20"
               />
             </div>

@@ -3,7 +3,7 @@ import { useSOARState } from "../../hooks/useSOARState";
 import { InputField } from "../../components/InputField";
 import { Button } from "../../components/Button";
 
-function generateMembers(interests = []) {
+function generatePeers(interests = []) {
   const base = [
     {
       id: "m1",
@@ -45,8 +45,8 @@ export default function Connect() {
   const [messageDrafts, setMessageDrafts] = useState({});
   const currentUserId = state.user?.id;
 
-  const members = useMemo(
-    () => generateMembers(state.user?.interests ?? []),
+  const peers = useMemo(
+    () => generatePeers(state.user?.interests ?? []),
     [state.user?.interests],
   );
 
@@ -54,18 +54,16 @@ export default function Connect() {
     return null;
   }
 
-  const sendConnectionRequest = (member) => {
-    const existing = state.connections.find((c) =>
-      c.members?.includes(member.id),
-    );
+  const sendConnectionRequest = (peer) => {
+    const existing = state.connections.find((c) => c.peers?.includes(peer.id));
     if (existing) return;
 
     dispatch({
       type: "ADD_CONNECTION",
       payload: {
-        id: `cn_${member.id}_${state.connections.length + 1}`,
-        members: [currentUserId, member.id],
-        peer: member,
+        id: `cn_${peer.id}_${state.connections.length + 1}`,
+        peers: [currentUserId, peer.id],
+        peer: peer,
         status: "pending",
       },
     });
@@ -97,32 +95,30 @@ export default function Connect() {
             Connect
           </h1>
           <p className="max-w-3xl font-body text-base leading-relaxed text-brand/80">
-            Build meaningful connections with members who share your goals and
+            Build meaningful connections with peers who share your goals and
             interests.
           </p>
         </header>
 
         <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr]">
           <section className="space-y-4">
-            <h2 className="font-ui text-2xl text-brand">Suggested Members</h2>
+            <h2 className="font-ui text-2xl text-brand">Suggested Peers</h2>
             <div className="grid gap-4 md:grid-cols-2">
-              {members.map((member) => {
+              {peers.map((peer) => {
                 const connection = state.connections.find((c) =>
-                  c.members?.includes(member.id),
+                  c.peers?.includes(peer.id),
                 );
                 return (
                   <article
-                    key={member.id}
+                    key={peer.id}
                     className="rounded-2xl border border-brand/20 bg-cream p-5"
                   >
-                    <h3 className="font-ui text-xl text-brand">
-                      {member.name}
-                    </h3>
+                    <h3 className="font-ui text-xl text-brand">{peer.name}</h3>
                     <p className="mt-2 font-body text-sm text-brand/80">
-                      {member.bio}
+                      {peer.bio}
                     </p>
                     <p className="mt-3 font-body text-xs text-brand/60">
-                      {member.tags.join(" • ")}
+                      {peer.tags.join(" • ")}
                     </p>
                     {connection ? (
                       <p className="mt-4 font-body text-xs uppercase tracking-[0.12em] text-sage">
@@ -133,7 +129,7 @@ export default function Connect() {
                         <Button
                           type="button"
                           text="Send Request"
-                          onClick={() => sendConnectionRequest(member)}
+                          onClick={() => sendConnectionRequest(peer)}
                         />
                       </div>
                     )}
@@ -151,12 +147,11 @@ export default function Connect() {
               </div>
             ) : (
               (state.connections ?? []).map((connection) => {
-                const peerId = (connection.members ?? []).find(
-                  (memberId) => memberId !== currentUserId,
+                const peerId = (connection.peers ?? []).find(
+                  (peerId) => peerId !== currentUserId,
                 );
                 const peer =
-                  connection.peer ??
-                  members.find((member) => member.id === peerId);
+                  connection.peer ?? peers.find((peer) => peer.id === peerId);
 
                 return (
                   <article
@@ -165,7 +160,7 @@ export default function Connect() {
                   >
                     <div className="flex items-center justify-between">
                       <h3 className="font-ui text-lg text-brand">
-                        {peer?.name ?? "Member"}
+                        {peer?.name ?? "Peer"}
                       </h3>
                       <span className="font-body text-xs uppercase tracking-widest text-brand/70">
                         {connection.status}

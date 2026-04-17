@@ -14,7 +14,7 @@ export default function About() {
           <div className="relative space-y-5">
             <Badge variant="cream">About SOAR</Badge>
             <h1 className="max-w-4xl font-display text-[clamp(3rem,8vw,5.8rem)] leading-[0.9] text-brand">
-              A member-owned platform for people who want progress.
+              A peer-owned platform for people who want progress.
             </h1>
             <p className="max-w-3xl font-body text-base leading-relaxed text-brand/82 md:text-lg">
               SOAR is designed around a simple idea: your time online should
@@ -35,7 +35,7 @@ export default function About() {
           />
           <AboutCard
             title="Own the roadmap"
-            body="Use the forum to propose and vote on changes so product direction is shaped by members, not engagement metrics."
+            body="Use the forum to propose and vote on changes so product direction is shaped by peers, not engagement metrics."
           />
         </section>
 
@@ -66,7 +66,7 @@ export default function About() {
               />
               <PrincipleLink
                 title="Governance"
-                body="Member voice over black-box roadmaps."
+                body="Peer voice over black-box roadmaps."
                 to="/principles/governance"
               />
             </div>

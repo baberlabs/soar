@@ -6,7 +6,7 @@ import { InputField } from "../../components/InputField";
 import { useSOARState } from "../../hooks/useSOARState";
 
 export default function Login() {
-  const [state, dispatch, { authenticateMember }] = useSOARState();
+  const [state, dispatch, { authenticatePeer }] = useSOARState();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,8 +26,8 @@ export default function Login() {
     event.preventDefault();
 
     const normalizedEmail = email.trim().toLowerCase();
-    const member = authenticateMember(normalizedEmail, password);
-    const knownEmail = state.members.some(
+    const peer = authenticatePeer(normalizedEmail, password);
+    const knownEmail = state.peers.some(
       (candidate) => candidate.email.toLowerCase() === normalizedEmail,
     );
 
@@ -41,7 +41,7 @@ export default function Login() {
       return;
     }
 
-    if (!member) {
+    if (!peer) {
       setError(
         "That password does not match the account saved on this device.",
       );
@@ -51,11 +51,11 @@ export default function Login() {
     setError("");
     setStatus("loading");
     dispatch({
-      type: "LOGIN_MEMBER",
-      payload: { userId: member.id },
+      type: "LOGIN_PEER",
+      payload: { userId: peer.id },
     });
 
-    navigate(member.onboardingComplete ? "/learn" : "/onboarding", {
+    navigate(peer.onboardingComplete ? "/learn" : "/onboarding", {
       replace: true,
     });
   };

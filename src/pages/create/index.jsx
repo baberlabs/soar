@@ -528,7 +528,7 @@ export default function Create() {
                 <div className="space-y-4">
                   {viewerCreation.textPreview ? (
                     <div className="max-h-[68vh] overflow-auto rounded-2xl border border-brand/12 bg-page p-4">
-                      <pre className="whitespace-pre-wrap break-words font-body text-sm leading-relaxed text-brand/82">
+                      <pre className="whitespace-pre-wrap wrap-break-word font-body text-sm leading-relaxed text-brand/82">
                         {viewerCreation.textPreview}
                       </pre>
                     </div>
@@ -668,7 +668,7 @@ const renderCreationMedia = (creation, { className = "" } = {}) => {
     if (textPreview) {
       return (
         <div className="max-h-56 overflow-auto p-4 text-left">
-          <pre className="whitespace-pre-wrap break-words font-body text-sm leading-relaxed text-brand/82">
+          <pre className="whitespace-pre-wrap wrap-break-word font-body text-sm leading-relaxed text-brand/82">
             {textPreview}
           </pre>
         </div>
