@@ -5,6 +5,26 @@ import { Button } from "../../components/Button";
 import { InputField } from "../../components/InputField";
 import { useSOARState } from "../../hooks/useSOARState";
 
+const MIN_CONTRIBUTION = 1;
+
+const PAYMENT_METHODS = [
+  { id: "card", label: "Debit or credit card" },
+  { id: "paypal", label: "PayPal" },
+  { id: "applepay", label: "Apple Pay" },
+  { id: "googlepay", label: "Google Pay" },
+  { id: "bank", label: "Bank transfer" },
+  { id: "bitcoin", label: "Bitcoin" },
+];
+
+const PAYMENT_METHOD_LABELS = {
+  card: "Debit or credit card",
+  paypal: "PayPal",
+  applepay: "Apple Pay",
+  googlepay: "Google Pay",
+  bank: "Bank transfer",
+  bitcoin: "Bitcoin",
+};
+
 export default function Join() {
   const [state, dispatch] = useSOARState();
   const navigate = useNavigate();
@@ -15,9 +35,32 @@ export default function Join() {
     password: "",
     confirmPassword: "",
   });
+  const [payment, setPayment] = useState({
+    contribution: "1.00",
+    method: "card",
+    cardName: "",
+    cardNumber: "",
+    expiry: "",
+    cvc: "",
+    postcode: "",
+    paypalEmail: "",
+    bankAccountName: "",
+    sortCode: "",
+    accountNumber: "",
+    bitcoinAddress: "",
+  });
+  const [paymentReceipt, setPaymentReceipt] = useState(null);
   const [acknowledged, setAcknowledged] = useState(false);
   const [error, setError] = useState("");
-  const [status, setStatus] = useState("idle");
+  const [registrationStatus, setRegistrationStatus] = useState("idle");
+  const [paymentStatus, setPaymentStatus] = useState("idle");
+
+  const contributionValue = Number.parseFloat(payment.contribution);
+  const contributionAmount =
+    Number.isFinite(contributionValue) && contributionValue > 0
+      ? contributionValue
+      : MIN_CONTRIBUTION;
+  const contributionDisplay = `£${contributionAmount.toFixed(2)}`;
 
   if (state.user) {
     return (
@@ -28,11 +71,11 @@ export default function Join() {
     );
   }
 
-  const emailTaken = state.peers.some(
-    (peer) => peer.email.toLowerCase() === form.email.trim().toLowerCase(),
+  const emailTaken = state.members?.some(
+    (member) => member.email.toLowerCase() === form.email.trim().toLowerCase(),
   );
 
-  const moveToReview = (event) => {
+  const moveToPayment = (event) => {
     event.preventDefault();
 
     if (!form.fullName.trim() || !form.email.trim() || !form.password.trim()) {
@@ -60,6 +103,176 @@ export default function Join() {
     }
 
     setError("");
+    setPaymentReceipt(null);
+    setStep("payment");
+  };
+
+  const isValidCardNumber = (value) => {
+    const digits = value.replace(/\D/g, "");
+
+    if (digits.length < 13 || digits.length > 19) {
+      return false;
+    }
+
+    // Unnecessary for simulated card payment
+
+    // let sum = 0;
+    // let shouldDouble = false;
+
+    // for (let i = digits.length - 1; i >= 0; i -= 1) {
+    //   let digit = Number(digits[i]);
+
+    //   if (shouldDouble) {
+    //     digit *= 2;
+    //     if (digit > 9) {
+    //       digit -= 9;
+    //     }
+    //   }
+
+    //   sum += digit;
+    //   shouldDouble = !shouldDouble;
+    // }
+
+    // return sum % 10 === 0;
+
+    return true;
+  };
+
+  const isValidExpiry = (value) => {
+    const match = value.match(/^(0[1-9]|1[0-2])\/(\d{2})$/);
+    if (!match) {
+      return false;
+    }
+
+    const month = Number(match[1]);
+    const year = Number(`20${match[2]}`);
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1;
+    const currentYear = now.getFullYear();
+
+    if (year < currentYear) {
+      return false;
+    }
+
+    if (year === currentYear && month < currentMonth) {
+      return false;
+    }
+
+    return true;
+  };
+
+  const isValidBitcoinAddress = (value) => {
+    const trimmed = value.trim();
+    const legacyPattern = /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/;
+    const segwitPattern = /^bc1[ac-hj-np-z02-9]{11,71}$/;
+
+    return legacyPattern.test(trimmed) || segwitPattern.test(trimmed);
+  };
+
+  const processPayment = async (event) => {
+    event.preventDefault();
+
+    if (
+      !Number.isFinite(contributionValue) ||
+      contributionValue < MIN_CONTRIBUTION
+    ) {
+      setError("Enter a contribution of at least £1.00.");
+      return;
+    }
+
+    if (payment.contribution.includes(".")) {
+      const decimals = payment.contribution.split(".")[1] ?? "";
+      if (decimals.length > 2) {
+        setError("Use a valid amount with up to two decimal places.");
+        return;
+      }
+    }
+
+    if (payment.method === "card") {
+      if (!payment.cardName.trim()) {
+        setError("Enter the cardholder name.");
+        return;
+      }
+
+      if (!isValidCardNumber(payment.cardNumber)) {
+        setError("Enter a valid card number.");
+        return;
+      }
+
+      if (!isValidExpiry(payment.expiry)) {
+        setError("Enter a valid expiry date in MM/YY format.");
+        return;
+      }
+
+      if (!/^\d{3,4}$/.test(payment.cvc.trim())) {
+        setError("Enter a valid security code.");
+        return;
+      }
+
+      if (payment.postcode.trim().length < 5) {
+        setError("Enter a valid billing postcode.");
+        return;
+      }
+    }
+
+    if (payment.method === "paypal") {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payment.paypalEmail.trim())) {
+        setError("Enter a valid PayPal email address.");
+        return;
+      }
+    }
+
+    if (payment.method === "bank") {
+      if (!payment.bankAccountName.trim()) {
+        setError("Enter the account holder name.");
+        return;
+      }
+
+      if (!/^\d{2}-?\d{2}-?\d{2}$/.test(payment.sortCode.trim())) {
+        setError("Enter a valid UK sort code.");
+        return;
+      }
+
+      if (!/^\d{8}$/.test(payment.accountNumber.trim())) {
+        setError("Enter a valid 8-digit account number.");
+        return;
+      }
+    }
+
+    if (payment.method === "bitcoin") {
+      if (!isValidBitcoinAddress(payment.bitcoinAddress)) {
+        setError("Enter a valid Bitcoin wallet address.");
+        return;
+      }
+    }
+
+    setError("");
+    setPaymentStatus("loading");
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 900);
+    });
+
+    const cardDigits = payment.cardNumber.replace(/\D/g, "");
+    const accountDigits = payment.accountNumber.replace(/\D/g, "");
+    setPaymentReceipt({
+      transactionId: `SOAR-${Date.now().toString().slice(-8)}`,
+      amount: contributionDisplay,
+      paidAt: new Date().toISOString(),
+      method: payment.method,
+      paymentRef:
+        payment.method === "card"
+          ? `•••• ${cardDigits.slice(-4)}`
+          : payment.method === "paypal"
+            ? payment.paypalEmail.trim().toLowerCase()
+            : payment.method === "bank"
+              ? `Account ending ${accountDigits.slice(-4)}`
+              : payment.method === "bitcoin"
+                ? `${payment.bitcoinAddress.trim().slice(0, 8)}...${payment.bitcoinAddress.trim().slice(-6)}`
+                : "Wallet authorisation",
+    });
+
+    setPaymentStatus("idle");
     setStep("review");
   };
 
@@ -73,14 +286,20 @@ export default function Join() {
       return;
     }
 
-    setStatus("loading");
+    if (!paymentReceipt) {
+      setError("Complete payment before you confirm your peership.");
+      return;
+    }
+
+    setRegistrationStatus("loading");
 
     dispatch({
-      type: "REGISTER_PEER",
+      type: "REGISTER_MEMBER",
       payload: {
         fullName: form.fullName.trim(),
         email: form.email.trim().toLowerCase(),
         password: form.password,
+        paid: true,
       },
     });
 
@@ -123,13 +342,13 @@ export default function Join() {
 
         <section className="rounded-[1.75rem] border border-brand/12 bg-page p-5 md:p-6">
           {step === "details" ? (
-            <form onSubmit={moveToReview} className="space-y-5">
+            <form onSubmit={moveToPayment} className="space-y-5">
               <div className="space-y-1">
                 <h2 className="font-ui text-2xl text-brand">
                   Create your account
                 </h2>
                 <p className="font-body text-sm text-brand/70">
-                  Get started with your account today.
+                  Enter your details before payment.
                 </p>
               </div>
 
@@ -188,6 +407,224 @@ export default function Join() {
 
               <Button type="submit" text="Continue" />
             </form>
+          ) : step === "payment" ? (
+            <form onSubmit={processPayment} className="space-y-5">
+              <div className="space-y-1">
+                <h2 className="font-ui text-2xl text-brand">
+                  Pay peership fee
+                </h2>
+                <p className="font-body text-sm text-brand/70">
+                  Choose your contribution and payment method. Minimum peership
+                  contribution is £1.00.
+                </p>
+              </div>
+
+              <div className="rounded-3xl border border-brand/12 p-5">
+                <InputField
+                  label="Contribution amount (GBP)"
+                  name="join-contribution"
+                  type="number"
+                  value={payment.contribution}
+                  onValueChange={(contribution) =>
+                    setPayment((current) => ({ ...current, contribution }))
+                  }
+                  placeholder="1.00"
+                />
+                <p className="mt-2 font-body text-xs leading-relaxed text-brand/68">
+                  Minimum contribution: £1.00. You can contribute more to
+                  support SOAR's community model.
+                </p>
+              </div>
+
+              <div className="space-y-3 rounded-3xl border border-brand/12 p-5">
+                <p className="font-ui text-sm text-brand">Payment method</p>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {PAYMENT_METHODS.map((method) => (
+                    <label
+                      key={method.id}
+                      className="flex items-center gap-3 rounded-2xl border border-brand/12 bg-page px-3 py-3"
+                    >
+                      <input
+                        type="radio"
+                        name="payment-method"
+                        checked={payment.method === method.id}
+                        onChange={() =>
+                          setPayment((current) => ({
+                            ...current,
+                            method: method.id,
+                          }))
+                        }
+                        className="size-4 border border-navy/40 accent-brand"
+                      />
+                      <span className="font-body text-sm text-brand/80">
+                        {method.label}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-3xl border border-brand/12 p-5">
+                <SummaryRow label="Amount" value={contributionDisplay} />
+                <SummaryRow
+                  label="Charge type"
+                  value="One-off peership share"
+                />
+              </div>
+
+              {payment.method === "card" ? (
+                <>
+                  <InputField
+                    label="Cardholder name"
+                    name="join-card-name"
+                    value={payment.cardName}
+                    onValueChange={(cardName) =>
+                      setPayment((current) => ({ ...current, cardName }))
+                    }
+                    placeholder="Jane Smith"
+                    autoComplete="cc-name"
+                  />
+
+                  <InputField
+                    label="Card number"
+                    name="join-card-number"
+                    value={payment.cardNumber}
+                    onValueChange={(cardNumber) =>
+                      setPayment((current) => ({ ...current, cardNumber }))
+                    }
+                    placeholder="4242 4242 4242 4242"
+                    autoComplete="cc-number"
+                  />
+
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    <InputField
+                      label="Expiry"
+                      name="join-card-expiry"
+                      value={payment.expiry}
+                      onValueChange={(expiry) =>
+                        setPayment((current) => ({ ...current, expiry }))
+                      }
+                      placeholder="MM/YY"
+                      autoComplete="cc-exp"
+                    />
+
+                    <InputField
+                      label="Security code"
+                      name="join-card-cvc"
+                      value={payment.cvc}
+                      onValueChange={(cvc) =>
+                        setPayment((current) => ({ ...current, cvc }))
+                      }
+                      placeholder="123"
+                      autoComplete="cc-csc"
+                    />
+
+                    <InputField
+                      label="Billing postcode"
+                      name="join-postcode"
+                      value={payment.postcode}
+                      onValueChange={(postcode) =>
+                        setPayment((current) => ({ ...current, postcode }))
+                      }
+                      placeholder="SW1A 1AA"
+                      autoComplete="postal-code"
+                    />
+                  </div>
+                </>
+              ) : null}
+
+              {payment.method === "paypal" ? (
+                <InputField
+                  label="PayPal email"
+                  name="join-paypal-email"
+                  type="email"
+                  value={payment.paypalEmail}
+                  onValueChange={(paypalEmail) =>
+                    setPayment((current) => ({ ...current, paypalEmail }))
+                  }
+                  placeholder="jane@example.com"
+                  autoComplete="email"
+                />
+              ) : null}
+
+              {payment.method === "bank" ? (
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <InputField
+                    label="Account holder"
+                    name="join-bank-account-name"
+                    value={payment.bankAccountName}
+                    onValueChange={(bankAccountName) =>
+                      setPayment((current) => ({ ...current, bankAccountName }))
+                    }
+                    placeholder="Jane Smith"
+                  />
+                  <InputField
+                    label="Sort code"
+                    name="join-bank-sort-code"
+                    value={payment.sortCode}
+                    onValueChange={(sortCode) =>
+                      setPayment((current) => ({ ...current, sortCode }))
+                    }
+                    placeholder="12-34-56"
+                  />
+                  <InputField
+                    label="Account number"
+                    name="join-bank-account-number"
+                    value={payment.accountNumber}
+                    onValueChange={(accountNumber) =>
+                      setPayment((current) => ({ ...current, accountNumber }))
+                    }
+                    placeholder="12345678"
+                  />
+                </div>
+              ) : null}
+
+              {payment.method === "bitcoin" ? (
+                <InputField
+                  label="Bitcoin wallet address"
+                  name="join-bitcoin-address"
+                  value={payment.bitcoinAddress}
+                  onValueChange={(bitcoinAddress) =>
+                    setPayment((current) => ({ ...current, bitcoinAddress }))
+                  }
+                  placeholder="bc1..."
+                />
+              ) : null}
+
+              {payment.method === "applepay" ||
+              payment.method === "googlepay" ? (
+                <p className="rounded-2xl border border-brand/12 px-4 py-3 font-body text-xs leading-relaxed text-brand/68">
+                  You will approve this payment with your device wallet during
+                  authorisation.
+                </p>
+              ) : null}
+
+              {error ? (
+                <p className="font-body text-sm text-rose-700" role="alert">
+                  {error}
+                </p>
+              ) : null}
+
+              <div className="flex flex-wrap gap-3">
+                <Button
+                  type="button"
+                  text="Back"
+                  variant="secondary"
+                  fullWidth={false}
+                  onClick={() => {
+                    setError("");
+                    setStep("details");
+                  }}
+                />
+                <Button
+                  type="submit"
+                  status={paymentStatus}
+                  loadingText="Authorising payment..."
+                  text={`Pay ${contributionDisplay}`}
+                  fullWidth={false}
+                />
+              </div>
+            </form>
           ) : (
             <form onSubmit={createPeer} className="space-y-5">
               <div className="space-y-1">
@@ -195,21 +632,46 @@ export default function Join() {
                   Review your peership
                 </h2>
                 <p className="font-body text-sm text-brand/70">
-                  Please check your details before confirming.
+                  Check your details and payment before confirming.
                 </p>
               </div>
 
-              <div className="space-y-3 rounded-3xl border border-brand/12 bg-white p-5">
+              <div className="space-y-3 rounded-3xl border border-brand/12 p-5">
                 <SummaryRow label="Name" value={form.fullName} />
                 <SummaryRow
                   label="Email"
                   value={form.email.trim().toLowerCase()}
                 />
                 <SummaryRow label="Peership type" value="Permanent" />
-                <SummaryRow label="Peership fee" value="£1.00" />
+                <SummaryRow label="Contribution" value={contributionDisplay} />
               </div>
 
-              <div className="rounded-3xl border border-brand/12 bg-white p-5">
+              <div className="space-y-3 rounded-3xl border border-brand/12 p-5">
+                <SummaryRow
+                  label="Payment status"
+                  value={paymentReceipt ? "Authorised" : "Pending"}
+                />
+                <SummaryRow
+                  label="Method"
+                  value={
+                    paymentReceipt
+                      ? PAYMENT_METHOD_LABELS[paymentReceipt.method]
+                      : "Not selected"
+                  }
+                />
+                <SummaryRow
+                  label="Reference"
+                  value={
+                    paymentReceipt ? paymentReceipt.paymentRef : "Not provided"
+                  }
+                />
+                <SummaryRow
+                  label="Transaction"
+                  value={paymentReceipt?.transactionId ?? "Not available"}
+                />
+              </div>
+
+              <div className="rounded-3xl border border-brand/12 p-5">
                 <p className="font-body text-sm leading-relaxed text-brand/76">
                   Your peership supports our mission to make personal growth
                   accessible to everyone. As a peer, you'll have full access to
@@ -218,7 +680,7 @@ export default function Join() {
                 </p>
               </div>
 
-              <label className="flex items-start gap-3 rounded-2xl border border-brand/12 bg-white px-4 py-4">
+              <label className="flex items-start gap-3 rounded-2xl border border-brand/12 px-4 py-4">
                 <input
                   type="checkbox"
                   checked={acknowledged}
@@ -240,17 +702,17 @@ export default function Join() {
               <div className="flex flex-wrap gap-3">
                 <Button
                   type="button"
-                  text="Back"
+                  text="Back to payment"
                   variant="secondary"
                   fullWidth={false}
                   onClick={() => {
                     setError("");
-                    setStep("details");
+                    setStep("payment");
                   }}
                 />
                 <Button
                   type="submit"
-                  status={status}
+                  status={registrationStatus}
                   loadingText="Setting up your account..."
                   text="Complete Registration"
                   fullWidth={false}

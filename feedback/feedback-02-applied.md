@@ -53,3 +53,13 @@
 ---
 
 10.1 #TODO
+
+---
+
+11.1 Added a payment-first flow to Join so users complete payment before final account registration.
+
+11.2 Added support for card, PayPal, Apple Pay, Google Pay, bank transfer, and Bitcoin payment options.
+
+11.3 Added flexible contribution amounts with a £1 minimum.
+
+11.4 Added method-specific validation and surfaced payment method/reference in the final review step.
