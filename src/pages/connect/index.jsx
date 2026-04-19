@@ -1,217 +1,66 @@
-import { useMemo, useState } from "react";
+import { Outlet, useLocation } from "react-router-dom";
 import { useSOARState } from "../../hooks/useSOARState";
-import { InputField } from "../../components/InputField";
-import { Button } from "../../components/Button";
+import { ConnectHeader } from "./components/shared/ConnectHeader";
+import { ConnectTabs } from "./components/shared/ConnectTabs";
+import { buildEvents } from "./utils/events";
 
-function generatePeers(interests = []) {
-  const base = [
-    {
-      id: "m1",
-      name: "Ari Patel",
-      bio: "Documentary photographer and editor",
-      tags: ["Photography", "Film"],
-    },
-    {
-      id: "m2",
-      name: "Lena Brooks",
-      bio: "Writes essays on ethics and technology",
-      tags: ["Writing", "Philosophy"],
-    },
-    {
-      id: "m3",
-      name: "Marco Diaz",
-      bio: "Frontend learner building community tools",
-      tags: ["JavaScript", "Design"],
-    },
-    {
-      id: "m4",
-      name: "Nia Walker",
-      bio: "Leads local mindfulness circles",
-      tags: ["Meditation", "Leadership"],
-    },
+/**
+ * Connect shell. Renders the page chrome (header + tabs) and an <Outlet />
+ * for the active tab's content.
+ *
+ * Header stats are derived once here rather than per-tab so the numbers
+ * stay stable as the user switches tabs.
+ */
+export default function Connect() {
+  const [state] = useSOARState();
+  const location = useLocation();
+
+  // All hooks must run unconditionally — guard the render, not the hooks.
+  const user = state.user;
+  const connections = state.connections ?? [];
+  const interests = user?.interests ?? [];
+
+  // buildEvents is O(n) on a 3-item array; useMemo would be more overhead
+  // than the work it avoids.
+  const eventCount = buildEvents(interests).length;
+  const accepted = connections.filter((c) => c.status === "accepted").length;
+  const pending = connections.filter((c) => c.status === "pending").length;
+
+  if (!user) return null;
+
+  const stats = [
+    { label: "Connected", value: accepted },
+    { label: "Pending", value: pending },
+    { label: "Events", value: eventCount },
   ];
 
-  if (!interests.length) return base;
-
-  return base.sort((a, b) => {
-    const scoreA = a.tags.filter((t) => interests.includes(t)).length;
-    const scoreB = b.tags.filter((t) => interests.includes(t)).length;
-    return scoreB - scoreA;
-  });
-}
-
-export default function Connect() {
-  const [state, dispatch] = useSOARState();
-  const [messageDrafts, setMessageDrafts] = useState({});
-  const currentUserId = state.user?.id;
-
-  const peers = useMemo(
-    () => generatePeers(state.user?.interests ?? []),
-    [state.user?.interests],
-  );
-
-  if (!state.user) {
-    return null;
-  }
-
-  const sendConnectionRequest = (peer) => {
-    const existing = state.connections.find((c) => c.peers?.includes(peer.id));
-    if (existing) return;
-
-    dispatch({
-      type: "ADD_CONNECTION",
-      payload: {
-        id: `cn_${peer.id}_${state.connections.length + 1}`,
-        peers: [currentUserId, peer.id],
-        peer: peer,
-        status: "pending",
-      },
-    });
+  const counts = {
+    "/connect/peers": undefined, // no count — encourages exploration
+    "/connect/chats": connections.length || undefined,
+    "/connect/events": eventCount || undefined,
   };
 
-  const sendMessage = (connection) => {
-    const value = (messageDrafts[connection.id] ?? "").trim();
-    if (!value) return;
-
-    dispatch({
-      type: "ADD_CONNECTION_MESSAGE",
-      payload: {
-        connectionId: connection.id,
-        message: {
-          body: value,
-          fromUserId: state.user.id,
-        },
-      },
-    });
-
-    setMessageDrafts((prev) => ({ ...prev, [connection.id]: "" }));
-  };
+  // Screenreader-friendly announcement of the current tab on change.
+  const tabLabel = location.pathname.startsWith("/connect/chats")
+    ? "Chats"
+    : location.pathname.startsWith("/connect/events")
+      ? "Events"
+      : "Peers";
 
   return (
     <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-32 md:pb-32 md:pt-40">
-      <section className="mx-auto max-w-5xl space-y-8">
-        <header className="space-y-3">
-          <h1 className="font-display text-[clamp(2.8rem,7vw,5rem)] leading-[0.92] text-brand">
-            Connect
-          </h1>
-          <p className="max-w-3xl font-body text-base leading-relaxed text-brand/80">
-            Build meaningful connections with peers who share your goals and
-            interests.
+      <div className="space-y-8">
+        <ConnectHeader stats={stats} />
+
+        <div className="flex items-center justify-between gap-4">
+          <ConnectTabs counts={counts} />
+          <p aria-live="polite" className="sr-only">
+            Active section: {tabLabel}
           </p>
-        </header>
-
-        <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr]">
-          <section className="space-y-4">
-            <h2 className="font-ui text-2xl text-brand">Suggested Peers</h2>
-            <div className="grid gap-4 md:grid-cols-2">
-              {peers.map((peer) => {
-                const connection = state.connections.find((c) =>
-                  c.peers?.includes(peer.id),
-                );
-                return (
-                  <article
-                    key={peer.id}
-                    className="rounded-2xl border border-brand/20 bg-cream p-5"
-                  >
-                    <h3 className="font-ui text-xl text-brand">{peer.name}</h3>
-                    <p className="mt-2 font-body text-sm text-brand/80">
-                      {peer.bio}
-                    </p>
-                    <p className="mt-3 font-body text-xs text-brand/60">
-                      {peer.tags.join(" • ")}
-                    </p>
-                    {connection ? (
-                      <p className="mt-4 font-body text-xs uppercase tracking-[0.12em] text-sage">
-                        {connection.status}
-                      </p>
-                    ) : (
-                      <div className="mt-4">
-                        <Button
-                          type="button"
-                          text="Send Request"
-                          onClick={() => sendConnectionRequest(peer)}
-                        />
-                      </div>
-                    )}
-                  </article>
-                );
-              })}
-            </div>
-          </section>
-
-          <section className="space-y-4">
-            <h2 className="font-ui text-2xl text-brand">Your Connections</h2>
-            {(state.connections ?? []).length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-brand/30 bg-page p-6 text-center font-body text-brand/70">
-                No connections yet.
-              </div>
-            ) : (
-              (state.connections ?? []).map((connection) => {
-                const peerId = (connection.peers ?? []).find(
-                  (peerId) => peerId !== currentUserId,
-                );
-                const peer =
-                  connection.peer ?? peers.find((peer) => peer.id === peerId);
-
-                return (
-                  <article
-                    key={connection.id}
-                    className="space-y-3 rounded-2xl border border-brand/20 bg-cream p-4"
-                  >
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-ui text-lg text-brand">
-                        {peer?.name ?? "Peer"}
-                      </h3>
-                      <span className="font-body text-xs uppercase tracking-widest text-brand/70">
-                        {connection.status}
-                      </span>
-                    </div>
-
-                    <div className="max-h-28 space-y-2 overflow-y-auto rounded-xl bg-page p-3">
-                      {(connection.messages ?? []).length === 0 ? (
-                        <p className="font-body text-xs text-brand/60">
-                          No messages yet.
-                        </p>
-                      ) : (
-                        connection.messages.map((msg) => (
-                          <p
-                            key={msg.id}
-                            className="font-body text-xs text-brand/80"
-                          >
-                            {msg.body}
-                          </p>
-                        ))
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <InputField
-                        label="New message"
-                        type="text"
-                        name={`msg-${connection.id}`}
-                        placeholder="Say hello"
-                        value={messageDrafts[connection.id] ?? ""}
-                        required={false}
-                        onValueChange={(val) =>
-                          setMessageDrafts((prev) => ({
-                            ...prev,
-                            [connection.id]: val,
-                          }))
-                        }
-                      />
-                      <Button
-                        type="button"
-                        text="Send"
-                        onClick={() => sendMessage(connection)}
-                      />
-                    </div>
-                  </article>
-                );
-              })
-            )}
-          </section>
         </div>
-      </section>
+
+        <Outlet />
+      </div>
     </main>
   );
 }

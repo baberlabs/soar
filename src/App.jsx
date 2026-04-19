@@ -1,4 +1,11 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  useParams,
+} from "react-router-dom";
 
 import { Header } from "./layout/Header";
 import { Newsletter } from "./layout/Newsletter";
@@ -9,6 +16,9 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import About from "./pages/about";
 import Account from "./pages/account";
 import Connect from "./pages/connect";
+import ChatsTab from "./pages/connect/tabs/ChatsTab";
+import EventsTab from "./pages/connect/tabs/EventsTab";
+import PeersTab from "./pages/connect/tabs/PeersTab";
 import Create from "./pages/create";
 import Dashboard from "./pages/dashboard";
 import Donate from "./pages/donate";
@@ -27,13 +37,14 @@ import Subject from "./pages/subject";
 const App = () => {
   const location = useLocation();
   const showDonation = location.pathname !== "/donate";
+
   return (
     <div className="relative isolate flex min-h-dvh flex-col overflow-x-hidden bg-page text-navy">
       <Header />
 
       <div className="flex-1">
         <Routes>
-          {/* Public pages */}
+          {/* Public */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/join" element={<Join />} />
@@ -111,6 +122,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/connect"
             element={
@@ -118,7 +130,13 @@ const App = () => {
                 <Connect />
               </ProtectedRoute>
             }
-          />
+          >
+            <Route index element={<Navigate to="peers" replace />} />
+            <Route path="peers" element={<PeersTab />} />
+            <Route path="chats" element={<ChatsTab />} />
+            <Route path="events" element={<EventsTab />} />
+          </Route>
+
           <Route
             path="/forum"
             element={

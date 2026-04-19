@@ -54,3 +54,11 @@ Follow-up feedback based on post-implementation review:
 10. **Proposals and Peer System (Deferred from Feedback #01 TODO 10)**
     - Add existing dummy proposals for reference
     - Ensure peer connection, messaging, and peer creation visibility are available
+
+---
+
+## Extra Todo
+
+11. Add payment flow to user registration process
+
+12. Confirm if "Reflect" deserves its own page, or should it be part of the Learn flow.

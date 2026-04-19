@@ -524,6 +524,37 @@ const soarReducer = (state, action) => {
       };
     }
 
+    case "ACCEPT_CONNECTION": {
+      const { connectionId, mockMessage } = action.payload;
+      return {
+        ...state,
+        connections: state.connections.map((connection) => {
+          if (connection.id !== connectionId) return connection;
+
+          // Build a fresh message list that prepends the mock welcome.
+          const messages = connection.messages ?? [];
+          const nextMessages = mockMessage
+            ? [
+                ...messages,
+                {
+                  id: createId("message"),
+                  at: new Date().toISOString(),
+                  body: mockMessage.body,
+                  fromUserId: mockMessage.fromUserId,
+                },
+              ]
+            : messages;
+
+          return {
+            ...connection,
+            status: "accepted",
+            acceptedAt: connection.acceptedAt ?? new Date().toISOString(),
+            messages: nextMessages,
+          };
+        }),
+      };
+    }
+
     case "ADD_CONNECTION_MESSAGE":
       return {
         ...state,

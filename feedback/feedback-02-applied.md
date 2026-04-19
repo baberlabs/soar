@@ -44,7 +44,23 @@
 
 ---
 
-8.1 #TODO
+8.1 Implemented a dedicated local events section in Connect with match-ordered event cards.
+
+8.2 Added practical event guidance in Connect for finding and joining SOAR in-person sessions.
+
+8.3 Linked events into peer discovery and chats so users can move from discovery to coordination in one flow.
+
+8.4 Expanded peer discovery from a basic suggested list into a dedicated Find New Peers flow with search and pathway filtering.
+
+8.5 Reworked connection logic to use the single canonical connection schema (`members`) and removed legacy dual-schema handling.
+
+8.6 Added recommendation scoring based on shared interests and pathways, with clearer match reasoning shown per peer.
+
+8.7 Introduced dedicated peer profile routing and profile pages, with connected-peer access rules and richer peer context.
+
+8.8 Upgraded chats from simple inline message blocks to a two-pane chat workspace with conversation list, active thread, timestamps, Enter-to-send, and stable auto-scroll behaviour.
+
+8.9 Unified peers, chats, and events into one connected journey, including cross-navigation between discovery, profile view, conversations, and event coordination.
 
 ---
 
