@@ -20,7 +20,7 @@
 
 3.5 Moodboard editing now includes a cinema mode that expands the canvas fullscreen (reason = why not?).
 
-3.6 Replace all fields in Future Letters with one text field called "Letter".
+3.6 Replaced all fields in Future Letters with one text field called "Letter".
 
 3.6 Only one letter for the future self is allowed.
 
@@ -28,15 +28,15 @@
 
 ---
 
-4.1 Replace "member(s)" terminology with "peer(s)" across all pages.
+4.1 Replaced "member(s)" terminology with "peer(s)" across all pages.
 
 ---
 
-5.1 Expand About page content to better explain mission and platform flow
+5.1 Expanded About page content to better explain mission and platform flow
 
 ---
 
-6.1 #TODO
+6.1 Added a "How SOAR works" step inside onboarding/registration
 
 ---
 

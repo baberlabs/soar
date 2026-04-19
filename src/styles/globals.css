@@ -102,6 +102,38 @@ body {
   background: color-mix(in srgb, var(--color-navy) 86%, black);
 }
 
+@keyframes softFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.soft-enter {
+  animation: softFadeUp 380ms ease-out both;
+}
+
+.soft-rise {
+  animation: softFadeUp 460ms ease-out both;
+}
+
+.soft-delay-1 {
+  animation-delay: 60ms;
+}
+
+.soft-delay-2 {
+  animation-delay: 120ms;
+}
+
+.soft-delay-3 {
+  animation-delay: 180ms;
+}
+
 @media (pointer: coarse) {
   html,
   body,
