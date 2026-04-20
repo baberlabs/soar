@@ -82,8 +82,8 @@ export default function Join() {
     );
   }
 
-  const emailTaken = state.members?.some(
-    (member) => member.email.toLowerCase() === form.email.trim().toLowerCase(),
+  const emailTaken = state.peers?.some(
+    (peer) => peer.email.toLowerCase() === form.email.trim().toLowerCase(),
   );
 
   const moveToPayment = (event) => {
@@ -305,7 +305,7 @@ export default function Join() {
     setRegistrationStatus("loading");
 
     dispatch({
-      type: "REGISTER_MEMBER",
+      type: "REGISTER_PEER",
       payload: {
         fullName: form.fullName.trim(),
         email: form.email.trim().toLowerCase(),
@@ -322,7 +322,7 @@ export default function Join() {
 
   return (
     <main className="mx-auto flex w-full max-w-360 items-center px-6 pb-20 pt-28 md:pt-34">
-      <div className="mx-auto grid w-full max-w-5xl gap-8 rounded-4xl border border-brand/15 bg-white/75 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:grid-cols-[1.05fr_0.95fr] md:p-8">
+      <div className="mx-auto grid w-full max-w-5xl gap-8 rounded-4xl border border-brand/15 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:grid-cols-[1.05fr_0.95fr] md:p-8">
         <section className="space-y-6">
           <div className="space-y-4">
             <span className="inline-flex rounded-full bg-sky/35 px-3 py-1 font-ui text-[0.7rem] tracking-[0.14em] text-brand">
@@ -808,7 +808,7 @@ export default function Join() {
                   body="You produce work, review progress monthly, connect with peers, and influence product direction through shared governance."
                 />
 
-                <p className="rounded-2xl border border-brand/12 bg-white/55 px-4 py-3 font-body text-xs leading-relaxed text-brand/68 soft-rise soft-delay-2">
+                <p className="rounded-2xl border border-brand/12 px-4 py-3 font-body text-xs leading-relaxed text-brand/68 soft-rise soft-delay-2">
                   Onboarding takes a few minutes and gives you a usable start: a
                   clear learning direction, your first subject path, and an
                   immediate next action.
@@ -858,7 +858,7 @@ const ValueCard = ({ title, body }) => (
 );
 
 const JourneyItem = ({ phase, title, body }) => (
-  <article className="rounded-2xl border border-brand/12 bg-white/45 p-4 transition duration-300 hover:-translate-y-0.5 hover:border-brand/22">
+  <article className="rounded-2xl border border-brand/12 p-4 transition duration-300 hover:-translate-y-0.5 hover:border-brand/22">
     <p className="font-ui text-[0.7rem] tracking-[0.15em] text-brand/58 uppercase">
       {phase}
     </p>

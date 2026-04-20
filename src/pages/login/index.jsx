@@ -62,7 +62,7 @@ export default function Login() {
 
   return (
     <main className="mx-auto flex w-full max-w-360 items-center px-6 pb-20 pt-28 md:pt-34">
-      <div className="mx-auto grid w-full max-w-5xl gap-8 rounded-4xl border border-brand/15 bg-white/75 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:grid-cols-[0.95fr_1.05fr] md:p-8">
+      <div className="mx-auto grid w-full max-w-5xl gap-8 rounded-4xl border border-brand/15 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:grid-cols-[0.95fr_1.05fr] md:p-8">
         <section className="space-y-6">
           <div className="space-y-4">
             <span className="inline-flex rounded-full bg-sky/35 px-3 py-1 font-ui text-[0.7rem] tracking-[0.14em] text-brand">

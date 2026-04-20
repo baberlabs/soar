@@ -138,7 +138,7 @@ export default function SessionPage() {
           ← Back to subject room
         </Link>
 
-        <header className="relative overflow-hidden rounded-4xl border border-brand/15 bg-white/72 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:p-8">
+        <header className="relative overflow-hidden rounded-4xl border border-brand/15 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:p-8">
           <img
             src={BackgroundLayer1Image}
             alt=""
@@ -277,7 +277,7 @@ export default function SessionPage() {
                 {media.supporting.map((image) => (
                   <figure
                     key={image.caption}
-                    className="overflow-hidden rounded-3xl border border-brand/12 bg-white"
+                    className="overflow-hidden rounded-3xl border border-brand/12"
                   >
                     <img
                       src={image.src}
@@ -296,7 +296,7 @@ export default function SessionPage() {
                 {keyFacts.map((fact) => (
                   <article
                     key={fact.title}
-                    className="rounded-3xl border border-brand/12 bg-white p-4"
+                    className="rounded-3xl border border-brand/12 p-4"
                   >
                     <p className="font-ui text-sm tracking-[0.08em] text-brand">
                       {fact.title}
@@ -309,7 +309,7 @@ export default function SessionPage() {
               </div>
             </section>
 
-            <section className="rounded-4xl border border-brand/12 bg-white/75 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.06)]">
+            <section className="rounded-4xl border border-brand/12 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.06)]">
               <h2 className="font-ui text-3xl text-brand">3. Quick quiz</h2>
               <p className="mt-3 font-body text-sm leading-relaxed text-brand/76">
                 {quiz.question}
@@ -410,7 +410,7 @@ export default function SessionPage() {
                     }
                   }}
                   placeholder="Write a short reflection from this session..."
-                  className="mt-2 min-h-32 w-full rounded-2xl border border-brand/16 bg-white px-4 py-3 font-body text-sm leading-relaxed text-brand placeholder:text-brand/40 focus:border-brand/28 focus:outline-none"
+                  className="mt-2 min-h-32 w-full rounded-2xl border border-brand/16 px-4 py-3 font-body text-sm leading-relaxed text-brand placeholder:text-brand/40 focus:border-brand/28 focus:outline-none"
                 />
 
                 <div className="mt-3 flex flex-wrap items-center gap-3">

@@ -198,7 +198,7 @@ export default function Donate() {
   if (status === "success") {
     return (
       <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-28 md:pb-32 md:pt-34">
-        <section className="mx-auto grid max-w-5xl gap-8 rounded-4xl border border-brand/15 bg-white/75 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:grid-cols-[1.1fr_0.9fr] md:p-8">
+        <section className="mx-auto grid max-w-5xl gap-8 rounded-4xl border border-brand/15 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:grid-cols-[1.1fr_0.9fr] md:p-8">
           <div className="space-y-5">
             <p className="font-ui text-sm tracking-[0.18em] text-sage">
               Donation complete
@@ -257,7 +257,7 @@ export default function Donate() {
   return (
     <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-28 md:pb-32 md:pt-34">
       <section className="mx-auto max-w-6xl space-y-8">
-        <header className="grid gap-6 rounded-4xl border border-brand/15 bg-white/70 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:grid-cols-[1.15fr_0.85fr] md:p-8">
+        <header className="grid gap-6 rounded-4xl border border-brand/15 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:grid-cols-[1.15fr_0.85fr] md:p-8">
           <div className="space-y-4">
             <p className="font-ui text-sm tracking-[0.18em] text-sage">
               Support SOAR
@@ -316,7 +316,7 @@ export default function Donate() {
               step === "amount" ? handleContinueToPayment : handleSubmit
             }
             noValidate
-            className="space-y-6 rounded-4xl border border-brand/15 bg-white/75 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:p-8"
+            className="space-y-6 rounded-4xl border border-brand/15 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:p-8"
           >
             <ProgressBar step={step} />
 
@@ -808,7 +808,7 @@ const StatCard = ({ label, value }) => (
 );
 
 const ImpactRow = ({ title, body }) => (
-  <div className="rounded-2xl border border-brand/12 bg-white px-4 py-3">
+  <div className="rounded-2xl border border-brand/12 px-4 py-3">
     <p className="font-ui text-sm text-brand">{title}</p>
     <p className="mt-1 font-body text-sm leading-relaxed text-brand/72">
       {body}

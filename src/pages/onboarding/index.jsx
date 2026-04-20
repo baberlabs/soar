@@ -69,7 +69,7 @@ export default function Onboarding() {
       </div>
 
       <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-28 md:pb-32 md:pt-34">
-        <div className="mx-auto max-w-4xl rounded-4xl border border-brand/15 bg-white/78 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:p-8">
+        <div className="mx-auto max-w-4xl rounded-4xl border border-brand/15 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:p-8">
           {step === "welcome" ? (
             <OnboardingWelcome onNext={() => setStep("setup")} />
           ) : null}

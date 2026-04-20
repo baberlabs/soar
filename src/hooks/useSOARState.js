@@ -35,31 +35,31 @@ const createId = (prefix) =>
 const createDefaultState = () => ({
   version: 2,
   session: { currentUserId: null },
-  members: [],
+  peers: [],
   subjects: SUBJECTS,
   forum: [],
   connections: [],
   newsletterSubscribers: [],
 });
 
-const normalizeMember = (member) => ({
-  id: member.id ?? createId("member"),
-  fullName: member.fullName ?? "",
-  email: member.email ?? "",
-  password: member.password ?? "",
-  joinedAt: member.joinedAt ?? new Date().toISOString(),
-  paid: member.paid ?? true,
-  onboardingComplete: member.onboardingComplete ?? false,
-  learningStyle: member.learningStyle ?? null,
-  interests: member.interests ?? [],
-  curriculum: member.curriculum ?? [],
-  creations: member.creations ?? [],
-  reflections: normalizeReflections(member.reflections),
+const normalizePeer = (peer) => ({
+  id: peer.id ?? createId("peer"),
+  fullName: peer.fullName ?? "",
+  email: peer.email ?? "",
+  password: peer.password ?? "",
+  joinedAt: peer.joinedAt ?? new Date().toISOString(),
+  paid: peer.paid ?? true,
+  onboardingComplete: peer.onboardingComplete ?? false,
+  learningStyle: peer.learningStyle ?? null,
+  interests: peer.interests ?? [],
+  curriculum: peer.curriculum ?? [],
+  creations: peer.creations ?? [],
+  reflections: normalizeReflections(peer.reflections),
 });
 
-const sanitizeMember = (member) => {
-  const { password: _password, ...safeMember } = normalizeMember(member);
-  return safeMember;
+const sanitizePeer = (peer) => {
+  const { password: _password, ...safePeer } = normalizePeer(peer);
+  return safePeer;
 };
 
 const normalizeStore = (candidate) => {
@@ -72,7 +72,7 @@ const normalizeStore = (candidate) => {
       ...defaults.session,
       ...(candidate?.session ?? {}),
     },
-    members: (candidate?.members ?? []).map(normalizeMember),
+    peers: (candidate?.peers ?? []).map(normalizePeer),
     subjects: defaults.subjects,
     forum: candidate?.forum ?? [],
     connections: candidate?.connections ?? [],
@@ -92,7 +92,7 @@ const migrateLegacyStore = (legacyState) => {
   }
 
   const legacyUser = legacyState.user
-    ? normalizeMember({
+    ? normalizePeer({
         ...legacyState.user,
         curriculum: legacyState.curriculum ?? [],
         creations: legacyState.creations ?? [],
@@ -103,7 +103,7 @@ const migrateLegacyStore = (legacyState) => {
   return normalizeStore({
     ...defaults,
     session: { currentUserId: legacyUser?.id ?? null },
-    members: legacyUser ? [legacyUser] : [],
+    peers: legacyUser ? [legacyUser] : [],
     subjects: defaults.subjects,
     forum: legacyState.forum ?? [],
     connections: [],
@@ -125,27 +125,26 @@ const loadInitialState = () => {
   }
 };
 
-const getCurrentMember = (state) =>
-  state.members.find((member) => member.id === state.session.currentUserId) ??
-  null;
+const getCurrentPeer = (state) =>
+  state.peers.find((peer) => peer.id === state.session.currentUserId) ?? null;
 
-const updateCurrentMember = (state, updater) => {
+const updateCurrentPeer = (state, updater) => {
   const currentUserId = state.session.currentUserId;
   if (!currentUserId) {
     return state;
   }
 
   let wasUpdated = false;
-  const members = state.members.map((member) => {
-    if (member.id !== currentUserId) {
-      return member;
+  const peers = state.peers.map((peer) => {
+    if (peer.id !== currentUserId) {
+      return peer;
     }
 
     wasUpdated = true;
-    return normalizeMember(updater(normalizeMember(member)));
+    return normalizePeer(updater(normalizePeer(peer)));
   });
 
-  return wasUpdated ? { ...state, members } : state;
+  return wasUpdated ? { ...state, peers } : state;
 };
 
 const buildEnrollment = (subjectId, payload = {}) => ({
@@ -161,22 +160,22 @@ const buildEnrollment = (subjectId, payload = {}) => ({
 
 const soarReducer = (state, action) => {
   switch (action.type) {
-    case "REGISTER_MEMBER": {
-      const member = normalizeMember({
+    case "REGISTER_PEER": {
+      const peer = normalizePeer({
         ...action.payload,
-        id: createId("member"),
+        id: createId("peer"),
         paid: true,
         onboardingComplete: false,
       });
 
       return {
         ...state,
-        members: [...state.members, member],
-        session: { currentUserId: member.id },
+        peers: [...state.peers, peer],
+        session: { currentUserId: peer.id },
       };
     }
 
-    case "LOGIN_MEMBER":
+    case "LOGIN_PEER":
       return {
         ...state,
         session: { currentUserId: action.payload.userId },
@@ -192,21 +191,21 @@ const soarReducer = (state, action) => {
       return createDefaultState();
 
     case "UPDATE_USER":
-      return updateCurrentMember(state, (member) => ({
-        ...member,
+      return updateCurrentPeer(state, (peer) => ({
+        ...peer,
         ...action.payload,
       }));
 
     case "ADD_CURRICULUM_SUBJECT":
-      return updateCurrentMember(state, (member) => {
-        const existing = member.curriculum.find(
+      return updateCurrentPeer(state, (peer) => {
+        const existing = peer.curriculum.find(
           (entry) => entry.subjectId === action.payload.subjectId,
         );
 
         if (existing) {
           return {
-            ...member,
-            curriculum: member.curriculum.map((entry) =>
+            ...peer,
+            curriculum: peer.curriculum.map((entry) =>
               entry.subjectId === action.payload.subjectId
                 ? {
                     ...entry,
@@ -218,18 +217,18 @@ const soarReducer = (state, action) => {
         }
 
         return {
-          ...member,
+          ...peer,
           curriculum: [
-            ...member.curriculum,
+            ...peer.curriculum,
             buildEnrollment(action.payload.subjectId, action.payload),
           ],
         };
       });
 
     case "UPDATE_CURRICULUM_PROGRESS":
-      return updateCurrentMember(state, (member) => ({
-        ...member,
-        curriculum: member.curriculum.map((entry) =>
+      return updateCurrentPeer(state, (peer) => ({
+        ...peer,
+        curriculum: peer.curriculum.map((entry) =>
           entry.id === action.payload.id
             ? { ...entry, progress: action.payload.progress }
             : entry,
@@ -237,15 +236,15 @@ const soarReducer = (state, action) => {
       }));
 
     case "COMPLETE_LESSON":
-      return updateCurrentMember(state, (member) => {
+      return updateCurrentPeer(state, (peer) => {
         const subject = getSubjectById(
           action.payload.subjectId,
           state.subjects,
         );
 
         return {
-          ...member,
-          curriculum: member.curriculum.map((entry) => {
+          ...peer,
+          curriculum: peer.curriculum.map((entry) => {
             if (entry.subjectId !== action.payload.subjectId) {
               return entry;
             }
@@ -277,15 +276,15 @@ const soarReducer = (state, action) => {
       });
 
     case "ADD_CREATION":
-      return updateCurrentMember(state, (member) => ({
-        ...member,
-        creations: [...member.creations, action.payload],
+      return updateCurrentPeer(state, (peer) => ({
+        ...peer,
+        creations: [...peer.creations, action.payload],
       }));
 
     case "UPDATE_CREATION":
-      return updateCurrentMember(state, (member) => ({
-        ...member,
-        creations: member.creations.map((creation) =>
+      return updateCurrentPeer(state, (peer) => ({
+        ...peer,
+        creations: peer.creations.map((creation) =>
           creation.id === action.payload.id
             ? { ...creation, ...action.payload }
             : creation,
@@ -293,70 +292,69 @@ const soarReducer = (state, action) => {
       }));
 
     case "REMOVE_CREATION":
-      return updateCurrentMember(state, (member) => ({
-        ...member,
-        creations: member.creations.filter(
+      return updateCurrentPeer(state, (peer) => ({
+        ...peer,
+        creations: peer.creations.filter(
           (creation) => creation.id !== action.payload,
         ),
       }));
 
     case "ADD_VISION_BOARD":
-      return updateCurrentMember(state, (member) => ({
-        ...member,
+      return updateCurrentPeer(state, (peer) => ({
+        ...peer,
         reflections: {
-          ...normalizeReflections(member.reflections),
+          ...normalizeReflections(peer.reflections),
           visionBoards: [
-            ...normalizeReflections(member.reflections).visionBoards,
+            ...normalizeReflections(peer.reflections).visionBoards,
             action.payload,
           ],
         },
       }));
 
     case "UPDATE_VISION_BOARD":
-      return updateCurrentMember(state, (member) => ({
-        ...member,
+      return updateCurrentPeer(state, (peer) => ({
+        ...peer,
         reflections: {
-          ...normalizeReflections(member.reflections),
-          visionBoards: normalizeReflections(
-            member.reflections,
-          ).visionBoards.map((board) =>
-            board.id === action.payload.id
-              ? {
-                  ...board,
-                  ...action.payload,
-                  updatedAt: new Date().toISOString(),
-                }
-              : board,
+          ...normalizeReflections(peer.reflections),
+          visionBoards: normalizeReflections(peer.reflections).visionBoards.map(
+            (board) =>
+              board.id === action.payload.id
+                ? {
+                    ...board,
+                    ...action.payload,
+                    updatedAt: new Date().toISOString(),
+                  }
+                : board,
           ),
         },
       }));
 
     case "REMOVE_VISION_BOARD":
-      return updateCurrentMember(state, (member) => ({
-        ...member,
+      return updateCurrentPeer(state, (peer) => ({
+        ...peer,
         reflections: {
-          ...normalizeReflections(member.reflections),
+          ...normalizeReflections(peer.reflections),
           visionBoards: normalizeReflections(
-            member.reflections,
+            peer.reflections,
           ).visionBoards.filter((board) => board.id !== action.payload),
         },
       }));
 
     case "ADD_LETTER":
-      return updateCurrentMember(state, (member) => ({
-        ...member,
+      return updateCurrentPeer(state, (peer) => ({
+        ...peer,
         reflections: {
-          ...normalizeReflections(member.reflections),
+          ...normalizeReflections(peer.reflections),
           letters: [
-            ...normalizeReflections(member.reflections).letters,
+            ...normalizeReflections(peer.reflections).letters,
             action.payload,
           ],
         },
       }));
 
     case "UPSERT_MONTHLY_LETTER":
-      return updateCurrentMember(state, (member) => {
-        const reflections = normalizeReflections(member.reflections);
+      return updateCurrentPeer(state, (peer) => {
+        const reflections = normalizeReflections(peer.reflections);
         const letters = reflections.letters;
         const existingIndex = letters.findIndex(
           (letter) => letter.id === action.payload.id,
@@ -375,7 +373,7 @@ const soarReducer = (state, action) => {
               );
 
         return {
-          ...member,
+          ...peer,
           reflections: {
             ...reflections,
             letters: nextLetters,
@@ -384,11 +382,11 @@ const soarReducer = (state, action) => {
       });
 
     case "SEAL_MONTHLY_LETTER":
-      return updateCurrentMember(state, (member) => {
-        const reflections = normalizeReflections(member.reflections);
+      return updateCurrentPeer(state, (peer) => {
+        const reflections = normalizeReflections(peer.reflections);
 
         return {
-          ...member,
+          ...peer,
           reflections: {
             ...reflections,
             letters: reflections.letters.map((letter) =>
@@ -406,11 +404,11 @@ const soarReducer = (state, action) => {
       });
 
     case "MARK_MONTHLY_LETTER_OPENED":
-      return updateCurrentMember(state, (member) => {
-        const reflections = normalizeReflections(member.reflections);
+      return updateCurrentPeer(state, (peer) => {
+        const reflections = normalizeReflections(peer.reflections);
 
         return {
-          ...member,
+          ...peer,
           reflections: {
             ...reflections,
             letters: reflections.letters.map((letter) =>
@@ -429,11 +427,11 @@ const soarReducer = (state, action) => {
       });
 
     case "MARK_MONTHLY_LETTER_REVIEWED":
-      return updateCurrentMember(state, (member) => {
-        const reflections = normalizeReflections(member.reflections);
+      return updateCurrentPeer(state, (peer) => {
+        const reflections = normalizeReflections(peer.reflections);
 
         return {
-          ...member,
+          ...peer,
           reflections: {
             ...reflections,
             letters: reflections.letters.map((letter) =>
@@ -452,11 +450,11 @@ const soarReducer = (state, action) => {
       });
 
     case "REMOVE_MONTHLY_LETTER":
-      return updateCurrentMember(state, (member) => {
-        const reflections = normalizeReflections(member.reflections);
+      return updateCurrentPeer(state, (peer) => {
+        const reflections = normalizeReflections(peer.reflections);
 
         return {
-          ...member,
+          ...peer,
           reflections: {
             ...reflections,
             letters: reflections.letters.filter(
@@ -467,8 +465,8 @@ const soarReducer = (state, action) => {
       });
 
     case "UPSERT_LESSON_REFLECTION":
-      return updateCurrentMember(state, (member) => {
-        const reflections = normalizeReflections(member.reflections);
+      return updateCurrentPeer(state, (peer) => {
+        const reflections = normalizeReflections(peer.reflections);
         const existingEntries = reflections.lessonEntries;
         const existingIndex = existingEntries.findIndex(
           (entry) =>
@@ -489,7 +487,7 @@ const soarReducer = (state, action) => {
               );
 
         return {
-          ...member,
+          ...peer,
           reflections: {
             ...reflections,
             lessonEntries,
@@ -499,11 +497,11 @@ const soarReducer = (state, action) => {
 
     case "ADD_CONNECTION": {
       const existingConnection = state.connections.find((connection) => {
-        const sameMembers =
-          connection.members.includes(action.payload.members[0]) &&
-          connection.members.includes(action.payload.members[1]);
+        const samePeers =
+          connection.peers.includes(action.payload.peers[0]) &&
+          connection.peers.includes(action.payload.peers[1]);
 
-        return sameMembers;
+        return samePeers;
       });
 
       if (existingConnection) {
@@ -656,19 +654,19 @@ const soarReducer = (state, action) => {
 };
 
 const deriveState = (store) => {
-  const user = getCurrentMember(store);
+  const user = getCurrentPeer(store);
   const userId = user?.id ?? null;
 
   return {
     ...store,
-    members: store.members.map(sanitizeMember),
-    user: user ? sanitizeMember(user) : null,
+    peers: store.peers.map(sanitizePeer),
+    user: user ? sanitizePeer(user) : null,
     curriculum: user?.curriculum ?? [],
     creations: user?.creations ?? [],
     reflections: normalizeReflections(user?.reflections),
     connections: userId
       ? store.connections.filter((connection) =>
-          connection.members.includes(userId),
+          connection.peers.includes(userId),
         )
       : [],
   };
@@ -691,19 +689,19 @@ export const SOARProvider = ({ children }) => {
 
   const helpers = useMemo(
     () => ({
-      authenticateMember(email, password) {
+      authenticatePeer(email, password) {
         const normalizedEmail = email.trim().toLowerCase();
 
         return (
-          store.members.find(
-            (member) =>
-              member.email.toLowerCase() === normalizedEmail &&
-              member.password === password,
+          store.peers.find(
+            (peer) =>
+              peer.email.toLowerCase() === normalizedEmail &&
+              peer.password === password,
           ) ?? null
         );
       },
     }),
-    [store.members],
+    [store.peers],
   );
 
   const value = useMemo(

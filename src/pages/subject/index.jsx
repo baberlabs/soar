@@ -68,7 +68,7 @@ export default function SubjectRoom() {
             ← Back to library
           </Link>
 
-          <header className="grid gap-6 rounded-4xl border border-brand/15 bg-white/70 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:grid-cols-[1.4fr_0.9fr] md:p-8">
+          <header className="grid gap-6 rounded-4xl border border-brand/15p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:grid-cols-[1.4fr_0.9fr] md:p-8">
             <div className="space-y-4">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-sky/35 px-3 py-1 font-ui text-[0.7rem] tracking-[0.14em] text-brand">
@@ -129,7 +129,7 @@ export default function SubjectRoom() {
                   ) : null}
 
                   {enrollment.learningNotes ? (
-                    <div className="rounded-2xl border border-brand/12 bg-white px-4 py-3">
+                    <div className="rounded-2xl border border-brand/12 px-4 py-3">
                       <p className="font-body text-xs uppercase tracking-[0.12em] text-brand/55">
                         Your note
                       </p>
@@ -173,7 +173,7 @@ export default function SubjectRoom() {
                       onChange={(event) => setLearningNotes(event.target.value)}
                       rows="4"
                       placeholder="What do you want to get from this subject?"
-                      className="w-full rounded-2xl border border-black/15 bg-white px-4 py-3 font-body text-base text-navy outline-none placeholder:text-navy/35 transition duration-200 focus:border-brand focus:ring-2 focus:ring-brand/15"
+                      className="w-full rounded-2xl border border-black/15 px-4 py-3 font-body text-base text-navy outline-none placeholder:text-navy/35 transition duration-200 focus:border-brand focus:ring-2 focus:ring-brand/15"
                     />
                   </div>
 
@@ -264,7 +264,7 @@ const STATUS_STYLES = {
   },
   current: {
     badge: "bg-sky/35 text-brand",
-    panel: "border-brand/18 bg-white",
+    panel: "border-brand/18 bg-brand/10",
     label: "Current",
   },
   upcoming: {

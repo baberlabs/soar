@@ -4,7 +4,7 @@ import { Button } from "../../../../components/Button";
  * Banner shown above the chat composer when a connection is pending.
  *
  * This breaks the fourth wall intentionally — peer profiles are mock data
- * from PEER_DIRECTORY, not real members who could accept your request. The
+ * from PEER_DIRECTORY, not real peers who could accept your request. The
  * banner is honest about that and offers the one sensible action: simulate
  * acceptance so the user can experience the rest of the flow.
  *

@@ -22,7 +22,7 @@ export const buildRecommendedPeers = ({
     );
     const score = sharedInterests.length * 3 + sharedPathways.length * 4;
     const alreadyConnected = connections.some((connection) =>
-      (connection.members ?? []).includes(peer.id),
+      (connection.peers ?? []).includes(peer.id),
     );
 
     return {

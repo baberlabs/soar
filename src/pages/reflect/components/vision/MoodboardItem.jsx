@@ -90,7 +90,7 @@ export const MoodboardItem = ({
           ? A11Y_LABELS.moodboardItem(item.category, item.caption)
           : `${item.category}${item.caption ? `: ${item.caption}` : ""}`
       }
-      className={`absolute rounded-2xl border border-brand/12 bg-white/90 p-1.5 shadow-[0_12px_30px_rgba(42,49,90,0.16)] backdrop-blur-sm transition focus-visible:outline-none ${interactiveClass}`}
+      className={`absolute rounded-2xl border border-brand/12 bg-cream p-1.5 shadow-[0_12px_30px_rgba(42,49,90,0.16)] backdrop-blur-sm transition focus-visible:outline-none ${interactiveClass}`}
       style={containerStyle}
       onPointerDown={
         isEditable ? (event) => onPointerDown(event, item.id) : undefined
@@ -110,7 +110,7 @@ export const MoodboardItem = ({
               event.stopPropagation();
               setIsMenuOpen((open) => !open);
             }}
-            className="absolute right-0 top-0 inline-flex h-6 w-6 items-center justify-center rounded-md border border-brand/15 bg-white/90 text-brand/80 shadow-[0_6px_16px_rgba(42,49,90,0.12)] hover:bg-brand/10"
+            className="absolute right-0 top-0 inline-flex h-6 w-6 items-center justify-center rounded-md border border-brand/15 bg-cream text-brand/80 shadow-[0_6px_16px_rgba(42,49,90,0.12)] hover:bg-brand/10"
             title="Actions"
           >
             <span aria-hidden="true" className="flex items-center gap-0.5">
@@ -123,7 +123,7 @@ export const MoodboardItem = ({
           {isMenuOpen ? (
             <div
               role="menu"
-              className="mt-7 w-40 rounded-xl border border-brand/15 bg-white p-1.5 shadow-[0_14px_30px_rgba(42,49,90,0.2)]"
+              className="mt-7 w-40 rounded-xl border border-brand/15 bg-cream p-1.5 shadow-[0_14px_30px_rgba(42,49,90,0.2)]"
               onPointerDown={stopPointer}
             >
               {isEditable ? (

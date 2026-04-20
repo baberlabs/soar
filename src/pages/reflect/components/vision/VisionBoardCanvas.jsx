@@ -39,7 +39,7 @@ export const VisionBoardCanvas = ({
     >
       {items.length === 0 ? (
         <div className="flex h-full items-center justify-center px-6 text-center">
-          <div className="max-w-sm rounded-2xl border border-brand/15 bg-white/75 p-6 backdrop-blur-sm">
+          <div className="max-w-sm rounded-2xl border border-brand/15 p-6 backdrop-blur-sm">
             <p className="font-ui text-sm uppercase tracking-[0.14em] text-brand/60">
               Empty canvas
             </p>

@@ -254,7 +254,7 @@ export default function Create() {
                             <button
                               type="button"
                               onClick={() => handleOpenViewer(creation)}
-                              className="absolute right-3 top-3 rounded-full bg-white/92 px-3 py-1 font-body text-xs text-brand shadow-sm hover:bg-white"
+                              className="absolute right-3 top-3 rounded-full px-3 py-1 font-body text-xs text-brand shadow-sm cursor-pointer"
                             >
                               Expand
                             </button>
@@ -291,7 +291,7 @@ export default function Create() {
             )}
           </section>
         ) : (
-          <section className="mx-auto max-w-3xl space-y-6 rounded-[1.75rem] border border-brand/12 bg-white/72 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.06)] backdrop-blur-sm">
+          <section className="mx-auto max-w-3xl space-y-6 rounded-[1.75rem] border border-brand/12 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.06)] backdrop-blur-sm">
             <div className="space-y-2">
               <h2 className="font-ui text-3xl text-brand">Share a creation</h2>
               <p className="font-body text-sm leading-relaxed text-brand/72">
@@ -334,7 +334,7 @@ export default function Create() {
                 ) : null}
 
                 {filePreview || fileTextPreview ? (
-                  <div className="mt-4 overflow-hidden rounded-2xl border border-brand/12 bg-white">
+                  <div className="mt-4 overflow-hidden rounded-2xl border border-brand/12">
                     {renderCreationMedia(
                       {
                         title: fileName || "Selected upload",
@@ -370,7 +370,7 @@ export default function Create() {
                     id="creation-subject"
                     value={selectedSubjectId}
                     onChange={(event) => setSubjectId(event.target.value)}
-                    className="mt-2 w-full rounded-2xl border border-black/15 bg-white px-4 py-3 font-body text-base text-navy outline-none transition duration-200 focus:border-brand focus:ring-2 focus:ring-brand/15"
+                    className="mt-2 w-full rounded-2xl border border-black/15 px-4 py-3 font-body text-base text-navy outline-none transition duration-200 focus:border-brand focus:ring-2 focus:ring-brand/15"
                   >
                     <option value="">None</option>
                     {creationSubjects.map((subject) => (
@@ -394,7 +394,7 @@ export default function Create() {
                   value={note}
                   onChange={(event) => setNote(event.target.value)}
                   placeholder="A short note about the process, the result, or what you learned."
-                  className="mt-2 w-full rounded-2xl border border-black/15 bg-white px-4 py-3 font-body text-base text-navy outline-none placeholder:text-navy/35 transition duration-200 focus:border-brand focus:ring-2 focus:ring-brand/15"
+                  className="mt-2 w-full rounded-2xl border border-black/15 px-4 py-3 font-body text-base text-navy outline-none placeholder:text-navy/35 transition duration-200 focus:border-brand focus:ring-2 focus:ring-brand/15"
                   rows="4"
                 />
               </div>
@@ -437,7 +437,7 @@ export default function Create() {
           onClick={handleCloseViewer}
         >
           <div
-            className="max-h-[92vh] w-full max-w-5xl overflow-hidden rounded-3xl border border-white/20 bg-white"
+            className="max-h-[92vh] w-full max-w-5xl overflow-hidden rounded-3xl border border-white/20"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-brand/12 px-5 py-4">
@@ -680,7 +680,7 @@ const renderCreationMedia = (creation, { className = "" } = {}) => {
         <iframe
           title={creation.title || mediaName}
           src={previewData}
-          className={`${className} bg-white`}
+          className={className}
         />
       );
     }
@@ -692,7 +692,7 @@ const renderCreationMedia = (creation, { className = "" } = {}) => {
             href={previewData}
             target="_blank"
             rel="noreferrer"
-            className="rounded-xl border border-brand/18 bg-white px-4 py-2 font-body text-sm text-brand hover:bg-brand/6"
+            className="rounded-xl border border-brand/18 px-4 py-2 font-body text-sm text-brand hover:bg-brand/6"
           >
             Open document
           </a>

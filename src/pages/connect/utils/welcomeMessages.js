@@ -10,7 +10,7 @@ const WELCOME_MESSAGES = [
   "Good to meet you here. Saw we share a few interests — happy to swap notes any time.",
   "Thanks for the request. I've been looking for people to learn alongside — feel free to share what you're exploring.",
   "Appreciate the connect. I'm quite active in the evenings (UK time) if you ever want to compare pathway notes.",
-  "Thanks for reaching out. Always glad to meet another SOAR member — what drew you to join?",
+  "Thanks for reaching out. Always glad to meet another SOAR peer — what drew you to join?",
   "Nice to connect. Let me know if you ever want a second pair of eyes on something you're building.",
   "Thanks for the request. I've been meaning to find more collaborators — what's on your plate this month?",
   "Good to have you in the network. Feel free to drop in about anything you're stuck on.",

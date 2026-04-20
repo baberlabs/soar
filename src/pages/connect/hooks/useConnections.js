@@ -11,7 +11,7 @@ export const useConnections = (connections, currentUserId) =>
   useMemo(
     () =>
       (connections ?? []).map((connection) => {
-        const peerId = (connection.members ?? []).find(
+        const peerId = (connection.peers ?? []).find(
           (id) => id !== currentUserId,
         );
         const peer =

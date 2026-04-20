@@ -29,7 +29,6 @@ import Learn from "./pages/learn";
 import Login from "./pages/login";
 import NotFound from "./pages/not-found";
 import Onboarding from "./pages/onboarding";
-import Principles from "./pages/principles";
 import Reflect from "./pages/reflect";
 import Session from "./pages/session";
 import Subject from "./pages/subject";
@@ -50,18 +49,6 @@ const App = () => {
           <Route path="/join" element={<Join />} />
           <Route path="/login" element={<Login />} />
           <Route path="/donate" element={<Donate />} />
-          <Route
-            path="/principles/no-scroll"
-            element={<Principles slug="no-scroll" />}
-          />
-          <Route
-            path="/principles/data-ownership"
-            element={<Principles slug="data-ownership" />}
-          />
-          <Route
-            path="/principles/governance"
-            element={<Principles slug="governance" />}
-          />
 
           {/* Auth flows */}
           <Route

@@ -191,7 +191,7 @@ export const VisionBoardStage = ({
             onError={onSetError}
           />
 
-          <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-brand/10 bg-white/60 px-4 py-2">
+          <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-brand/10 px-4 py-2">
             <label className="inline-flex items-center gap-2 font-body text-sm text-brand/75">
               <input
                 type="checkbox"

@@ -57,7 +57,7 @@ export default function PeersTab() {
   const openedConnection = useMemo(() => {
     if (!peerId) return null;
     return connections.find((connection) =>
-      (connection.members ?? []).includes(peerId),
+      (connection.peers ?? []).includes(peerId),
     );
   }, [peerId, connections]);
 
@@ -66,7 +66,7 @@ export default function PeersTab() {
     dispatch({
       type: "ADD_CONNECTION",
       payload: {
-        members: [currentUserId, openedPeer.id],
+        peers: [currentUserId, openedPeer.id],
         peer: openedPeer,
         status: "pending",
       },
