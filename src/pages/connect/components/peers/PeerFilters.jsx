@@ -5,6 +5,9 @@
  * "Recommendations are ranked by shared interests..." explainer is gone;
  * users who squint at a search box understand what to type.
  */
+
+import SearchIcon from "../../../../assets/icons/search.svg";
+
 export const PeerFilters = ({
   searchTerm,
   onSearchChange,
@@ -27,7 +30,7 @@ export const PeerFilters = ({
         aria-hidden="true"
         className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 font-ui text-xs text-brand/45"
       >
-        ⌕
+        <img src={SearchIcon} className="size-5 opacity-50" />
       </span>
     </div>
 

@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import SendIcon from "../../../../assets/icons/send.svg";
+
 /**
  * Draft is held local so the parent tab component doesn't need to re-render
  * on every keystroke across all chats. Parent only learns about it on send.
@@ -40,9 +42,9 @@ export const MessageComposer = ({ onSend, disabled }) => {
         onClick={submit}
         disabled={disabled || !draft.trim()}
         aria-label="Send message"
-        className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand font-ui text-base text-cream shadow-[0_10px_22px_rgba(75,81,149,0.2)] transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+        className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand shadow-[0_10px_22px_rgba(75,81,149,0.2)] transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
       >
-        <span aria-hidden="true">→</span>
+        <img src={SendIcon} className="size-5 ml-1" aria-hidden="true" />
       </button>
     </div>
   );

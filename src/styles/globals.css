@@ -44,6 +44,11 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+a,
+button {
+  cursor: pointer;
+}
+
 /* Global custom scrollbars */
 * {
   scrollbar-width: thin;

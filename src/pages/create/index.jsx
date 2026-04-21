@@ -5,6 +5,10 @@ import { Button } from "../../components/Button";
 import { InputField } from "../../components/InputField";
 import { useSOARState } from "../../hooks/useSOARState";
 
+import ExpandIcon from "../../assets/icons/expand.svg";
+import DownloadIcon from "../../assets/icons/download.svg";
+import CloseIcon from "../../assets/icons/close.svg";
+
 export default function Create() {
   const [state, dispatch] = useSOARState();
   const [searchParams] = useSearchParams();
@@ -254,9 +258,15 @@ export default function Create() {
                             <button
                               type="button"
                               onClick={() => handleOpenViewer(creation)}
-                              className="absolute right-3 top-3 rounded-full px-3 py-1 font-body text-xs text-brand shadow-sm cursor-pointer"
+                              className="absolute right-3 top-3 rounded-lg p-2 bg-cream/50 shadow-sm hover:scale-110 transition-transform"
+                              aria-label="Expand"
+                              title="Expand"
                             >
-                              Expand
+                              <img
+                                src={ExpandIcon}
+                                className="size-5"
+                                aria-hidden="true"
+                              />
                             </button>
                           ) : null}
                         </div>
@@ -437,7 +447,7 @@ export default function Create() {
           onClick={handleCloseViewer}
         >
           <div
-            className="max-h-[92vh] w-full max-w-5xl overflow-hidden rounded-3xl border border-white/20"
+            className="max-h-[92vh] w-full max-w-5xl overflow-hidden rounded-3xl bg-cream/90 border border-white/20"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-brand/12 px-5 py-4">
@@ -454,27 +464,25 @@ export default function Create() {
                   <a
                     href={viewerCreation.previewData}
                     download={viewerCreation.media || "attachment"}
-                    className="rounded-xl border border-brand/18 bg-page px-3 py-2 font-body text-xs text-brand hover:bg-brand/6"
+                    className="rounded-lg border border-brand/18 bg-page p-2 hover:bg-brand/6"
+                    aria-label="Download"
+                    title="Download"
                   >
-                    Download
-                  </a>
-                ) : null}
-                {viewerCreation.previewData ? (
-                  <a
-                    href={viewerCreation.previewData}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="rounded-xl border border-brand/18 bg-page px-3 py-2 font-body text-xs text-brand hover:bg-brand/6"
-                  >
-                    Open In New Tab
+                    <img
+                      src={DownloadIcon}
+                      className="size-5"
+                      aria-hidden="true"
+                    />
                   </a>
                 ) : null}
                 <button
                   type="button"
                   onClick={handleCloseViewer}
-                  className="rounded-xl border border-brand/18 bg-page px-3 py-2 font-body text-xs text-brand hover:bg-brand/6"
+                  className="rounded-lg border border-brand/18 bg-page p-2 font-body hover:bg-brand/6"
+                  aria-label="Close"
+                  title="Close"
                 >
-                  Close
+                  <img src={CloseIcon} className="size-5" aria-hidden="true" />
                 </button>
               </div>
             </div>
