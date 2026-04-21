@@ -79,3 +79,9 @@
 11.3 Added flexible contribution amounts with a £1 minimum.
 
 11.4 Added method-specific validation and surfaced payment method/reference in the final review step.
+
+---
+
+12.1 Added ScrollToTop on route navigation
+
+---

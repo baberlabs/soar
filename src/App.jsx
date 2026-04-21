@@ -1,17 +1,11 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-  useLocation,
-  useParams,
-} from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 import { Header } from "./layout/Header";
 import { Newsletter } from "./layout/Newsletter";
 import { Donation } from "./layout/Donation";
 import { Footer } from "./layout/Footer";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { ScrollToTop } from "./components/ScrollToTop";
 
 import About from "./pages/about";
 import Account from "./pages/account";
@@ -39,6 +33,7 @@ const App = () => {
 
   return (
     <div className="relative isolate flex min-h-dvh flex-col overflow-x-hidden bg-page text-navy">
+      <ScrollToTop />
       <Header />
 
       <div className="flex-1">
