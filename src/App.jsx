@@ -9,10 +9,16 @@ import { ScrollToTop } from "./components/ScrollToTop";
 
 import About from "./pages/about";
 import Account from "./pages/account";
+import AccountProfileTab from "./pages/account/tabs/ProfileTab";
+import AccountActivityTab from "./pages/account/tabs/ActivityTab";
+import AccountPeersTab from "./pages/account/tabs/PeersTab";
+import AccountNodeTab from "./pages/account/tabs/NodeTab";
+import AccountDataTab from "./pages/account/tabs/DataTab";
+import AccountComingSoonTab from "./pages/account/tabs/ComingSoonTab";
 import Connect from "./pages/connect";
 import ChatsTab from "./pages/connect/tabs/ChatsTab";
 import EventsTab from "./pages/connect/tabs/EventsTab";
-import PeersTab from "./pages/connect/tabs/PeersTab";
+import ConnectPeersTab from "./pages/connect/tabs/PeersTab";
 import Create from "./pages/create";
 import Dashboard from "./pages/dashboard";
 import Donate from "./pages/donate";
@@ -105,6 +111,7 @@ const App = () => {
             }
           />
 
+          {/* Connect: shell + nested tabs */}
           <Route
             path="/connect"
             element={
@@ -114,9 +121,27 @@ const App = () => {
             }
           >
             <Route index element={<Navigate to="peers" replace />} />
-            <Route path="peers" element={<PeersTab />} />
+            <Route path="peers" element={<ConnectPeersTab />} />
             <Route path="chats" element={<ChatsTab />} />
             <Route path="events" element={<EventsTab />} />
+          </Route>
+
+          {/* Account: shell + nested tabs */}
+          <Route
+            path="/account"
+            element={
+              <ProtectedRoute>
+                <Account />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Navigate to="profile" replace />} />
+            <Route path="profile" element={<AccountProfileTab />} />
+            <Route path="activity" element={<AccountActivityTab />} />
+            <Route path="peers" element={<AccountPeersTab />} />
+            <Route path="node" element={<AccountNodeTab />} />
+            <Route path="data" element={<AccountDataTab />} />
+            <Route path="coming-soon" element={<AccountComingSoonTab />} />
           </Route>
 
           <Route
@@ -132,14 +157,6 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <Forum />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/account"
-            element={
-              <ProtectedRoute>
-                <Account />
               </ProtectedRoute>
             }
           />

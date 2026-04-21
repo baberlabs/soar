@@ -55,6 +55,16 @@ const normalizePeer = (peer) => ({
   curriculum: peer.curriculum ?? [],
   creations: peer.creations ?? [],
   reflections: normalizeReflections(peer.reflections),
+
+  // Profile fields editable from /account/profile
+  avatarImage: peer.avatarImage ?? null,
+  bio: peer.bio ?? "",
+  location: peer.location ?? "",
+  timezone: peer.timezone ?? "",
+  links: peer.links ?? { website: "", github: "", linkedin: "" },
+
+  // Preferences (placeholder for future backend)
+  preferences: peer.preferences ?? { theme: "system", notifications: null },
 });
 
 const sanitizePeer = (peer) => {

@@ -64,7 +64,23 @@
 
 ---
 
-9.1 #TODO
+9.1 Replaced flat `/account` page with a sidebar-navigated seven-section layout (profile, activity, peers, node, data, coming soon).
+
+9.2 Added profile personalisation: avatar upload, bio, location, timezone, interests editor, and website/GitHub/LinkedIn links.
+
+9.3 Rebuilt the IPFS node section as a functional status panel showing PeerID, multiaddrs, live storage usage, connected peer count, uptime, and the full list of pinned CIDs — all derived from real store data.
+
+9.4 Added data controls: export store as JSON, restore from a prior export, and a type-to-confirm device reset.
+
+9.5 Added an Activity section surfacing learning, creations, and reflections counts with direct links to each page.
+
+9.6 Moved sign-out into the sidebar footer so it is reachable from every account sub-page.
+
+9.7 Applied copy-reduction pass (same standard as Connect): removed marketing and placeholder prose in favour of self-evident UI.
+
+9.8 Grouped Security, Notifications, and Theme under a single honest "Coming soon" section pending backend support.
+
+9.9 Extended the peer record schema with avatar, bio, location, timezone, links, and preferences fields (additive — existing peers get defaults at load).
 
 ---
 
