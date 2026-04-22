@@ -14,10 +14,10 @@ import LearnImage3 from "./imagery/3.jpg";
 import LearnImage4 from "./imagery/4.jpg";
 import LearnImage5 from "./imagery/5.jpg";
 import LearnImage6 from "./imagery/6.jpg";
-import LearnImage7 from "./imagery/7 .jpg";
-import LearnCreateImage from "./imagery/create imagery .jpg";
-import LearnMeditationImage from "./imagery/meditation image .jpg";
-import LearnPhotographyImage from "./imagery/photography image .jpg";
+import LearnImage7 from "./imagery/7.jpg";
+import LearnCreateImage from "./imagery/create-imagery.jpg";
+import LearnMeditationImage from "./imagery/meditation-image.jpg";
+import LearnPhotographyImage from "./imagery/photography-image.jpg";
 
 export default function SessionPage() {
   const { subjectId, lessonId } = useParams();

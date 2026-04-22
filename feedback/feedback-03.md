@@ -14,7 +14,7 @@ The following todos are based on feedback from client and my own observations.
 
 ## 2. Session Page (Make this SERIOUSLY Pro)
 
-#TODO 2a. Fix: Rename image files (trailing spaces).
+~~2a. Fix: Rename image files (trailing spaces).~~
 
 #TODO 2b. Feat: For one selected path, design the complete flow in (relative) depth. This path must demonstrate the full Learn → Reflect → Create → Share/Connect journey to show how SOAR's integrated model works end-to-end.
 
