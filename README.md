@@ -1,8 +1,8 @@
 # SOAR Web App
 
-SOAR is a React + Vite prototype for a calmer, member-oriented learning product.
+SOAR is a React + Vite prototype for a calmer, peer-oriented learning product.
 
-The current build focuses on a truthful first-member flow:
+The current build focuses on a truthful first-peer flow:
 
 - Create an account
 - Complete onboarding
@@ -11,7 +11,7 @@ The current build focuses on a truthful first-member flow:
 - Vote in the forum
 - Connect with a peer
 
-This is a local-first prototype. Accounts, progress, creations, reflections, and dispatch signups are stored in browser storage for the current device. The app does **not** process real payments or implement portable member-owned storage yet.
+This is a local-first prototype. Accounts, progress, creations, reflections, and dispatch signups are stored in browser storage for the current device. The app does **not** process real payments or implement portable peer-owned storage yet.
 
 ## Run locally
 

@@ -4,7 +4,7 @@
 
 SOAR is a decentralised, community-owned digital platform designed to restore control, purpose, and agency to time spent online.
 
-It operates as a **community benefit society**, where users become members through share ownership and participate in governance through a one-member-one-vote system. The platform is not owned by a private entity extracting value from users; it is collectively owned and shaped by the people who use it.
+It operates as a **community benefit society**, where users become peers through share ownership and participate in governance through a one-peer-one-vote system. The platform is not owned by a private entity extracting value from users; it is collectively owned and shaped by the people who use it.
 
 SOAR combines a **learning environment, creative workspace, reflective system, and civic platform** into one integrated experience. It is built as a direct alternative to algorithm-driven social media.
 
@@ -54,7 +54,7 @@ It is built around five core shifts:
 
 - **From scrolling → to completion**
 - **From consumption → to creation**
-- **From users → to members**
+- **From users → to peers**
 - **From central control → to shared governance**
 - **From data extraction → to data ownership**
 
@@ -92,12 +92,12 @@ SOAR follows a structured and deliberate user journey:
 1. Discover SOAR (website)
 2. Understand the model (ownership, no-scroll, purpose)
 3. Create account
-4. Become a member (purchase £1+ share)
+4. Become a peer (purchase £1+ share)
 5. Initialise decentralised node (data ownership layer)
 6. Complete onboarding (interests + learning preferences)
 7. Build Personal Curriculum
 8. Enter sessions (learn, create, reflect)
-9. Connect with members
+9. Connect with peers
 10. Participate in governance
 
 This flow sets expectation: SOAR is not passive. It requires participation.
@@ -113,9 +113,9 @@ SOAR operates across two distinct layers:
 - Explains the concept and model
 - Communicates mission, values, and structure
 - Acts as onboarding and entry point
-- Enables membership registration
+- Enables peership registration
 
-### Platform (Member Layer)
+### Platform (Peer Layer)
 
 - Full product experience
 - Learning, creation, reflection, connection, governance
@@ -153,7 +153,7 @@ The system is designed for completion, not continuation.
 
 ### Data Ownership
 
-Members own:
+Peers own:
 
 - their learning history,
 - their creations,
@@ -168,16 +168,16 @@ Data is treated as **personal property**, not platform residue.
 
 SOAR operates democratically.
 
-- One member = one share = one vote
-- Members propose ideas
-- Members vote on decisions
+- One peer = one share = one vote
+- Peers propose ideas
+- Peers vote on decisions
 - Outcomes are visible and implemented
 
 Future governance includes:
 
 - structured proposal systems
-- quarterly member meetings
-- potential member councils
+- quarterly peer meetings
+- potential peer councils
 
 Governance is not symbolic. It is functional.
 
@@ -310,7 +310,7 @@ Also includes:
 
 Structured governance environment.
 
-Members can:
+Peers can:
 
 - propose platform changes
 - discuss improvements
@@ -327,7 +327,7 @@ A combined identity and control space:
 - profile
 - activity
 - progress
-- membership status
+- peership status
 - node/data control
 
 ---
@@ -347,17 +347,17 @@ Long-term vision includes:
 
 - workshops
 - talks
-- exhibitions of member work
+- exhibitions of peer work
 - collaborative spaces
 
 ---
 
-## Membership Model
+## Peership Model
 
 SOAR is structured as a community benefit society.
 
 - Minimum entry: £1 share
-- One member, one vote
+- One peer, one vote
 - Equal ownership
 - Profits reinvested
 
@@ -500,7 +500,7 @@ It focuses on:
 
 The final section of the site:
 
-- explains the membership model clearly
+- explains the peership model clearly
 - provides a donation mechanism
 - reinforces fairness (no additional voting power)
 

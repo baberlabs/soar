@@ -16,7 +16,7 @@ Follow-up feedback based on post-implementation review:
 1. **Donation Banner (Follow-up)**
    - Add a donation banner section below the Newsletter section that links to the donation page.
 
-2. **Dashboard (New)**  
+2. **Dashboard (New)** [DEFERRED to NEXT]
    Create a DASHBOARD page:
    - With an overview section for active learning paths, per-subject progress, and sessions completed
    - With a reflection widgets for monthly letters (sealed) and saved moodboards
@@ -39,7 +39,7 @@ Follow-up feedback based on post-implementation review:
    - Add a "How SOAR works" step inside onboarding/registration
    - Keep it short, visual, and aligned with existing registration flow style
 
-7. **Learn Session Imagery Upgrade (Deferred from Feedback #01 TODO 3.2)**
+7. **Learn Session Imagery Upgrade (Deferred from Feedback #01 TODO 3.2)** [DEFERRED to NEXT]
    - Replace default session imagery with topic-relevant visuals
    - Maintain visual consistency across all session pages
 
@@ -51,6 +51,14 @@ Follow-up feedback based on post-implementation review:
    - Add richer personalisation: photo, interests, peers list
    - Improve account page layout and polish to a more professional level
 
-10. **Proposals and Peer System (Deferred from Feedback #01 TODO 10)**
+10. **Proposals and Peer System (Deferred from Feedback #01 TODO 10)** [DEFERRED to NEXT]
     - Add existing dummy proposals for reference
     - Ensure peer connection, messaging, and peer creation visibility are available
+
+---
+
+## Extra Todo
+
+11. Add payment flow to user registration process
+
+12. Confirm if "Reflect" deserves its own page, or should it be part of the Learn flow. [DEFERRED to NEXT]

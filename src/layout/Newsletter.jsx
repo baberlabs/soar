@@ -3,7 +3,7 @@ import { Badge } from "../components/Badge";
 
 const BENEFITS = [
   "Platform updates voted on by the community — before they ship",
-  "Monthly member stories: what people are learning and making",
+  "Monthly peer stories: what people are learning and making",
   "New subjects, seasonal themes, and Forum highlights",
 ];
 
@@ -54,7 +54,7 @@ const NewsletterCopy = () => (
 
     <p className="font-body font-light text-lg text-cream/70 leading-relaxed max-w-[38ch]">
       Occasional, intentional updates from the community. No noise — just the
-      things that actually matter to members.
+      things that actually matter to peers.
     </p>
 
     <ul className="flex flex-col gap-3">
