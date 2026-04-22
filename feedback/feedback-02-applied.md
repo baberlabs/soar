@@ -4,10 +4,6 @@
 
 ---
 
-2.1 #TODO
-
----
-
 3.0 Expanded Moodboard support to explicitly handle images, notes, and links.
 
 3.1 Moodboard items now show links clearly, can be edited from saved boards, and remain usable after saving.
@@ -37,10 +33,6 @@
 ---
 
 6.1 Added a "How SOAR works" step inside onboarding/registration
-
----
-
-7.1 #TODO
 
 ---
 
@@ -84,10 +76,6 @@
 
 ---
 
-10.1 #TODO
-
----
-
 11.1 Added a payment-first flow to Join so users complete payment before final account registration.
 
 11.2 Added support for card, PayPal, Apple Pay, Google Pay, bank transfer, and Bitcoin payment options.
@@ -101,3 +89,7 @@
 12.1 Added ScrollToTop on route navigation
 
 ---
+
+#TODO 2. Deferred to next iteration
+#TODO 7. Deferred to next iteration
+#TODO 10. Deferred to next iteration
