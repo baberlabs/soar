@@ -32,6 +32,9 @@ import Onboarding from "./pages/onboarding";
 import Reflect from "./pages/reflect";
 import Session from "./pages/session";
 import Subject from "./pages/subject";
+import DataManifesto from "./pages/legal/data-manifesto";
+import Terms from "./pages/legal/terms";
+import Accessibility from "./pages/legal/accessibility";
 
 const App = () => {
   const location = useLocation();
@@ -50,6 +53,11 @@ const App = () => {
           <Route path="/join" element={<Join />} />
           <Route path="/login" element={<Login />} />
           <Route path="/donate" element={<Donate />} />
+
+          {/* Legal & Transparency */}
+          <Route path="/data-manifesto" element={<DataManifesto />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/accessibility" element={<Accessibility />} />
 
           {/* Auth flows */}
           <Route

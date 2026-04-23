@@ -21,11 +21,11 @@ const GROUPS = [
     ],
   },
   {
-    heading: "Principles",
+    heading: "Transparency",
     links: [
-      { label: "No scroll", to: "/principles/no-scroll" },
-      { label: "Data ownership", to: "/principles/data-ownership" },
-      { label: "Governance", to: "/principles/governance" },
+      { label: "Data Manifesto", to: "/data-manifesto" },
+      { label: "Terms of Peership", to: "/terms" },
+      { label: "Accessibility", to: "/accessibility" },
     ],
   },
 ];
