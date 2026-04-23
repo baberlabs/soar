@@ -68,9 +68,9 @@ The following todos are based on feedback from client and my own observations.
 
 ## 7. Home Page & About Page
 
-#TODO 7a. Feat: Rewrite Home and About pages' copy to reflect SOAR's radical mission: data ownership, educational liberation, collective governance, and moving from passive consumption to intentional progress.
+~~7a. Feat: Rewrite Home and About pages' copy to reflect SOAR's radical mission: data ownership, educational liberation, collective governance, and moving from passive consumption to intentional progress.~~
 
-#TODO 7b. Feat: Add visual hierarchy and storytelling to About that communicates the five core shifts (scrolling → completion, consumption → creation, users → peers, central control → shared governance, data extraction → data ownership).
+~~7b. Feat: Add visual hierarchy and storytelling to About that communicates the five core shifts (scrolling → completion, consumption → creation, users → peers, central control → shared governance, data extraction → data ownership).~~
 
 ## 8. Create Page
 
