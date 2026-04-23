@@ -1,33 +1,33 @@
 import { Link } from "react-router-dom";
-import { Badge } from "../components/Badge";
+import { LinkButton } from "../components/LinkButton";
 
 export const Donation = () => {
   return (
-    <section className="bg-sky px-6 py-20">
-      <div className="mx-auto max-w-6xl rounded-2xl border border-navy/15 bg-cream/60 p-7 md:p-10">
-        <div className="flex max-w-4xl flex-col gap-5">
-          <Badge variant="navy" className="self-start">
-            Donation
-          </Badge>
-
-          <h2 className="font-display text-[clamp(2.5rem,5vw,4rem)] leading-[1.03] tracking-[-0.02em] text-navy">
-            Keep SOAR Running Day To Day
-          </h2>
-
-          <p className="font-body text-base leading-relaxed text-navy/80 md:text-lg">
-            Donations support the ongoing operation of the platform, including
-            hosting, maintenance, moderation, and peer services required for
-            day-to-day use.
-          </p>
-
-          <Link
-            to="/donate"
-            className="cursor-pointer inline-flex w-fit items-center justify-center rounded-xl border border-navy/40 bg-navy px-6 py-3 font-ui text-cream transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(238,237,147,0.35)] active:scale-[0.97]"
-          >
-            Donate Now
-          </Link>
+    <aside className="p-6 md:py-16 bg-linear-to-br from-brand/5 to-transparent border-t border-brand/20">
+      <div className="max-w-6xl mx-auto">
+        <div className="relative z-10 grid gap-8 md:grid-cols-[1fr_auto] md:items-center">
+          <div className="max-w-2xl space-y-4">
+            <p className="font-ui text-xs tracking-[0.2em] text-sage">
+              COMMUNITY BENEFIT SOCIETY
+            </p>
+            <h2 className="font-display text-3xl text-brand md:text-4xl">
+              Owned by peers. Not private capital.
+            </h2>
+            <p className="font-body text-base leading-relaxed text-brand/80">
+              A £1 share makes you an equal peer with one vote. Additional
+              donations fund our infrastructure, curriculum, and decentralised
+              nodes. But they do not buy extra influence. Fairness is hardcoded
+              into the platform.
+            </p>
+            <LinkButton
+              text="Fund the Platform"
+              href="/donate"
+              fullWidth={false}
+              className="mt-2"
+            />
+          </div>
         </div>
       </div>
-    </section>
+    </aside>
   );
 };
