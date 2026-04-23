@@ -67,6 +67,60 @@ const normalizePeer = (peer) => ({
   preferences: peer.preferences ?? { theme: "system", notifications: null },
 });
 
+const normalizeProposalAttachments = (attachments) => {
+  if (!Array.isArray(attachments)) return [];
+
+  return attachments
+    .map((attachment) => ({
+      id: attachment?.id ?? createId("attachment"),
+      name: attachment?.name ?? "Attachment",
+      type: attachment?.type ?? "application/octet-stream",
+      size: Number.isFinite(attachment?.size) ? attachment.size : 0,
+      dataUrl: attachment?.dataUrl ?? null,
+    }))
+    .filter((attachment) => Boolean(attachment.dataUrl));
+};
+
+const normalizeProposal = (proposal) => ({
+  id: proposal.id ?? createId("proposal"),
+  title: proposal.title ?? "",
+  description: proposal.description ?? "",
+  authorId: proposal.authorId ?? null,
+  // Legacy "open" becomes "discussion"; "closed" stays "closed".
+  status:
+    proposal.status === "open"
+      ? "discussion"
+      : proposal.status === "closed"
+        ? "closed"
+        : (proposal.status ?? "draft"),
+  votes: normalizeVotes(proposal.votes),
+  comments: proposal.comments ?? [],
+  attachments: normalizeProposalAttachments(proposal.attachments),
+  createdAt: proposal.createdAt ?? new Date().toISOString(),
+  updatedAt: proposal.updatedAt ?? proposal.createdAt ?? null,
+  publishedAt: proposal.publishedAt ?? null,
+  votingOpenedAt: proposal.votingOpenedAt ?? null,
+  votingDeadline: proposal.votingDeadline ?? null,
+  closedAt: proposal.closedAt ?? null,
+  implementedAt: proposal.implementedAt ?? null,
+  implementationNote: proposal.implementationNote ?? "",
+  withdrawnAt: proposal.withdrawnAt ?? null,
+});
+
+const normalizeVotes = (votes) => {
+  if (!votes || typeof votes !== "object") return {};
+  const out = {};
+  Object.entries(votes).forEach(([userId, raw]) => {
+    // Legacy: { userId: true/false } — convert to the new shape.
+    if (raw === true) out[userId] = { value: "yes", castAt: null };
+    else if (raw === false) out[userId] = { value: "no", castAt: null };
+    else if (raw && typeof raw === "object" && raw.value) {
+      out[userId] = { value: raw.value, castAt: raw.castAt ?? null };
+    }
+  });
+  return out;
+};
+
 const sanitizePeer = (peer) => {
   const { password: _password, ...safePeer } = normalizePeer(peer);
   return safePeer;
@@ -84,7 +138,7 @@ const normalizeStore = (candidate) => {
     },
     peers: (candidate?.peers ?? []).map(normalizePeer),
     subjects: defaults.subjects,
-    forum: candidate?.forum ?? [],
+    forum: (candidate?.forum ?? []).map(normalizeProposal),
     connections: candidate?.connections ?? [],
     newsletterSubscribers: candidate?.newsletterSubscribers ?? [],
   };
@@ -597,40 +651,191 @@ const soarReducer = (state, action) => {
         ),
       };
 
-    case "ADD_PROPOSAL":
-      return {
-        ...state,
-        forum: [...state.forum, action.payload],
+    case "UPSERT_PROPOSAL": {
+      // Create or edit a proposal. Used during draft composition and later
+      // edits in the discussion phase. Payload: { id?, title, description }
+      const existing = state.forum.find((p) => p.id === action.payload.id);
+
+      if (existing) {
+        // Edits are only legal while draft or discussion. Silently ignore
+        // attempts to edit a voting/closed/implemented/withdrawn proposal.
+        if (!["draft", "discussion"].includes(existing.status)) return state;
+
+        return {
+          ...state,
+          forum: state.forum.map((p) =>
+            p.id === existing.id
+              ? {
+                  ...p,
+                  title: action.payload.title ?? p.title,
+                  description: action.payload.description ?? p.description,
+                  attachments:
+                    action.payload.attachments !== undefined
+                      ? normalizeProposalAttachments(action.payload.attachments)
+                      : p.attachments,
+                  updatedAt: new Date().toISOString(),
+                }
+              : p,
+          ),
+        };
+      }
+
+      const newProposal = {
+        id: action.payload.id ?? createId("proposal"),
+        title: action.payload.title,
+        description: action.payload.description,
+        authorId: action.payload.authorId ?? state.session.currentUserId,
+        status: "draft",
+        votes: {},
+        comments: [],
+        attachments: normalizeProposalAttachments(action.payload.attachments),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        publishedAt: null,
+        votingOpenedAt: null,
+        votingDeadline: null,
+        closedAt: null,
+        implementedAt: null,
+        implementationNote: "",
+        withdrawnAt: null,
       };
 
-    case "VOTE_ON_PROPOSAL":
+      return { ...state, forum: [...state.forum, newProposal] };
+    }
+
+    case "PUBLISH_PROPOSAL":
       return {
         ...state,
-        forum: state.forum.map((proposal) =>
-          proposal.id === action.payload.proposalId
+        forum: state.forum.map((p) =>
+          p.id === action.payload.id && p.status === "draft"
             ? {
-                ...proposal,
-                votes: {
-                  ...(proposal.votes ?? {}),
-                  [action.payload.userId]: action.payload.voteValue,
-                },
+                ...p,
+                status: "discussion",
+                publishedAt: new Date().toISOString(),
               }
-            : proposal,
+            : p,
+        ),
+      };
+
+    case "OPEN_VOTING":
+      // Payload: { id, votingDeadline }  (ISO string)
+      return {
+        ...state,
+        forum: state.forum.map((p) =>
+          p.id === action.payload.id && p.status === "discussion"
+            ? {
+                ...p,
+                status: "voting",
+                votingOpenedAt: new Date().toISOString(),
+                votingDeadline: action.payload.votingDeadline,
+              }
+            : p,
+        ),
+      };
+
+    case "CAST_VOTE":
+      // Payload: { proposalId, userId, voteValue }  where voteValue is
+      // "yes" | "no" | "abstain". Re-voting overrides the previous value.
+      return {
+        ...state,
+        forum: state.forum.map((p) => {
+          if (p.id !== action.payload.proposalId) return p;
+          if (p.status !== "voting") return p; // only accept votes while voting
+          // Deadline check is a defence — UI should already block expired
+          // voting, but the reducer stays honest if someone races it.
+          if (p.votingDeadline && new Date(p.votingDeadline) <= new Date()) {
+            return p;
+          }
+          return {
+            ...p,
+            votes: {
+              ...p.votes,
+              [action.payload.userId]: {
+                value: action.payload.voteValue,
+                castAt: new Date().toISOString(),
+              },
+            },
+          };
+        }),
+      };
+
+    case "WITHDRAW_PROPOSAL":
+      // Author explicitly withdraws. Legal in any pre-closed state.
+      return {
+        ...state,
+        forum: state.forum.map((p) =>
+          p.id === action.payload.id &&
+          ["draft", "discussion", "voting"].includes(p.status)
+            ? {
+                ...p,
+                status: "withdrawn",
+                withdrawnAt: new Date().toISOString(),
+              }
+            : p,
+        ),
+      };
+
+    case "MARK_IMPLEMENTED":
+      // Payload: { id, implementationNote }
+      return {
+        ...state,
+        forum: state.forum.map((p) =>
+          p.id === action.payload.id && p.status === "closed"
+            ? {
+                ...p,
+                status: "implemented",
+                implementedAt: new Date().toISOString(),
+                implementationNote: action.payload.implementationNote ?? "",
+              }
+            : p,
         ),
       };
 
     case "CLOSE_PROPOSAL":
+      // Author-triggered close (rare; mostly used when the UI wants to
+      // persist the closure for historical accuracy even though phase is
+      // already derivable from the deadline).
       return {
         ...state,
-        forum: state.forum.map((proposal) =>
-          proposal.id === action.payload.id
-            ? {
-                ...proposal,
-                status: "closed",
-                outcome: action.payload.outcome,
-                closedAt: new Date().toISOString(),
-              }
-            : proposal,
+        forum: state.forum.map((p) =>
+          p.id === action.payload.id && p.status === "voting"
+            ? { ...p, status: "closed", closedAt: new Date().toISOString() }
+            : p,
+        ),
+      };
+
+    case "ADD_PROPOSAL_COMMENT":
+      // Payload: { proposalId, body, authorId }
+      return {
+        ...state,
+        forum: state.forum.map((p) => {
+          if (p.id !== action.payload.proposalId) return p;
+          // Comments allowed in discussion and closed/implemented phases only.
+          // Voting is silent to prevent last-minute lobbying during the ballot.
+          if (!["discussion", "closed", "implemented"].includes(p.status)) {
+            return p;
+          }
+          return {
+            ...p,
+            comments: [
+              ...(p.comments ?? []),
+              {
+                id: createId("comment"),
+                body: action.payload.body,
+                authorId: action.payload.authorId,
+                at: new Date().toISOString(),
+              },
+            ],
+          };
+        }),
+      };
+
+    case "REMOVE_PROPOSAL":
+      // Hard delete — only legal for drafts that haven't been published.
+      return {
+        ...state,
+        forum: state.forum.filter(
+          (p) => p.id !== action.payload.id || p.status !== "draft",
         ),
       };
 

@@ -38,15 +38,15 @@ The following todos are based on feedback from client and my own observations.
 
 ## 4. Forum & Governance UI (NEW)
 
-#TODO 4a. Feat: Build Forum page with pro-level UI for peer proposals and discussions.
+~~4a. Feat: Build Forum page with pro-level UI for peer proposals and discussions.~~
 
-#TODO 4b. Feat: Implement proposal submission flow where peers can suggest platform changes with title, description, and optional attachments.
+~~4b. Feat: Implement proposal submission flow where peers can suggest platform changes with title, description, and optional attachments.~~
 
-#TODO 4c. Feat: Create voting interface where peers vote on active proposals (one-peer-one-vote). Display vote counts, status (open/closed), and outcomes.
+~~4c. Feat: Create voting interface where peers vote on active proposals (one-peer-one-vote). Display vote counts, status (open/closed), and outcomes.~~
 
-#TODO 4d. Feat: Display archived proposals and outcomes so peers see decisions made and understand platform evolution.
+~~4d. Feat: Display archived proposals and outcomes so peers see decisions made and understand platform evolution.~~
 
-#TODO 4e. Feat: Connect governance activities to Account > Activity to show peer participation in decision-making.
+~~4e. Feat: Connect governance activities to Account > Activity to show peer participation in decision-making.~~
 
 ## 5. Data Sovereignty & Transparency (NEW)
 

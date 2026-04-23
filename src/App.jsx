@@ -23,6 +23,11 @@ import Create from "./pages/create";
 import Dashboard from "./pages/dashboard";
 import Donate from "./pages/donate";
 import Forum from "./pages/forum";
+import ForumFilteredListTab from "./pages/forum/tabs/FilteredListTab";
+import ForumDraftsTab from "./pages/forum/tabs/DraftsTab";
+import ForumNewProposalTab from "./pages/forum/tabs/NewProposalTab";
+import ForumProposalDetail from "./pages/forum/detail/ProposalDetail";
+import ForumProposalEdit from "./pages/forum/detail/ProposalEdit";
 import Home from "./pages/home";
 import Join from "./pages/join";
 import Learn from "./pages/learn";
@@ -159,15 +164,36 @@ const App = () => {
                 <Forum />
               </ProtectedRoute>
             }
-          />
+          >
+            <Route index element={<Navigate to="all" replace />} />
+            <Route
+              path="all"
+              element={<ForumFilteredListTab routeFilter="all" />}
+            />
+            <Route
+              path="discussion"
+              element={<ForumFilteredListTab routeFilter="discussion" />}
+            />
+            <Route
+              path="voting"
+              element={<ForumFilteredListTab routeFilter="voting" />}
+            />
+            <Route
+              path="closed"
+              element={<ForumFilteredListTab routeFilter="closed" />}
+            />
+            <Route path="new" element={<ForumNewProposalTab />} />
+            <Route path="drafts" element={<ForumDraftsTab />} />
+            <Route path=":proposalId/edit" element={<ForumProposalEdit />} />
+            <Route path=":proposalId" element={<ForumProposalDetail />} />
+          </Route>
+
+          {/* /feedback is a legacy alias for /forum — keep it working */}
           <Route
             path="/feedback"
-            element={
-              <ProtectedRoute>
-                <Forum />
-              </ProtectedRoute>
-            }
+            element={<Navigate to="/forum/all" replace />}
           />
+
           <Route path="/404" element={<NotFound />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
