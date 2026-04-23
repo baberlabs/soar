@@ -1,5 +1,5 @@
 import { Button } from "../../../../components/Button";
-import { Modal } from "./Modal";
+import { Modal } from "../../../../components/Modal";
 
 export const ConfirmDialog = ({
   isOpen,
