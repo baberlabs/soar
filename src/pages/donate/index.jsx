@@ -2,13 +2,13 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { InputField } from "../../components/InputField";
 import { Button } from "../../components/Button";
-import { useSOARState } from "../../hooks/useSOARState";
+import { useSOARState } from "../../store";
 import { PAYMENT_METHODS } from "./constants";
 
 const AMOUNTS = [5, 25, 50, 100];
 
 export default function Donate() {
-  const [state] = useSOARState();
+  const state = useSOARState();
 
   // Transaction State
   const [amount, setAmount] = useState(25);

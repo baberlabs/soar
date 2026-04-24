@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { useSOARState } from "../../hooks/useSOARState";
+import { useSOARDispatch, useSOARState } from "../../store";
 import { useVisionComposer } from "./hooks/useVisionComposer";
 import { useLetterComposer } from "./hooks/useLetterComposer";
 import { useConfirmDialog } from "./hooks/useConfirmDialog";
@@ -23,7 +23,8 @@ import { LetterTabPanel } from "./components/letters/LetterTabPanel";
  * All the UI lives in the feature folders. This file is supposed to stay short.
  */
 export default function Reflect() {
-  const [state, dispatchStore] = useSOARState();
+  const state = useSOARState();
+  const dispatchStore = useSOARDispatch();
   const [tab, setTab] = useState("vision");
 
   const visionBoards = state.reflections?.visionBoards ?? [];

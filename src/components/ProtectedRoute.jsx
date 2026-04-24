@@ -1,12 +1,8 @@
 import { Navigate } from "react-router-dom";
-import { useSOARState } from "../hooks/useSOARState";
+import { useSOARState } from "../store";
 
-/**
- * ProtectedRoute ensures user is logged in and fully onboarded
- * before accessing dashboard/platform pages
- */
 export function ProtectedRoute({ children, requireOnboarding = true }) {
-  const [state] = useSOARState();
+  const state = useSOARState();
   const isAuthenticated = state.user !== null;
   const isOnboarded = state.user?.onboardingComplete === true;
 

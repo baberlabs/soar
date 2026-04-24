@@ -1,20 +1,13 @@
 import { useCallback } from "react";
-import { useSOARState } from "../../../hooks/useSOARState";
+import { useSOARDispatch, useSOARState } from "../../../store";
 import { SectionCard } from "../components/shared/SectionCard";
 import { ProfileForm } from "../components/profile/ProfileForm";
 import { InterestsEditor } from "../components/profile/InterestsEditor";
 import { useProfileForm } from "../hooks/useProfileForm";
 
-/**
- * Profile tab. Two sections:
- *   1. Identity + contact + avatar + bio + location + links (one form)
- *   2. Interests (live-saved; no explicit save button)
- *
- * Interests flush immediately on toggle because they're small and users
- * expect chip toggles to feel instant. Form fields batch into one Save.
- */
 export default function ProfileTab() {
-  const [state, dispatch] = useSOARState();
+  const state = useSOARState();
+  const dispatch = useSOARDispatch();
   const user = state.user;
 
   const saveProfile = useCallback(

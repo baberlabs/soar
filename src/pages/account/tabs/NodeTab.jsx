@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useSOARState } from "../../../hooks/useSOARState";
+import { useSOARState } from "../../../store";
 import { SectionCard } from "../components/shared/SectionCard";
 import { NodeIdentityCard } from "../components/node/NodeIdentityCard";
 import { NodeStatsGrid } from "../components/node/NodeStatsGrid";
@@ -15,7 +15,7 @@ import { deriveNodeStats } from "../utils/nodeStats";
  *   - Pinned content = creations + moodboards + letters + lesson reflections
  */
 export default function NodeTab() {
-  const [state] = useSOARState();
+  const state = useSOARState();
 
   const stats = useMemo(
     () =>
@@ -41,7 +41,10 @@ export default function NodeTab() {
       >
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
           <NodeStatsGrid stats={stats} />
-          <NodeIdentityCard peerId={stats.peerId} multiaddrs={stats.multiaddrs} />
+          <NodeIdentityCard
+            peerId={stats.peerId}
+            multiaddrs={stats.multiaddrs}
+          />
         </div>
       </SectionCard>
 

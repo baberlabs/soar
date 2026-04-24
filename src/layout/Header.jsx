@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import LogoIcon from "../assets/icons";
-import { useSOARState } from "../hooks/useSOARState";
+import { useSOARState } from "../store";
 import { MEMBER_NAV_ITEMS, PUBLIC_NAV_ITEMS } from "./nav.config";
 
 export const Header = () => {
-  const [state] = useSOARState();
+  const state = useSOARState();
   const [isOpen, setIsOpen] = useState(false);
 
   const items = useMemo(

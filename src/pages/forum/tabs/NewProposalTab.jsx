@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSOARState } from "../../../hooks/useSOARState";
+import { useSOARDispatch, useSOARState } from "../../../store";
 import { ProposalForm } from "../components/compose/ProposalForm";
 
 /**
@@ -20,7 +20,8 @@ const generateProposalId = () => {
   return `proposal_${stamp}${random}`;
 };
 export default function NewProposalTab() {
-  const [state, dispatch] = useSOARState();
+  const state = useSOARState();
+  const dispatch = useSOARDispatch();
   const navigate = useNavigate();
   const proposalIdRef = useRef(generateProposalId());
   const [isSubmitting, setIsSubmitting] = useState(false);

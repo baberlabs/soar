@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useSOARState } from "../../../hooks/useSOARState";
+import { useSOARState } from "../../../store";
 import { ProposalCard } from "../components/shared/ProposalCard";
 import { EmptyState } from "../components/shared/EmptyState";
 import { PHASES, computeEffectivePhase } from "../utils/phase";
@@ -9,7 +9,7 @@ import { PHASES, computeEffectivePhase } from "../utils/phase";
  * user authored AND that are still in draft phase. Used on /forum/drafts.
  */
 export default function DraftsTab() {
-  const [state] = useSOARState();
+  const state = useSOARState();
   const userId = state.user.id;
 
   const drafts = useMemo(

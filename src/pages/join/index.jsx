@@ -3,7 +3,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 
 import { Button } from "../../components/Button";
 import { InputField } from "../../components/InputField";
-import { useSOARState } from "../../hooks/useSOARState";
+import { useSOARDispatch, useSOARState } from "../../store";
 
 const MIN_CONTRIBUTION = 1;
 
@@ -33,7 +33,8 @@ const JOIN_FLOW_STEPS = [
 ];
 
 export default function Join() {
-  const [state, dispatch] = useSOARState();
+  const state = useSOARState();
+  const dispatch = useSOARDispatch();
   const navigate = useNavigate();
   const [step, setStep] = useState("details");
   const [registeredHere, setRegisteredHere] = useState(false);

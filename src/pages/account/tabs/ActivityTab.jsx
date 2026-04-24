@@ -1,4 +1,4 @@
-import { useSOARState } from "../../../hooks/useSOARState";
+import { useSOARState } from "../../../store";
 import { SectionCard } from "../components/shared/SectionCard";
 import {
   CreationsSummary,
@@ -8,7 +8,7 @@ import {
 } from "../components/activity/ActivitySummary";
 
 export default function ActivityTab() {
-  const [state] = useSOARState();
+  const state = useSOARState();
 
   return (
     <section

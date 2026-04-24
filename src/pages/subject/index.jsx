@@ -6,11 +6,12 @@ import { getButtonClasses } from "../../components/buttonStyles";
 import { InputField } from "../../components/InputField";
 import { ProgressBar } from "../../components/ProgressBar";
 import { getSubjectById } from "../../data/subjects";
-import { useSOARState } from "../../hooks/useSOARState";
+import { useSOARDispatch, useSOARState } from "../../store";
 
 export default function SubjectRoom() {
   const { subjectId } = useParams();
-  const [state, dispatch] = useSOARState();
+  const state = useSOARState();
+  const dispatch = useSOARDispatch();
   const [targetDate, setTargetDate] = useState("");
   const [learningNotes, setLearningNotes] = useState("");
   const [status, setStatus] = useState("idle");

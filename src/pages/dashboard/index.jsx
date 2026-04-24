@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useSOARState } from "../../hooks/useSOARState";
+import { useSOARDispatch, useSOARState } from "../../store";
 import { SubjectCard } from "../../components/SubjectCard";
 import { EnrollmentForm } from "../../components/EnrollmentForm";
 import { Button } from "../../components/Button";
 
 export default function Dashboard() {
-  const [state, dispatch] = useSOARState();
+  const state = useSOARState();
+  const dispatch = useSOARDispatch();
   const [enrollmentSubject, setEnrollmentSubject] = useState(null);
   const [filterInterests, setFilterInterests] = useState(false);
 

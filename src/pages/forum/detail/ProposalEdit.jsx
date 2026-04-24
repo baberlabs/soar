@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { useSOARState } from "../../../hooks/useSOARState";
+import { useSOARDispatch, useSOARState } from "../../../store";
 import { ProposalForm } from "../components/compose/ProposalForm";
 import { useProposalLifecycle } from "../hooks/useProposalLifecycle";
 
@@ -13,7 +13,8 @@ import { useProposalLifecycle } from "../hooks/useProposalLifecycle";
  */
 export default function ProposalEdit() {
   const { proposalId } = useParams();
-  const [state, dispatch] = useSOARState();
+  const state = useSOARState();
+  const dispatch = useSOARDispatch();
   const navigate = useNavigate();
 
   const proposal = useMemo(

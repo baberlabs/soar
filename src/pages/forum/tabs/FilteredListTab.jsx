@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { useSOARState } from "../../../hooks/useSOARState";
+import { useSOARState } from "../../../store";
 import { ProposalCard } from "../components/shared/ProposalCard";
 import { EmptyState } from "../components/shared/EmptyState";
 import { getPhaseFilter } from "../utils/phase";
@@ -16,7 +16,7 @@ import { getPhaseFilter } from "../utils/phase";
  */
 export default function FilteredListTab({ routeFilter }) {
   const { filter: paramFilter } = useParams();
-  const [state] = useSOARState();
+  const state = useSOARState();
   const filter = routeFilter ?? paramFilter ?? "all";
 
   const proposals = state.forum ?? [];

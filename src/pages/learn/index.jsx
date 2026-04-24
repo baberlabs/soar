@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 
 import { Button } from "../../components/Button";
 import { SubjectCard } from "../../components/SubjectCard";
-import { useSOARState } from "../../hooks/useSOARState";
+import { useSOARState } from "../../store";
 import { LEARNING_STYLE_LABELS } from "../../data/subjects";
 
 const countCompletedSessions = (curriculum) =>
@@ -12,7 +12,7 @@ const countCompletedSessions = (curriculum) =>
   );
 
 export default function Learn() {
-  const [state] = useSOARState();
+  const state = useSOARState();
   const [filter, setFilter] = useState("recommended");
 
   const enrolledBySubjectId = useMemo(

@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import { Outlet } from "react-router-dom";
-import { useSOARState } from "../../hooks/useSOARState";
+import { useSOARState } from "../../store";
 import { ForumHeader } from "./components/shared/ForumHeader";
 import { ForumTabs } from "./components/shared/ForumTabs";
 import { PHASES, computeEffectivePhase } from "./utils/phase";
 
 export default function Forum() {
-  const [state] = useSOARState();
+  const state = useSOARState();
   const userId = state.user?.id;
 
   const counts = useMemo(() => {

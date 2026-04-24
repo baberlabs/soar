@@ -3,10 +3,16 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 
 import { Button } from "../../components/Button";
 import { InputField } from "../../components/InputField";
-import { useSOARState } from "../../hooks/useSOARState";
+import {
+  useSOARDispatch,
+  useSOARHelpers,
+  useSOARState,
+} from "../../store";
 
 export default function Login() {
-  const [state, dispatch, { authenticatePeer }] = useSOARState();
+  const state = useSOARState();
+  const dispatch = useSOARDispatch();
+  const { authenticatePeer } = useSOARHelpers();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

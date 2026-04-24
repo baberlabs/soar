@@ -1,9 +1,9 @@
-import { useSOARState } from "../../../hooks/useSOARState";
+import { useSOARState } from "../../../store";
 import { SectionCard } from "../components/shared/SectionCard";
 import { ConnectionSummary } from "../components/peers/ConnectionSummary";
 
 export default function PeersTab() {
-  const [state] = useSOARState();
+  const state = useSOARState();
 
   return (
     <section

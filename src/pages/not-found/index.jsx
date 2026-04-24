@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 
 import { getButtonClasses } from "../../components/buttonStyles";
-import { useSOARState } from "../../hooks/useSOARState";
+import { useSOARState } from "../../store";
 
 export default function NotFound() {
-  const [state] = useSOARState();
+  const state = useSOARState();
 
   return (
     <main className="mx-auto flex min-h-[70vh] w-full max-w-360 items-center px-6 py-24">

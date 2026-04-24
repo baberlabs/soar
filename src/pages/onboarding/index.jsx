@@ -2,12 +2,13 @@ import { useMemo, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 
 import { Button } from "../../components/Button";
-import { useSOARState } from "../../hooks/useSOARState";
+import { useSOARDispatch, useSOARState } from "../../store";
 
 const STEP_ORDER = ["welcome", "setup", "vark", "interests"];
 
 export default function Onboarding() {
-  const [state, dispatch] = useSOARState();
+  const state = useSOARState();
+  const dispatch = useSOARDispatch();
   const navigate = useNavigate();
   const [step, setStep] = useState("welcome");
 

@@ -1,5 +1,5 @@
 import { Outlet, useLocation } from "react-router-dom";
-import { useSOARState } from "../../hooks/useSOARState";
+import { useSOARState } from "../../store";
 import { ConnectHeader } from "./components/shared/ConnectHeader";
 import { ConnectTabs } from "./components/shared/ConnectTabs";
 import { buildEvents } from "./utils/events";
@@ -12,7 +12,7 @@ import { buildEvents } from "./utils/events";
  * stay stable as the user switches tabs.
  */
 export default function Connect() {
-  const [state] = useSOARState();
+  const state = useSOARState();
   const location = useLocation();
 
   // All hooks must run unconditionally — guard the render, not the hooks.

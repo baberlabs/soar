@@ -3,14 +3,15 @@ import { useSearchParams } from "react-router-dom";
 
 import { Button } from "../../components/Button";
 import { InputField } from "../../components/InputField";
-import { useSOARState } from "../../hooks/useSOARState";
+import { useSOARDispatch, useSOARState } from "../../store";
 
 import ExpandIcon from "../../assets/icons/expand.svg";
 import DownloadIcon from "../../assets/icons/download.svg";
 import CloseIcon from "../../assets/icons/close.svg";
 
 export default function Create() {
-  const [state, dispatch] = useSOARState();
+  const state = useSOARState();
+  const dispatch = useSOARDispatch();
   const [searchParams] = useSearchParams();
   const requestedSubject = searchParams.get("subject");
   const [step, setStep] = useState(() =>

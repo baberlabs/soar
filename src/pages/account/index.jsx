@@ -1,6 +1,6 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { useMemo } from "react";
-import { useSOARState } from "../../hooks/useSOARState";
+import { useSOARDispatch, useSOARState } from "../../store";
 import { AccountHeader } from "./components/shared/AccountHeader";
 import { AccountSidebar } from "./components/shared/AccountSidebar";
 import { deriveNodeStats } from "./utils/nodeStats";
@@ -16,7 +16,8 @@ import { deriveNodeStats } from "./utils/nodeStats";
  * shared between shell and tab via the deriveNodeStats utility.
  */
 export default function Account() {
-  const [state, dispatch] = useSOARState();
+  const state = useSOARState();
+  const dispatch = useSOARDispatch();
   const navigate = useNavigate();
 
   const user = state.user;
@@ -52,7 +53,7 @@ export default function Account() {
   ];
 
   return (
-    <main className="mx-auto w-full max-w-[90rem] px-6 pb-24 pt-32 md:pb-32 md:pt-40">
+    <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-32 md:pb-32 md:pt-40">
       <div className="space-y-8">
         <AccountHeader user={user} stats={headerStats} />
 

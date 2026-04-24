@@ -4,7 +4,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import { Button } from "../../components/Button";
 import { getButtonClasses } from "../../components/buttonStyles";
 import { getSubjectById } from "../../data/subjects";
-import { useSOARState } from "../../hooks/useSOARState";
+import { useSOARDispatch, useSOARState } from "../../store";
 
 import BackgroundLayer1Image from "../../assets/images/background-layer-1.svg";
 import BackgroundLayer2Image from "../../assets/images/background-layer-2.svg";
@@ -21,7 +21,8 @@ import LearnPhotographyImage from "./imagery/photography-image.jpg";
 
 export default function SessionPage() {
   const { subjectId, lessonId } = useParams();
-  const [state, dispatch] = useSOARState();
+  const state = useSOARState();
+  const dispatch = useSOARDispatch();
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const [completeStatus, setCompleteStatus] = useState("idle");

@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getPeerById } from "../../../data/peers";
-import { useSOARState } from "../../../hooks/useSOARState";
+import { useSOARDispatch, useSOARState } from "../../../store";
 import { SplitPane } from "../components/shared/SplitPane";
 import { PeerFilters } from "../components/peers/PeerFilters";
 import { PeerListItem } from "../components/peers/PeerListItem";
@@ -21,7 +21,8 @@ import { pickWelcomeMessage } from "../utils/welcomeMessages";
  *   - Open chat (navigate to /connect/chats?chatId=x)
  */
 export default function PeersTab() {
-  const [state, dispatch] = useSOARState();
+  const state = useSOARState();
+  const dispatch = useSOARDispatch();
   const [peerId, setPeerId] = usePanelParam("peerId");
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");

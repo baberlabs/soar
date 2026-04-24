@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { useSOARState } from "../../../hooks/useSOARState";
+import { useSOARDispatch, useSOARState } from "../../../store";
 import { Modal } from "../../../components/Modal";
 
 import { PhaseBadge } from "../components/shared/PhaseBadge";
@@ -87,7 +87,8 @@ const decodeDataUrlText = (dataUrl) => {
  */
 export default function ProposalDetail() {
   const { proposalId } = useParams();
-  const [state, dispatch] = useSOARState();
+  const state = useSOARState();
+  const dispatch = useSOARDispatch();
   const navigate = useNavigate();
   const [previewAttachment, setPreviewAttachment] = useState(null);
   const [imageZoom, setImageZoom] = useState(1);

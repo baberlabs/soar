@@ -46,7 +46,7 @@ export const readJSONFile = (file) =>
 
 /**
  * Approx byte size of the current serialized state. Used by the Data tab to
- * show how much space is being used in localStorage.
+ * show how much space is being used by the persisted store snapshot.
  */
 export const estimateStoreBytes = (store) => {
   try {

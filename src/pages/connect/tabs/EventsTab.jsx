@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useSOARState } from "../../../hooks/useSOARState";
+import { useSOARState } from "../../../store";
 import { SplitPane } from "../components/shared/SplitPane";
 import { EventListItem } from "../components/events/EventListItem";
 import { EventDetail } from "../components/events/EventDetail";
@@ -7,7 +7,7 @@ import { usePanelParam } from "../hooks/usePanelParam";
 import { buildEvents, getEventById } from "../utils/events";
 
 export default function EventsTab() {
-  const [state] = useSOARState();
+  const state = useSOARState();
   const [eventId, setEventId] = usePanelParam("eventId");
   const interests = state.user.interests ?? [];
 
