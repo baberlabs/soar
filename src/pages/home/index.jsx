@@ -1,15 +1,14 @@
 import { Link } from "react-router-dom";
 
+import Logo from "./components/Logo";
 import BackgroundLayer1Image from "../../assets/images/background-layer-1.svg";
 import BackgroundLayer2Image from "../../assets/images/background-layer-2.svg";
-import Logo from "./components/Logo";
 import { LinkButton } from "../../components/LinkButton";
 
 export default function Home() {
   return (
     <main className="relative overflow-hidden">
       <PageBackground />
-
       <div className="mx-auto w-full max-w-360 px-6 pb-24">
         <div className="mx-auto flex max-w-6xl flex-col gap-16 md:gap-24">
           <HeroSection />
@@ -44,52 +43,40 @@ const PageBackground = () => (
   </div>
 );
 
-export const HeroSection = () => {
+const HeroSection = () => {
   return (
-    <section className="relative mx-auto px-6 pt-16 md:pt-24 w-full max-w-6xl">
-      <div className="mt-16 flex max-w-3xl flex-col gap-6">
-        <Logo />
-
-        {/* Main headline */}
-        <h1 className="font-display text-4xl sm:text-5xl md:text-6xl">
-          YOUR DATA.
-          <br />
-          YOUR RULES.
-          <br />
-          YOUR NETWORK.
+    <section className="relative mx-auto px-6 mt-32 md:py-16 w-full max-w-6xl">
+      <div className="max-w-3xl">
+        <Logo className="text-brand size-64" />
+        <h1 className="font-display text-3xl mb-6">
+          YOUR DATA. YOUR RULES. YOUR NETWORK
         </h1>
 
-        {/* Manifesto Body */}
-        <div className="space-y-4">
-          <p className="text-xl">
-            SOAR believes that users of digital platforms should be in control
-            of their data. We are a pioneer in collective-ownership and
-            open-source decentralised networks, imagining a world where users of
-            technology have digital autonomy to control their online identity.
-          </p>
-          <p className="opacity-80">
-            We believe that technology should be a force for good and utilised
-            for nutritional purposes. We refuse to let technology ruin our focus
-            and attention by providing users with the opportunity to expand
-            knowledge through our personal curriculum lessons, challenging
-            yourselves and your brains and as a result watch your potential
-            SOAR.
-          </p>
-          <p className="opacity-80">
-            Join to become a <Link to="/terms">peer</Link> of our community and
-            become a part of something special with SOAR.
-          </p>
-        </div>
-
-        {/* CTAs */}
-        <div className="flex flex-wrap gap-4 pt-2">
+        <p className="text-xl mb-4">
+          SOAR believes that users of digital platforms should be in control of
+          their data. We are a pioneer in collective-ownership and open-source
+          decentralised networks, imagining a world where users of technology
+          have digital autonomy to control their online identity.
+        </p>
+        <p className="opacity-80 mb-2">
+          We believe that technology should be a force for good and utilised for
+          nutritional purposes. We refuse to let technology ruin our focus and
+          attention by providing users with the opportunity to expand knowledge
+          through our personal curriculum lessons, challenging yourselves and
+          your brains and as a result watch your potential SOAR.
+        </p>
+        <p className="opacity-80 mb-6">
+          Join to become a <Link to="/terms">peer</Link> of our community and
+          become a part of something special with SOAR.
+        </p>
+        <div className="flex flex-wrap gap-4">
           <LinkButton
             text="Become a Peer (£1)"
             href="/join"
             fullWidth={false}
           />
           <LinkButton
-            text="Read the Manifesto"
+            text="See How SOAR Works"
             href="/about"
             fullWidth={false}
             variant="ghost"
@@ -191,7 +178,7 @@ const NoScrollSection = () => (
           Destination-led by design
         </h2>
         <p className="font-body text-sm leading-relaxed text-brand/78 md:text-base">
-          There are no infinite feeds. You choose where you’re going, complete
+          There are no infinite feeds. You choose where you're going, complete
           your session, and finish.
         </p>
       </div>
@@ -199,7 +186,7 @@ const NoScrollSection = () => (
     <div className="rounded-4xl border border-brand/12 bg-cream p-7 shadow-[0_20px_40px_rgba(75,81,149,0.05)] md:p-8">
       <div className="space-y-5">
         <p className="font-body text-sm leading-relaxed text-brand/78 md:text-base">
-          Each space has a clear purpose. Each session ends. That’s what makes
+          Each space has a clear purpose. Each session ends. That's what makes
           it easier to focus and decondition from algorithmic control.
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -327,7 +314,7 @@ const LearningSection = () => (
       </h2>
       <div className="space-y-4 font-body text-sm leading-relaxed text-brand/78 md:text-base">
         <p>
-          SOAR provides educational liberation. We don’t just focus on technical
+          SOAR provides educational liberation. We don't just focus on technical
           skills; we make space for reflection, self-knowledge, and sustained
           attention.
         </p>

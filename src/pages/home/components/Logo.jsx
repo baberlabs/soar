@@ -1,8 +1,8 @@
-export default function Logo() {
+export default function Logo({ className }) {
   return (
     <svg
       aria-hidden="true"
-      className="text-navy size-32"
+      className={className}
       viewBox="0 0 68 48"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
