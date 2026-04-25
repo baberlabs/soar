@@ -3,21 +3,15 @@ import { Badge } from "../../../../components/Badge";
 import { Button } from "../../../../components/Button";
 import { formatMonthLabel } from "../../utils/month";
 
-export const SealedLetterCard = ({
-  letter,
-  onBreakSeal,
-  onDelete,
-  onArchive,
-}) => (
+export const SealedLetterCard = ({ letter, onBreakSeal, onDelete }) => (
   <SealedLetterShell
     letter={letter}
     onBreakSeal={onBreakSeal}
     onDelete={onDelete}
-    onArchive={onArchive}
   />
 );
 
-const SealedLetterShell = ({ letter, onBreakSeal, onDelete, onArchive }) => {
+const SealedLetterShell = ({ letter, onBreakSeal, onDelete }) => {
   const [isBreaking, setIsBreaking] = useState(false);
 
   useEffect(() => {
@@ -118,16 +112,6 @@ const SealedLetterShell = ({ letter, onBreakSeal, onDelete, onArchive }) => {
           text="Delete"
           onClick={() => onDelete(letter)}
         />
-        {onArchive ? (
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            fullWidth={false}
-            text="Archive"
-            onClick={() => onArchive(letter)}
-          />
-        ) : null}
       </div>
     </article>
   );

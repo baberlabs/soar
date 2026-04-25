@@ -234,7 +234,16 @@ export const useLetterComposer = ({ rawLetters, dispatchStore }) => {
   );
 
   const archiveLetter = useCallback(
-    (id) => {
+    (letter) => {
+      if (!letter || letter.effectiveStatus !== LETTER_STATUS.REVIEWED) {
+        dispatch({
+          type: "SET_REVIEW_ERROR",
+          payload: "Add your reflection before archiving this letter.",
+        });
+        return;
+      }
+
+      const id = letter.id;
       dispatchStore({
         type: "UPSERT_MONTHLY_LETTER",
         payload: {

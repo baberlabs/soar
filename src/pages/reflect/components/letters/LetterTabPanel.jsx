@@ -53,6 +53,8 @@ export const LetterTabPanel = ({
     !!activeLetter &&
     !isMonthUnlocked(activeLetter.targetMonth) &&
     activeLetter.effectiveStatus === LETTER_STATUS.SEALED;
+  const shouldShowComposer =
+    !activeLetter || activeLetter.effectiveStatus === LETTER_STATUS.DRAFT;
 
   const handleDelete = (letter) =>
     onConfirmDelete({
@@ -70,7 +72,7 @@ export const LetterTabPanel = ({
       onConfirm: () => breakSeal(letter.id),
     });
 
-  const handleArchive = (letter) => archiveLetter(letter.id);
+  const handleArchive = (letter) => archiveLetter(letter);
 
   const handleRequestSeal = (afterConfirm) =>
     onConfirmSeal({
@@ -140,7 +142,28 @@ export const LetterTabPanel = ({
               letter={activeLetter}
               onBreakSeal={handleBreakSeal}
               onDelete={handleDelete}
+            />
+          ) : (
+            <LetterCard
+              letter={activeLetter}
+              reviewForm={reviewForm}
+              reviewError={reviewError}
+              isReviewing={reviewForm.letterId === activeLetter.id}
+              onEdit={loadLetter}
+              onDelete={handleDelete}
               onArchive={handleArchive}
+              onBeginReview={beginReview}
+              onCancelReview={cancelReview}
+              onReviewFieldChange={setReviewField}
+              onSubmitReview={saveReview}
+            />
+          )
+        ) : !shouldShowComposer ? (
+          activeLetter.effectiveStatus === LETTER_STATUS.SEALED ? (
+            <SealedLetterCard
+              letter={activeLetter}
+              onBreakSeal={handleBreakSeal}
+              onDelete={handleDelete}
             />
           ) : (
             <LetterCard
@@ -175,7 +198,6 @@ export const LetterTabPanel = ({
                 letter={activeLetter}
                 onBreakSeal={handleBreakSeal}
                 onDelete={handleDelete}
-                onArchive={handleArchive}
               />
             ) : (
               <LetterCard
