@@ -39,11 +39,12 @@ import Home from "./pages/home";
 import Join from "./pages/join";
 import Learn from "./pages/learn";
 import Login from "./pages/login";
+import MonthlyLetter from "./pages/monthly-letter";
 import NotFound from "./pages/not-found";
 import Onboarding from "./pages/onboarding";
-import Reflect from "./pages/reflect";
 import Session from "./pages/session";
 import Subject from "./pages/subject";
+import VisionBoard from "./pages/vision-board";
 
 import DataManifesto from "./pages/legal/data-manifesto";
 import Terms from "./pages/legal/terms";
@@ -120,13 +121,27 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          {/* Reflection: split into Vision Board + Monthly Letter (spec 8.11/8.12) */}
           <Route
-            path="/reflect"
+            path="/vision-board"
             element={
               <ProtectedRoute>
-                <Reflect />
+                <VisionBoard />
               </ProtectedRoute>
             }
+          />
+          <Route
+            path="/monthly-letter"
+            element={
+              <ProtectedRoute>
+                <MonthlyLetter />
+              </ProtectedRoute>
+            }
+          />
+          {/* /reflect is a legacy alias — keep it working for any saved links. */}
+          <Route
+            path="/reflect"
+            element={<Navigate to="/vision-board" replace />}
           />
 
           {/* Connect: shell + nested tabs */}

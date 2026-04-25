@@ -19,13 +19,27 @@ export const MEMBER_NAV_ITEMS = [
   { type: "link", label: "Home", icon: NavIcons.home, to: "/" },
   { type: "link", label: "About", icon: NavIcons.about, to: "/about" },
   { type: "link", label: "Donate", icon: NavIcons.donate, to: "/donate" },
-  { type: "link", label: "Forum", icon: NavIcons.feedback, to: "/forum" },
   { type: "separator", id: "sep-1" },
+
   { type: "link", label: "Learn", icon: NavIcons.learn, to: "/learn" },
   { type: "link", label: "Create", icon: NavIcons.create, to: "/create" },
-  { type: "link", label: "Reflect", icon: NavIcons.reflect, to: "/reflect" },
+
   { type: "link", label: "Connect", icon: NavIcons.connect, to: "/connect" },
   { type: "separator", id: "sep-2" },
+  {
+    type: "link",
+    label: "Vision Board",
+    icon: NavIcons.visionBoard,
+    to: "/vision-board",
+  },
+  {
+    type: "link",
+    label: "Monthly Letter",
+    icon: NavIcons.monthlyLetter,
+    to: "/monthly-letter",
+  },
+  { type: "link", label: "Forum", icon: NavIcons.feedback, to: "/forum" },
+  { type: "separator", id: "sep-3" },
   { type: "link", label: "Account", icon: NavIcons.account, to: "/account" },
 ];
 

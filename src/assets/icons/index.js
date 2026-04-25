@@ -8,7 +8,8 @@ import DonateIcon from "./navigation/donate.svg";
 import FeedbackIcon from "./navigation/feedback.svg";
 import HomeIcon from "./navigation/home.svg";
 import LearnIcon from "./navigation/learn.svg";
-import ReflectIcon from "./navigation/reflect.svg";
+import MonthlyLetterIcon from "./navigation/letter.svg";
+import VisionBoardIcon from "./navigation/board.svg";
 
 export default LogoIcon;
 
@@ -21,5 +22,6 @@ export const NavIcons = {
   feedback: FeedbackIcon,
   home: HomeIcon,
   learn: LearnIcon,
-  reflect: ReflectIcon,
+  monthlyLetter: MonthlyLetterIcon,
+  visionBoard: VisionBoardIcon,
 };

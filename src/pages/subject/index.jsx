@@ -239,7 +239,7 @@ export default function SubjectRoom() {
                   Share A Creation
                 </Link>
                 <Link
-                  to="/reflect"
+                  to="/vision-board"
                   className={getButtonClasses({
                     variant: "secondary",
                     size: "md",

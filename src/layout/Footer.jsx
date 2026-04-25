@@ -8,7 +8,8 @@ const GROUPS = [
     links: [
       { label: "Learn", to: "/learn" },
       { label: "Create", to: "/create" },
-      { label: "Reflect", to: "/reflect" },
+      { label: "Vision Board", to: "/vision-board" },
+      { label: "Monthly Letter", to: "/monthly-letter" },
       { label: "Connect", to: "/connect" },
     ],
   },
