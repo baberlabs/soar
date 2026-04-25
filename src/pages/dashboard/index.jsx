@@ -1,193 +1,73 @@
-import { useState } from "react";
-import { useSOARDispatch, useSOARState } from "../../store";
-import { SubjectCard } from "../../components/SubjectCard";
-import { EnrollmentForm } from "../../components/EnrollmentForm";
-import { Button } from "../../components/Button";
+import { useMemo } from "react";
+import { Navigate } from "react-router-dom";
+import { useSOARState } from "../../store";
+
+import { NodeStatusWidget } from "./components/NodeStatusWidget";
+import { CurriculumWidget } from "./components/CurriculumWidget";
+import { VisionBoardWidget } from "./components/VisionBoardWidget";
+import { MonthlyLetterWidget } from "./components/MonthlyLetterWidget";
+import { ForumActivityWidget } from "./components/ForumActivityWidget";
+import { RecentCreationsWidget } from "./components/RecentCreationsWidget";
 
 export default function Dashboard() {
   const state = useSOARState();
-  const dispatch = useSOARDispatch();
-  const [enrollmentSubject, setEnrollmentSubject] = useState(null);
-  const [filterInterests, setFilterInterests] = useState(false);
 
+  const greeting = useMemo(getTimeBasedGreeting, []);
+  const firstName = useMemo(() => deriveFirstName(state.user), [state.user]);
+
+  // Defensive guard. ProtectedRoute should already enforce this, but the
+  // dashboard accesses user fields throughout the widgets, so a hard
+  // redirect is cleaner than null-checking everywhere.
   if (!state.user) {
-    return (
-      <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-32 md:pb-32 md:pt-40">
-        <div className="text-center text-brand">Not logged in</div>
-      </main>
-    );
+    return <Navigate to="/login" replace />;
   }
 
-  const enrolledSubjectIds = state.curriculum.map((c) => c.subjectId);
-  const enrolledSubjects = state.curriculum;
-  const availableSubjects = state.subjects.filter(
-    (s) => !enrolledSubjectIds.includes(s.id),
-  );
-
-  const displayAvailable = filterInterests
-    ? availableSubjects.filter((s) =>
-        state.user.interests.some((interest) =>
-          s.name.toLowerCase().includes(interest.toLowerCase()),
-        ),
-      )
-    : availableSubjects;
-
-  const handleEnroll = (curriculumData) => {
-    const curriculum = {
-      id: `c${Date.now()}`,
-      ...curriculumData,
-    };
-
-    dispatch({
-      type: "ADD_CURRICULUM_SUBJECT",
-      payload: curriculum,
-    });
-
-    setEnrollmentSubject(null);
-  };
-
-  const handleUpdateProgress = (subjectId, newProgress) => {
-    dispatch({
-      type: "UPDATE_CURRICULUM_PROGRESS",
-      payload: { id: subjectId, progress: newProgress },
-    });
-  };
-
   return (
-    <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-32 md:pb-32 md:pt-40">
-      <div className="mx-auto max-w-4xl space-y-16">
-        <section>
-          <h1 className="font-display mb-2 text-5xl text-brand">
-            Your Curriculum
-          </h1>
-          <p className="font-body text-base text-brand/80">
-            {state.user.learningStyle &&
-              `Learning style: ${state.user.learningStyle}`}
+    <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-28 md:pb-32 md:pt-34">
+      <div className="mx-auto max-w-6xl space-y-10">
+        <header className="space-y-3">
+          <p className="font-ui text-sm tracking-[0.16em] text-brand/55">
+            Dashboard
           </p>
-        </section>
+          <h1 className="font-display text-[clamp(3rem,7vw,5rem)] leading-[0.92] text-brand">
+            {greeting}, {firstName}.
+          </h1>
+          <p className="max-w-3xl font-body text-base leading-relaxed text-brand/78">
+            Pick up your curriculum, capture this month&rsquo;s intentions, and
+            stay close to what your peers are building and proposing.
+          </p>
+        </header>
 
-        {enrolledSubjects.length > 0 && (
-          <section className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="font-ui text-2xl text-navy">Currently Learning</h2>
-              <span className="font-body text-sm text-brand/70">
-                {enrolledSubjects.length} enrolled
-              </span>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {enrolledSubjects.map((curriculum) => {
-                const subject = state.subjects.find(
-                  (s) => s.id === curriculum.subjectId,
-                );
-                return (
-                  <div
-                    key={curriculum.id}
-                    className="rounded-lg border border-navy/20 bg-cream p-6"
-                  >
-                    <h3 className="font-ui mb-2 text-lg text-navy">
-                      {subject.name}
-                    </h3>
-                    <p className="font-body mb-4 text-sm text-brand/80">
-                      {subject.description}
-                    </p>
-
-                    <div className="mb-4 space-y-2">
-                      <div className="flex justify-between">
-                        <span className="font-body text-xs text-brand/70">
-                          Progress
-                        </span>
-                        <span className="font-body text-xs font-semibold text-navy">
-                          {curriculum.progress}%
-                        </span>
-                      </div>
-                      <div className="h-2 w-full rounded-full bg-navy/10">
-                        <div
-                          className="h-2 rounded-full transition-all"
-                          style={{
-                            width: `${curriculum.progress}%`,
-                            backgroundImage:
-                              "linear-gradient(90deg, var(--color-brand), rgba(75, 81, 149, 0.7))",
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    {curriculum.targetDate && (
-                      <p className="font-body mb-4 text-xs text-brand/70">
-                        Target: {curriculum.targetDate}
-                      </p>
-                    )}
-
-                    <div className="grid grid-cols-2 gap-2">
-                      <Button variant="secondary" size="sm" onClick={() => {}}>
-                        Continue →
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() =>
-                          handleUpdateProgress(
-                            curriculum.id,
-                            Math.min(curriculum.progress + 10, 100),
-                          )
-                        }
-                      >
-                        +10%
-                      </Button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        )}
-
-        <section className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="font-ui text-2xl text-navy">Browse Subjects</h2>
-            <div className="flex gap-2">
-              <Button
-                variant={filterInterests ? "primary" : "secondary"}
-                size="sm"
-                onClick={() => setFilterInterests(!filterInterests)}
-              >
-                {filterInterests ? "All Subjects" : "My Interests"}
-              </Button>
-            </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="md:col-span-2">
+            <NodeStatusWidget />
           </div>
 
-          {displayAvailable.length === 0 ? (
-            <div className="rounded-lg border border-navy/20 bg-cream p-12 text-center">
-              <p className="font-body text-brand/80">
-                {filterInterests
-                  ? "No subjects match your interests. Try browsing all subjects."
-                  : "No more subjects available to enroll in!"}
-              </p>
-            </div>
-          ) : (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {displayAvailable.map((subject) => (
-                <SubjectCard
-                  key={subject.id}
-                  subject={subject}
-                  isEnrolled={false}
-                  onEnroll={() => setEnrollmentSubject(subject)}
-                />
-              ))}
-            </div>
-          )}
-        </section>
-      </div>
+          <div className="md:col-span-2">
+            <CurriculumWidget />
+          </div>
 
-      {enrollmentSubject && (
-        <EnrollmentForm
-          subject={enrollmentSubject}
-          learningStyle={state.user.learningStyle}
-          onEnroll={handleEnroll}
-          onCancel={() => setEnrollmentSubject(null)}
-        />
-      )}
+          <VisionBoardWidget />
+          <MonthlyLetterWidget />
+
+          <ForumActivityWidget />
+          <RecentCreationsWidget />
+        </div>
+      </div>
     </main>
   );
 }
+
+const getTimeBasedGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 18) return "Good afternoon";
+  return "Good evening";
+};
+
+const deriveFirstName = (user) => {
+  if (!user) return "peer";
+  if (user.firstName) return user.firstName;
+  if (user.name) return String(user.name).split(" ")[0];
+  return "peer";
+};
