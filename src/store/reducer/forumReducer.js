@@ -34,6 +34,7 @@ export const reduceForumActions = (state, action) => {
       }
 
       const proposal = createProposal({
+        id: action.payload.id,
         title: action.payload.title,
         description: action.payload.description,
         authorId: action.payload.authorId ?? state.session.currentUserId,
