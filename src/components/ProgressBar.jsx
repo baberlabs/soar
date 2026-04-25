@@ -28,7 +28,14 @@ export function ProgressBar({
           )}
         </div>
       )}
-      <div className={`w-full rounded-full bg-navy/10 ${heightClass}`}>
+      <div
+        role="progressbar"
+        aria-valuenow={Math.round(percentage)}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={label ?? "Progress"}
+        className={`w-full rounded-full bg-navy/10 ${heightClass}`}
+      >
         <div
           className={`rounded-full transition-all ${heightClass}`}
           style={{

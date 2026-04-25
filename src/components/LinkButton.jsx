@@ -16,13 +16,25 @@ export const LinkButton = ({
 }) => {
   const label =
     status === "loading" ? (loadingText ?? text) : (text ?? children);
+
   const isDisabled = Boolean(disabled) || status === "loading";
+
+  if (isDisabled) {
+    className += " cursor-default pointer-events-none opacity-80";
+    return (
+      <span
+        aria-disabled="true"
+        className={getButtonClasses({ variant, size, fullWidth, className })}
+      >
+        {label}
+      </span>
+    );
+  }
 
   return (
     <Link
       {...props}
       to={href}
-      disabled={isDisabled}
       className={getButtonClasses({
         variant,
         size,

@@ -24,10 +24,10 @@ export const Header = () => {
           type="button"
           aria-label="Toggle navigation menu"
           aria-expanded={isOpen}
+          aria-controls="mobile-nav"
           onClick={() => setIsOpen((prev) => !prev)}
-          className="cursor-pointer inline-flex h-10 w-10 items-center justify-center rounded-xl border border-brand-on/20 text-brand-on md:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-brand-on/20 text-brand-on md:hidden"
         >
-          <span className="sr-only">Toggle menu</span>
           <span className="flex flex-col gap-1">
             <span
               className={`h-0.5 w-5 rounded-full bg-brand-on transition ${isOpen ? "translate-y-1.5 rotate-45" : ""}`}
@@ -47,7 +47,11 @@ export const Header = () => {
       </div>
 
       {isOpen ? (
-        <div className="mx-auto mt-2 w-full max-w-360 rounded-2xl border border-brand/20 bg-cream p-3 shadow-[0_20px_40px_rgba(75,81,149,0.2)] md:hidden">
+        <div
+          id="mobile-nav"
+          hidden={!isOpen}
+          className="mx-auto mt-2 w-full max-w-360 rounded-2xl border border-brand/20 bg-cream p-3 shadow-[0_20px_40px_rgba(75,81,149,0.2)] md:hidden"
+        >
           <SiteNav items={items} mobile onNavigate={closeMenu} />
         </div>
       ) : null}

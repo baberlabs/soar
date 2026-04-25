@@ -25,22 +25,22 @@ export const ChallengeStep = ({
         </p>
       </header>
 
-      <div
-        role="radiogroup"
-        aria-label="Challenge source"
-        className="flex flex-wrap gap-2"
-      >
-        <ModeButton
-          active={mode === "curated"}
-          onClick={() => setMode("curated")}
-          label="Use the curated challenge"
-        />
-        <ModeButton
-          active={mode === "custom"}
-          onClick={() => setMode("custom")}
-          label="Define your own"
-        />
-      </div>
+      <fieldset>
+        <legend className="sr-only">Challenge source</legend>
+
+        <div className="flex flex-wrap gap-2">
+          <ModeButton
+            active={mode === "curated"}
+            onClick={() => setMode("curated")}
+            label="Use the curated challenge"
+          />
+          <ModeButton
+            active={mode === "custom"}
+            onClick={() => setMode("custom")}
+            label="Define your own"
+          />
+        </div>
+      </fieldset>
 
       {mode === "curated" ? (
         <div className="rounded-3xl border border-brand/15 bg-cream/80 p-5">
@@ -100,8 +100,7 @@ export const ChallengeStep = ({
 const ModeButton = ({ active, onClick, label }) => (
   <button
     type="button"
-    role="radio"
-    aria-checked={active}
+    aria-pressed={active}
     onClick={onClick}
     className={`rounded-full border px-4 py-2 font-ui text-sm tracking-[0.04em] transition ${
       active

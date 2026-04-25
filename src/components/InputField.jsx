@@ -22,6 +22,8 @@ export const InputField = ({
     onChange?.(e);
   };
 
+  const errorId = `${inputId}-error`;
+
   return (
     <div className="flex flex-col gap-2">
       <label htmlFor={inputId} className="font-body text-navy/60">
@@ -36,6 +38,8 @@ export const InputField = ({
         value={value}
         onChange={handleChange}
         required={required}
+        aria-invalid={error ? "true" : undefined}
+        aria-describedby={error ? errorId : undefined}
         {...props}
         className={`w-full rounded-2xl border bg-cream px-4 py-3 font-body text-base text-navy outline-none placeholder:text-navy/35 transition duration-200 focus:ring-2 focus:ring-brand/15 ${
           error
@@ -45,7 +49,13 @@ export const InputField = ({
       />
       {/* Inline Error Message */}
       {error && (
-        <p className="font-body text-xs text-rose-600 mt-0.5">{error}</p>
+        <p
+          id={errorId}
+          role="alert"
+          className="font-body text-xs text-rose-600 mt-0.5"
+        >
+          {error}
+        </p>
       )}
     </div>
   );
