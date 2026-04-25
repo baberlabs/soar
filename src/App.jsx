@@ -26,6 +26,8 @@ import MyEventsTab from "./pages/connect/tabs/MyEventsTab";
 import AllEventsTab from "./pages/connect/tabs/AllEventsTab";
 
 import Create from "./pages/create";
+import CreationDetail from "./pages/create/detail/CreationDetail";
+
 import Dashboard from "./pages/dashboard";
 import Donate from "./pages/donate";
 
@@ -129,6 +131,14 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <Create />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create/:creationId"
+            element={
+              <ProtectedRoute>
+                <CreationDetail />
               </ProtectedRoute>
             }
           />
