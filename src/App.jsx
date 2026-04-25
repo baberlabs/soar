@@ -6,6 +6,7 @@ import { Donation } from "./layout/Donation";
 import { Footer } from "./layout/Footer";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { ScrollToTop } from "./components/ScrollToTop";
+import { useSOARState } from "./store";
 
 import About from "./pages/about";
 
@@ -50,6 +51,16 @@ import DataManifesto from "./pages/legal/data-manifesto";
 import Terms from "./pages/legal/terms";
 import Accessibility from "./pages/legal/accessibility";
 
+/**
+ * Root route. Authenticated peers land on the Dashboard; everyone else
+ * gets the marketing Home page. The redirect is rendered (not pushed),
+ * so the back button still behaves naturally.
+ */
+const RootRoute = () => {
+  const { user } = useSOARState();
+  return user ? <Navigate to="/dashboard" replace /> : <Home />;
+};
+
 const App = () => {
   const location = useLocation();
   const showDonation = location.pathname !== "/donate";
@@ -62,7 +73,7 @@ const App = () => {
       <div className="flex-1">
         <Routes>
           {/* Public */}
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<RootRoute />} />
           <Route path="/about" element={<About />} />
           <Route path="/join" element={<Join />} />
           <Route path="/login" element={<Login />} />
@@ -138,13 +149,13 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          {/* /reflect is a legacy alias — keep it working for any saved links. */}
+          {/* /reflect is a legacy alias, keep it working for any saved links. */}
           <Route
             path="/reflect"
             element={<Navigate to="/vision-board" replace />}
           />
 
-          {/* Connect: shell + nested tabs */}
+          {/* Connect: shell + nested tabs  */}
           <Route path="/connect" element={<Connect />}>
             <Route index element={<Navigate to="chats" replace />} />
             <Route path="chats" element={<ChatsTab />} />
@@ -201,7 +212,7 @@ const App = () => {
             <Route path=":proposalId/edit" element={<ForumProposalEdit />} />
             <Route path=":proposalId" element={<ForumProposalDetail />} />
           </Route>
-          {/* /feedback is a legacy alias for /forum — keep it working */}
+          {/* /feedback is a legacy alias for /forum, keep it working */}
           <Route
             path="/feedback"
             element={<Navigate to="/forum/all" replace />}

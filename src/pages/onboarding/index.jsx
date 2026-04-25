@@ -17,7 +17,7 @@ export default function Onboarding() {
   }
 
   if (state.user.onboardingComplete) {
-    return <Navigate to="/learn" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   const stepIndex = STEP_ORDER.indexOf(step);
@@ -39,7 +39,7 @@ export default function Onboarding() {
       type: "UPDATE_USER",
       payload: { onboardingComplete: true },
     });
-    navigate("/learn", { replace: true });
+    navigate("/dashboard", { replace: true });
   };
 
   return (

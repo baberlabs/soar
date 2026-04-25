@@ -77,7 +77,7 @@ export default function Join() {
   if (state.user && !registeredHere) {
     return (
       <Navigate
-        to={state.user.onboardingComplete ? "/learn" : "/onboarding"}
+        to={state.user.onboardingComplete ? "/dashboard" : "/onboarding"}
         replace
       />
     );

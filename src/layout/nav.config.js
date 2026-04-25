@@ -16,7 +16,12 @@ export const PUBLIC_NAV_ITEMS = [
 
 /** @type {NavItem[]} */
 export const MEMBER_NAV_ITEMS = [
-  { type: "link", label: "Home", icon: NavIcons.home, to: "/" },
+  {
+    type: "link",
+    label: "Dashboard",
+    icon: NavIcons.dashboard,
+    to: "/dashboard",
+  },
   { type: "link", label: "About", icon: NavIcons.about, to: "/about" },
   { type: "link", label: "Donate", icon: NavIcons.donate, to: "/donate" },
   { type: "separator", id: "sep-1" },

@@ -3,11 +3,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 
 import { Button } from "../../components/Button";
 import { InputField } from "../../components/InputField";
-import {
-  useSOARDispatch,
-  useSOARHelpers,
-  useSOARState,
-} from "../../store";
+import { useSOARDispatch, useSOARHelpers, useSOARState } from "../../store";
 
 export default function Login() {
   const state = useSOARState();
@@ -22,7 +18,7 @@ export default function Login() {
   if (state.user) {
     return (
       <Navigate
-        to={state.user.onboardingComplete ? "/learn" : "/onboarding"}
+        to={state.user.onboardingComplete ? "/dashboard" : "/onboarding"}
         replace
       />
     );
@@ -61,7 +57,7 @@ export default function Login() {
       payload: { userId: peer.id },
     });
 
-    navigate(peer.onboardingComplete ? "/learn" : "/onboarding", {
+    navigate(peer.onboardingComplete ? "/dashboard" : "/onboarding", {
       replace: true,
     });
   };
