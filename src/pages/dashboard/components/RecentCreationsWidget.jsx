@@ -2,40 +2,17 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Sparkles } from "lucide-react";
 import { useSOARState } from "../../../store";
-import { PEER_DIRECTORY } from "../../../data/peers";
 import { WidgetCard, WidgetHeader } from "./WidgetCard";
 
 /**
- * Pulls creations from peers the user has actually connected with
- * (status: accepted), flattens them into a single list, and shows the
- * three most recent. Empty states for "no network yet" and "network has
- * no creations" are distinct so the CTA points peers somewhere useful.
+ * Shows the current user's three most recent creations from local store
+ * state. This widget is personal activity, not network activity.
  */
 export const RecentCreationsWidget = () => {
   const state = useSOARState();
 
-  const connectedPeerIds = useMemo(() => {
-    const userId = state.user?.id;
-    return new Set(
-      (state.connections ?? [])
-        .filter((connection) => connection.status === "accepted")
-        .flatMap((connection) => connection.peers ?? [])
-        .filter((id) => id && id !== userId),
-    );
-  }, [state.connections, state.user?.id]);
-
-  const networkPeers = useMemo(
-    () => PEER_DIRECTORY.filter((peer) => connectedPeerIds.has(peer.id)),
-    [connectedPeerIds],
-  );
-
   const recentCreations = useMemo(() => {
-    const all = networkPeers.flatMap((peer) =>
-      (peer.creations ?? []).map((creation) => ({
-        ...creation,
-        peer,
-      })),
-    );
+    const all = [...(state.creations ?? [])];
 
     return all
       .sort((a, b) => {
@@ -48,43 +25,35 @@ export const RecentCreationsWidget = () => {
         return dateB - dateA;
       })
       .slice(0, 3);
-  }, [networkPeers]);
-
-  const hasNetwork = networkPeers.length > 0;
+  }, [state.creations]);
 
   return (
     <WidgetCard>
       <WidgetHeader
-        eyebrow="Network"
+        eyebrow="Create"
         title="Recent creations"
         aside={
-          hasNetwork ? (
+          (state.creations?.length ?? 0) > 0 ? (
             <span className="rounded-full bg-brand/8 px-3 py-1 font-body text-xs text-brand/72">
-              {networkPeers.length} peer
-              {networkPeers.length === 1 ? "" : "s"}
+              {state.creations.length} item
+              {state.creations.length === 1 ? "" : "s"}
             </span>
           ) : null
         }
       />
 
       <div className="mt-4 flex-1">
-        {!hasNetwork ? (
+        {recentCreations.length === 0 ? (
           <EmptyState
-            message="Connect with peers to see their creations."
-            ctaLabel="Find peers"
-            ctaTo="/connect/find-peers"
-          />
-        ) : recentCreations.length === 0 ? (
-          <EmptyState
-            message="Your network hasn't shared anything yet. Check back soon."
-            ctaLabel="View peers"
-            ctaTo="/connect/my-peers"
+            message="You haven't published any creations yet. Share your first one."
+            ctaLabel="Open Create"
+            ctaTo="/create"
           />
         ) : (
           <ul className="space-y-2">
-            {recentCreations.map((creation) => (
+            {recentCreations.map((creation, index) => (
               <CreationRow
-                key={`${creation.peer.id}-${creation.id ?? creation.title}`}
+                key={`${creation.id ?? creation.createdAt ?? creation.title ?? "creation"}-${index}`}
                 creation={creation}
               />
             ))}
@@ -92,7 +61,7 @@ export const RecentCreationsWidget = () => {
         )}
       </div>
 
-      {hasNetwork && recentCreations.length > 0 ? (
+      {recentCreations.length > 0 ? (
         <div className="mt-4 flex flex-wrap gap-3 border-t border-brand/10 pt-4">
           <Link
             to="/create"
@@ -121,8 +90,7 @@ const CreationRow = ({ creation }) => (
           {creation.title || "Untitled creation"}
         </p>
         <p className="mt-0.5 font-body text-xs text-brand/65">
-          {creation.peer.name}
-          {creation.type ? ` · ${creation.type}` : ""}
+          {creation.type ? `${creation.type}` : "Creation"}
           {formatRelative(
             creation.publishedAt ?? creation.createdAt ?? creation.date,
           )
