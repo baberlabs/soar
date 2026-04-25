@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 
 import { Button } from "../../components/Button";
@@ -7,16 +6,19 @@ import { InputField } from "../../components/InputField";
 import { ProgressBar } from "../../components/ProgressBar";
 import { getSubjectById } from "../../data/subjects";
 import { useSOARDispatch, useSOARState } from "../../store";
+import { useEnrollment } from "./hooks/useEnrollment";
 
 export default function SubjectRoom() {
   const { subjectId } = useParams();
   const state = useSOARState();
   const dispatch = useSOARDispatch();
-  const [targetDate, setTargetDate] = useState("");
-  const [learningNotes, setLearningNotes] = useState("");
-  const [status, setStatus] = useState("idle");
 
   const subject = getSubjectById(subjectId, state.subjects);
+  const { form, setField, submit, status } = useEnrollment({
+    subject,
+    dispatch,
+    user: state.user,
+  });
   const enrollment = state.curriculum.find(
     (entry) => entry.subjectId === subjectId,
   );
@@ -39,24 +41,6 @@ export default function SubjectRoom() {
   if (!subject) {
     return <Navigate to="/404" replace />;
   }
-
-  const handleEnroll = async (event) => {
-    event.preventDefault();
-    setStatus("loading");
-
-    dispatch({
-      type: "ADD_CURRICULUM_SUBJECT",
-      payload: {
-        subjectId: subject.id,
-        targetDate,
-        learningNotes,
-        learningStyle: state.user?.learningStyle ?? "general",
-      },
-    });
-
-    setStatus("success");
-    setTimeout(() => setStatus("idle"), 600);
-  };
 
   return (
     <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-28 md:pb-32 md:pt-34">
@@ -141,7 +125,7 @@ export default function SubjectRoom() {
                   ) : null}
                 </div>
               ) : (
-                <form onSubmit={handleEnroll} className="space-y-4">
+                <form onSubmit={submit} className="space-y-4">
                   <div className="space-y-2">
                     <h2 className="font-ui text-2xl text-brand">
                       Start this path
@@ -156,8 +140,8 @@ export default function SubjectRoom() {
                     label="Target date"
                     type="date"
                     name="target-date"
-                    value={targetDate}
-                    onValueChange={setTargetDate}
+                    value={form.targetDate}
+                    onValueChange={(value) => setField("targetDate", value)}
                     required={false}
                   />
 
@@ -170,8 +154,10 @@ export default function SubjectRoom() {
                     </label>
                     <textarea
                       id="learning-note"
-                      value={learningNotes}
-                      onChange={(event) => setLearningNotes(event.target.value)}
+                      value={form.learningNotes}
+                      onChange={(event) =>
+                        setField("learningNotes", event.target.value)
+                      }
                       rows="4"
                       placeholder="What do you want to get from this subject?"
                       className="w-full rounded-2xl border border-black/15 px-4 py-3 font-body text-base text-navy outline-none placeholder:text-navy/35 transition duration-200 focus:border-brand focus:ring-2 focus:ring-brand/15"
