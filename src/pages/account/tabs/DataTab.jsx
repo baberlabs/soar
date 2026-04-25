@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   useSOARDispatch,
@@ -13,17 +13,27 @@ export default function DataTab() {
   const rawStore = useSOARRawStore();
   const replaceStore = useSOARReplaceStore();
   const navigate = useNavigate();
+  const [importError, setImportError] = useState("");
 
   const handleImport = useCallback(
     (data) => {
       try {
         replaceStore(data);
-      } catch (error) {
-        console.error("Failed to import:", error);
+        setImportError("");
+        return true;
+      } catch {
+        setImportError(
+          "Import failed. The file may be corrupted or from a different version.",
+        );
+        return false;
       }
     },
     [replaceStore],
   );
+
+  const clearImportError = useCallback(() => {
+    setImportError("");
+  }, []);
 
   const handleReset = useCallback(() => {
     dispatch({ type: "RESET_DEVICE_DATA" });
@@ -43,7 +53,9 @@ export default function DataTab() {
       >
         <DataPanels
           store={rawStore}
+          importError={importError}
           onImport={handleImport}
+          onImportStart={clearImportError}
           onReset={handleReset}
         />
       </SectionCard>

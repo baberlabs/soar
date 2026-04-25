@@ -8,7 +8,13 @@ import {
 } from "../../utils/dataTransfer";
 import { formatBytes } from "../../utils/nodeStats";
 
-export const DataPanels = ({ store, onImport, onReset }) => {
+export const DataPanels = ({
+  store,
+  importError,
+  onImport,
+  onImportStart,
+  onReset,
+}) => {
   const storeBytes = estimateStoreBytes(store);
 
   return (
@@ -27,7 +33,11 @@ export const DataPanels = ({ store, onImport, onReset }) => {
       </div>
 
       <ExportCard store={store} />
-      <ImportCard onImport={onImport} />
+      <ImportCard
+        importError={importError}
+        onImport={onImport}
+        onImportStart={onImportStart}
+      />
       <ResetCard onReset={onReset} />
     </div>
   );
@@ -68,7 +78,7 @@ const ExportCard = ({ store }) => {
   );
 };
 
-const ImportCard = ({ onImport }) => {
+const ImportCard = ({ importError, onImport, onImportStart }) => {
   const fileInputRef = useRef(null);
   const [status, setStatus] = useState({ kind: "idle" });
 
@@ -79,10 +89,15 @@ const ImportCard = ({ onImport }) => {
     event.target.value = "";
     if (!file) return;
 
+    onImportStart?.();
     setStatus({ kind: "loading" });
     try {
       const data = await readJSONFile(file);
-      onImport(data);
+      const imported = onImport(data);
+      if (imported === false) {
+        setStatus({ kind: "idle" });
+        return;
+      }
       setStatus({ kind: "success", filename: file.name });
       setTimeout(() => setStatus({ kind: "idle" }), 2600);
     } catch (error) {
@@ -116,6 +131,11 @@ const ImportCard = ({ onImport }) => {
         {status.kind === "error" ? (
           <p role="alert" className="font-body text-xs text-rose-700">
             {status.message}
+          </p>
+        ) : null}
+        {importError ? (
+          <p role="alert" className="font-body text-xs text-rose-700">
+            {importError}
           </p>
         ) : null}
       </div>
