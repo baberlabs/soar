@@ -3,12 +3,14 @@ import { reduceConnectionActions } from "./connectionReducer";
 import { reduceForumActions } from "./forumReducer";
 import { reduceNewsletterActions } from "./newsletterReducer";
 import { reducePeerActions } from "./peerReducer";
+import { reduceEventActions } from "./eventReducer";
 
 const DOMAIN_REDUCERS = [
   reducePeerActions,
   reduceForumActions,
   reduceConnectionActions,
   reduceNewsletterActions,
+  reduceEventActions,
 ];
 
 export const soarReducer = (state, action) => {

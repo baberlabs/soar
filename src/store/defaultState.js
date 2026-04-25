@@ -10,4 +10,5 @@ export const createDefaultStore = () => ({
   forum: [],
   connections: [],
   newsletterSubscribers: [],
+  rsvps: [],
 });

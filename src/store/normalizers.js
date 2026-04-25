@@ -151,6 +151,13 @@ export const sanitizePeer = (peer) => {
   return safePeer;
 };
 
+export const normalizeRSVPs = (rsvps) => {
+  if (!Array.isArray(rsvps)) return [];
+  return Array.from(
+    new Set(rsvps.filter((id) => typeof id === "string" && id.trim() !== "")),
+  );
+};
+
 export const normalizeStore = (candidate = {}) => {
   const defaults = createDefaultStore();
 
@@ -175,5 +182,6 @@ export const normalizeStore = (candidate = {}) => {
     newsletterSubscribers: Array.isArray(candidate?.newsletterSubscribers)
       ? candidate.newsletterSubscribers.map(normalizeNewsletterSubscriber)
       : [],
+    rsvps: normalizeRSVPs(candidate?.rsvps),
   };
 };

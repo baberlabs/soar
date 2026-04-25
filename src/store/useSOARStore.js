@@ -49,6 +49,7 @@ export const useSOARStore = create(
           version: state.store.version,
           session: state.store.session,
           peers: state.store.peers,
+          rsvps: state.store.rsvps,
           forum: state.store.forum,
           connections: state.store.connections,
           newsletterSubscribers: state.store.newsletterSubscribers,
