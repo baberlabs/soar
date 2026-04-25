@@ -6,6 +6,18 @@ import { getButtonClasses } from "../../components/buttonStyles";
 import { getSubjectById } from "../../data/subjects";
 import { useSOARDispatch, useSOARState } from "../../store";
 
+import {
+  Brain,
+  Camera,
+  ChefHat,
+  Code2,
+  Leaf,
+  Mic,
+  Palette,
+  PenLine,
+  Sparkles,
+} from "lucide-react";
+
 import BackgroundLayer1Image from "../../assets/images/background-layer-1.svg";
 import BackgroundLayer2Image from "../../assets/images/background-layer-2.svg";
 import LearnImage1 from "./imagery/1.jpg";
@@ -18,6 +30,10 @@ import LearnImage7 from "./imagery/7.jpg";
 import LearnCreateImage from "./imagery/create-imagery.jpg";
 import LearnMeditationImage from "./imagery/meditation-image.jpg";
 import LearnPhotographyImage from "./imagery/photography-image.jpg";
+
+// Reflection minimum. Long enough to ensure a real thought, short
+// enough to fit a single deliberate sentence.
+const MIN_REFLECTION_CHARS = 50;
 
 export default function SessionPage() {
   const { subjectId, lessonId } = useParams();
@@ -85,8 +101,24 @@ export default function SessionPage() {
   }, [existingReflection]);
 
   const isCorrect = selectedAnswer === quiz.correctIndex;
+
+  // Reflection gating (spec 8.8 step 4 — mandatory after pass).
+  // hasSavedReflection looks at what's actually persisted, not the
+  // current textarea value — that way deleting unsaved text doesn't
+  // undo the gate.
+  const reflectionLength = reflectionText.trim().length;
+  const meetsMinimum = reflectionLength >= MIN_REFLECTION_CHARS;
+  const hasSavedReflection =
+    (existingReflection?.content?.trim().length ?? 0) >= MIN_REFLECTION_CHARS;
+
+  const showReflectionStep = showResult && isCorrect;
+
   const canComplete =
-    isCurrent && showResult && isCorrect && completeStatus !== "loading";
+    isCurrent &&
+    showResult &&
+    isCorrect &&
+    hasSavedReflection &&
+    completeStatus !== "loading";
 
   const handleCheckAnswer = () => {
     if (selectedAnswer === null) return;
@@ -111,7 +143,7 @@ export default function SessionPage() {
 
   const handleSaveReflection = () => {
     const content = reflectionText.trim();
-    if (!content) return;
+    if (content.length < MIN_REFLECTION_CHARS) return;
 
     setReflectionStatus("loading");
     dispatch({
@@ -189,7 +221,7 @@ export default function SessionPage() {
               className={`rounded-3xl border border-brand/12 p-5 ${visual.panel}`}
               aria-label="Session visual"
             >
-              <p className="font-ui text-4xl leading-none">{visual.emoji}</p>
+              <visual.Icon size={32} strokeWidth={1.5} className="text-brand" />
               <p className="mt-3 font-ui text-sm tracking-[0.08em] text-brand">
                 {visual.title}
               </p>
@@ -387,56 +419,79 @@ export default function SessionPage() {
                 </div>
               ) : null}
 
-              <div className="mt-4 rounded-2xl border border-brand/12 bg-page p-4">
-                <p className="font-body text-xs uppercase tracking-[0.12em] text-brand/55">
-                  Reflection prompt
-                </p>
-                <p className="mt-2 font-body text-sm leading-relaxed text-brand/78">
-                  {lesson.reflectionPrompt}
-                </p>
+              {/* Reflection — visible only after passing the quiz, and
+                  required (50-char minimum) to mark the session complete. */}
+              {showReflectionStep ? (
+                <div className="mt-4 rounded-2xl border border-brand/12 bg-page p-4">
+                  <p className="font-body text-xs uppercase tracking-[0.12em] text-brand/55">
+                    Reflection prompt
+                  </p>
+                  <p className="mt-2 font-body text-sm leading-relaxed text-brand/78">
+                    {lesson.reflectionPrompt}
+                  </p>
 
-                <label
-                  htmlFor="lesson-reflection"
-                  className="mt-4 block font-body text-xs uppercase tracking-[0.12em] text-brand/55"
-                >
-                  Your reflection
-                </label>
-                <textarea
-                  id="lesson-reflection"
-                  value={reflectionText}
-                  onChange={(event) => {
-                    setReflectionText(event.target.value);
-                    if (reflectionStatus !== "idle") {
-                      setReflectionStatus("idle");
-                    }
-                  }}
-                  placeholder="Write a short reflection from this session..."
-                  className="mt-2 min-h-32 w-full rounded-2xl border border-brand/16 px-4 py-3 font-body text-sm leading-relaxed text-brand placeholder:text-brand/40 focus:border-brand/28 focus:outline-none"
-                />
-
-                <div className="mt-3 flex flex-wrap items-center gap-3">
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    fullWidth={false}
-                    text="Save Reflection"
-                    loadingText="Saving reflection..."
-                    status={reflectionStatus}
-                    onClick={handleSaveReflection}
-                    disabled={!reflectionText.trim()}
+                  <label
+                    htmlFor="lesson-reflection"
+                    className="mt-4 block font-body text-xs uppercase tracking-[0.12em] text-brand/55"
+                  >
+                    Your reflection
+                    <span className="ml-1 text-brand/45">(required)</span>
+                  </label>
+                  <textarea
+                    id="lesson-reflection"
+                    value={reflectionText}
+                    onChange={(event) => {
+                      setReflectionText(event.target.value);
+                      if (reflectionStatus !== "idle") {
+                        setReflectionStatus("idle");
+                      }
+                    }}
+                    aria-describedby="lesson-reflection-counter"
+                    placeholder="Write a short reflection from this session..."
+                    className="mt-2 min-h-32 w-full rounded-2xl border border-brand/16 px-4 py-3 font-body text-sm leading-relaxed text-brand placeholder:text-brand/40 focus:border-brand/28 focus:outline-none"
                   />
-                  {existingReflection?.savedAt ? (
-                    <p className="font-body text-xs text-brand/62">
-                      Last saved{" "}
-                      {new Date(existingReflection.savedAt).toLocaleString()}
+
+                  <p
+                    id="lesson-reflection-counter"
+                    className={`mt-2 font-body text-xs ${
+                      meetsMinimum ? "text-sage" : "text-brand/55"
+                    }`}
+                    aria-live="polite"
+                  >
+                    {reflectionLength} / {MIN_REFLECTION_CHARS} characters
+                    {meetsMinimum ? " · ready to save" : " minimum"}
+                  </p>
+
+                  <div className="mt-3 flex flex-wrap items-center gap-3">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      fullWidth={false}
+                      text="Save Reflection"
+                      loadingText="Saving reflection..."
+                      status={reflectionStatus}
+                      onClick={handleSaveReflection}
+                      disabled={!meetsMinimum}
+                    />
+                    {existingReflection?.savedAt ? (
+                      <p className="font-body text-xs text-brand/62">
+                        Last saved{" "}
+                        {new Date(existingReflection.savedAt).toLocaleString()}
+                      </p>
+                    ) : (
+                      <p className="font-body text-xs text-brand/62">
+                        Saved to your account on this device.
+                      </p>
+                    )}
+                  </div>
+
+                  {isCurrent && !hasSavedReflection ? (
+                    <p className="mt-3 font-body text-xs text-brand/65">
+                      Save your reflection to mark this session complete.
                     </p>
-                  ) : (
-                    <p className="font-body text-xs text-brand/62">
-                      Saved to your account on this device.
-                    </p>
-                  )}
+                  ) : null}
                 </div>
-              </div>
+              ) : null}
             </section>
           </div>
         )}
@@ -483,90 +538,90 @@ const buildLessonContent = (subject, lesson, lessonIndex) => {
       ],
     },
     "creative-writing": {
-      lens: "voice, image, and narrative movement",
-      habit: "draft first, then shape language around one live idea",
-      evidence: "a stronger draft with one clear emotional center",
+      lens: "voice, structure, and revision",
+      habit: "draft fast, then shape the line that carries the most weight",
+      evidence: "a paragraph where one sentence does more work than before",
       distractors: [
-        "Rewrite each sentence immediately so no rough lines remain",
-        "Collect notes indefinitely before drafting a first version",
-        "Use broad abstractions so the piece sounds universally relatable",
+        "Polish a single sentence until it feels perfect before drafting",
+        "Avoid revising so the original feeling stays intact",
+        "Write only when inspiration strikes and skip practice sessions",
       ],
     },
     "javascript-fundamentals": {
-      lens: "inputs, logic, and visible output",
-      habit: "turn each concept into a tiny working interaction",
-      evidence: "a small runnable snippet with predictable behavior",
+      lens: "syntax, behaviour, and debugging",
+      habit: "run small experiments to confirm what the language actually does",
+      evidence: "a working snippet that proves the concept",
       distractors: [
-        "Memorize syntax lists before trying any implementation",
-        "Build the UI first and postpone logic until the very end",
-        "Copy code blocks unchanged without checking understanding",
+        "Memorise syntax tables instead of running real code",
+        "Skip console output and assume the result you expected",
+        "Copy a tutorial verbatim without changing any variable",
       ],
     },
     "mindfulness-and-meditation": {
-      lens: "attention, breath, and response",
-      habit: "return to a short practice at the first sign of drift",
-      evidence: "one logged moment where reactivity turned into choice",
+      lens: "breath, body, and attention",
+      habit: "return gently when attention wanders rather than forcing focus",
+      evidence: "a session log that names what pulled your attention",
       distractors: [
-        "Force perfect silence before practicing for five minutes",
-        "Track your practice only when sessions feel easy",
-        "Add longer sessions immediately instead of building consistency",
+        "Push attention harder until distractions disappear entirely",
+        "Skip practice on busy days to make up later",
+        "Judge each session by how relaxed you felt at the end",
       ],
     },
     "cooking-fundamentals": {
-      lens: "flavor balance, timing, and texture",
-      habit: "change one variable at a time and taste intentionally",
-      evidence: "notes that connect one change to one flavor result",
+      lens: "heat, salt, and timing",
+      habit: "taste at each stage and adjust before plating",
+      evidence: "a dish you can describe in terms of the choices you made",
       distractors: [
-        "Add several new ingredients at once to discover what works",
-        "Cook from memory and skip tasting until plating",
-        "Change heat, salt, and acid together so the dish evolves faster",
+        "Follow the recipe without tasting to keep the result consistent",
+        "Add all seasoning at the start so the flavour develops on its own",
+        "Plate immediately and adjust only at the table",
       ],
     },
     "graphic-design": {
-      lens: "hierarchy, contrast, and spacing",
-      habit: "guide the eye by simplifying and prioritizing",
-      evidence: "a layout where message order is obvious at a glance",
+      lens: "hierarchy, contrast, and rhythm",
+      habit: "decide what the eye reaches for first, then defend that choice",
+      evidence: "a layout where one element clearly leads",
       distractors: [
-        "Add extra elements to avoid empty space",
-        "Set all text in similar size to keep visual consistency",
-        "Delay alignment decisions until final export",
+        "Apply more decoration so every element feels important",
+        "Match every spacing value to a default grid without judgement",
+        "Pick a font you like and reuse it across every weight",
       ],
     },
     "ecology-and-sustainability": {
-      lens: "systems, leverage points, and tradeoffs",
-      habit: "map one loop, then test one realistic intervention",
-      evidence: "tracked behavior data connected to one local system",
+      lens: "systems, flows, and feedback",
+      habit: "trace a single resource through one full cycle",
+      evidence: "a map that shows where impact concentrates",
       distractors: [
-        "Study global policy only and postpone local action",
-        "Pick the largest intervention possible before mapping constraints",
-        "Change goals weekly so progress stays flexible",
+        "Focus on individual choices and ignore the system around them",
+        "Treat sustainability as a marketing label rather than a behaviour",
+        "Wait for global consensus before changing local practice",
       ],
     },
     "public-speaking": {
-      lens: "message clarity, structure, and delivery",
-      habit: "practice one idea with one clear arc",
-      evidence: "a rehearsal recording with one measurable improvement",
+      lens: "message, presence, and pace",
+      habit: "rehearse aloud and adjust to what your ear actually hears",
+      evidence: "a talk outline tightened around one clear idea",
       distractors: [
-        "Write a long script and memorize every word before speaking",
-        "Focus on slide design first and postpone message decisions",
-        "Practice silently and skip recording to reduce pressure",
+        "Memorise the script word for word so nothing surprises you",
+        "Avoid recording rehearsals so you can stay confident",
+        "Add more slides so the audience has more to look at",
       ],
     },
   };
 
   const frame = subjectFrames[subject.id] ?? {
-    lens: "clear focus, concrete action, and reflection",
-    habit: "make one deliberate attempt and review the result",
-    evidence: "a visible before-and-after of your approach",
+    lens: "focus, action, and review",
+    habit: "do one concrete pass and capture what changed",
+    evidence: "a small artefact that shows what you practised",
     distractors: [
-      "Delay practice until all resources are perfect",
-      "Jump ahead before checking what this session teaches",
-      "Repeat work without noting what changed",
+      "Read the material once and call the session done",
+      "Skip the practice step and rely on intuition next time",
+      "Defer the work until you feel more prepared",
     ],
   };
 
   const paragraphs = [
-    `${lesson.summary} In this ${focusLabel.toLowerCase()} stage, focus on ${frame.lens} instead of trying to optimize everything at once. Depth comes from precision, not volume.`,
+    `This session focuses on ${frame.lens}. You are not trying to cover everything — you are practising one specific move that compounds over time. Depth comes from precision, not volume.`,
     `Start by naming a single target for this session. Then run one concentrated pass where you ${frame.habit}. This keeps your effort anchored to a result you can evaluate, rather than vague momentum.`,
     `Close by documenting evidence. Your goal is ${frame.evidence}. Treat this evidence as a baseline for the next session so each step in ${subject.name} builds on reality, not memory.`,
   ];
@@ -665,49 +720,49 @@ const getSessionMedia = (subjectId, lessonIndex, lessonTitle) => {
 const getSessionVisual = (subjectId) => {
   const visuals = {
     "digital-photography": {
-      emoji: "📷",
+      Icon: Camera,
       panel: "bg-sky/20",
       title: "Visual framing",
       body: "Look for contrast, depth, and story in each scene you capture.",
     },
     "creative-writing": {
-      emoji: "✍️",
+      Icon: PenLine,
       panel: "bg-yellow/25",
       title: "Drafting mode",
       body: "Move from raw thought to shaped language, one paragraph at a time.",
     },
     "javascript-fundamentals": {
-      emoji: "💻",
+      Icon: Code2,
       panel: "bg-brand/10",
       title: "Code in context",
       body: "Make each concept concrete by applying it to a small working example.",
     },
     "mindfulness-and-meditation": {
-      emoji: "🧘",
+      Icon: Brain,
       panel: "bg-sage/16",
       title: "Steady attention",
       body: "Slow down, observe clearly, and return to intention with less friction.",
     },
     "cooking-fundamentals": {
-      emoji: "🍳",
+      Icon: ChefHat,
       panel: "bg-yellow/22",
       title: "Flavor and timing",
       body: "Notice how simple ingredient choices shift the result of a whole dish.",
     },
     "graphic-design": {
-      emoji: "🎨",
+      Icon: Palette,
       panel: "bg-sky/22",
       title: "Hierarchy first",
       body: "Guide the eye with spacing, type contrast, and intentional rhythm.",
     },
     "ecology-and-sustainability": {
-      emoji: "🌿",
+      Icon: Leaf,
       panel: "bg-sage/18",
       title: "Systems thinking",
       body: "Map connections, identify leverage points, and act where impact is real.",
     },
     "public-speaking": {
-      emoji: "🎤",
+      Icon: Mic,
       panel: "bg-brand/10",
       title: "Message and delivery",
       body: "Shape one clear idea and practice saying it with confidence.",
@@ -716,7 +771,7 @@ const getSessionVisual = (subjectId) => {
 
   return (
     visuals[subjectId] ?? {
-      emoji: "✨",
+      Icon: Sparkles,
       panel: "bg-page",
       title: "Focused session",
       body: "Work through the core action, then reflect and move forward.",
