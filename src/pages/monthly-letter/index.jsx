@@ -1,9 +1,10 @@
-import { useCallback } from "react";
 import { useSOARDispatch, useSOARState } from "../../store";
 import { useLetterComposer } from "../reflect/hooks/useLetterComposer";
-import { useConfirmDialog } from "../reflect/hooks/useConfirmDialog";
+import { useReflectOrchestrator } from "../reflect/hooks/useReflectOrchestrator";
 import { ConfirmDialog } from "../reflect/components/shared/ConfirmDialog";
 import { LetterTabPanel } from "../reflect/components/letters/LetterTabPanel";
+
+const EMPTY_ARRAY = [];
 
 /**
  * Monthly Letter page (spec 8.12). Thin orchestrator that wires the global
@@ -16,46 +17,15 @@ export default function MonthlyLetter() {
   const state = useSOARState();
   const dispatchStore = useSOARDispatch();
 
-  const rawLetters = state.reflections?.letters ?? [];
+  const rawLetters = state.reflections?.letters ?? EMPTY_ARRAY;
 
   const letterComposer = useLetterComposer({ rawLetters, dispatchStore });
-  const { confirm, confirmState } = useConfirmDialog();
-
-  // -- Confirmation adapters for destructive / commitment actions.
-  const confirmDelete = useCallback(
-    async ({ title, message, confirmText, tone, onConfirm }) => {
-      const ok = await confirm({ title, message, confirmText, tone });
-      if (ok) onConfirm();
-    },
-    [confirm],
-  );
-
-  const confirmSeal = useCallback(
-    async ({ onConfirm }) => {
-      const ok = await confirm({
-        title: "Seal this letter?",
-        message:
-          "Once sealed, the letter is hidden until its target month. You can break the seal early, but it will be recorded.",
-        confirmText: "Seal it",
-      });
-      if (ok) onConfirm();
-    },
-    [confirm],
-  );
-
-  const confirmBreakSeal = useCallback(
-    async ({ onConfirm }) => {
-      const ok = await confirm({
-        title: "Break the seal early?",
-        message:
-          "You committed to waiting. Breaking the seal will reveal the letter now, and be noted on the letter so your review stays honest.",
-        confirmText: "Break seal",
-        tone: "danger",
-      });
-      if (ok) onConfirm();
-    },
-    [confirm],
-  );
+  const {
+    confirmState,
+    confirmDelete,
+    confirmSeal,
+    confirmBreakSeal,
+  } = useReflectOrchestrator({ letterComposer });
 
   // Guard: no user, no page. Render nothing (NOT before the hooks).
   if (!state.user) {

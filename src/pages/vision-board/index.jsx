@@ -1,94 +1,22 @@
-import { useCallback } from "react";
 import { useSOARDispatch, useSOARState } from "../../store";
 import { useVisionComposer } from "../reflect/hooks/useVisionComposer";
-import { useConfirmDialog } from "../reflect/hooks/useConfirmDialog";
-import { useAutosave } from "../reflect/hooks/useAutosave";
-import { useKeyboardShortcut } from "../reflect/hooks/useKeyboardShortcut";
+import { useReflectOrchestrator } from "../reflect/hooks/useReflectOrchestrator";
 import { formatMonthLabel } from "../reflect/utils/month";
 import { ConfirmDialog } from "../reflect/components/shared/ConfirmDialog";
 import { EditingBanner } from "../reflect/components/shared/EditingBanner";
 import { VisionTabPanel } from "../reflect/components/vision/VisionTabPanel";
 
-/**
- * Vision Board page (spec 8.11). Thin orchestrator that wires the global
- * store to the vision composer, hosts the ConfirmDialog instance, and
- * handles cross-cutting UX: autosave, keyboard shortcuts, editing banner.
- *
- * The hard state logic lives in useVisionComposer. The UI lives in the
- * `vision` feature folder. This file is intentionally short.
- */
+const EMPTY_ARRAY = [];
+
 export default function VisionBoard() {
   const state = useSOARState();
   const dispatchStore = useSOARDispatch();
 
-  const visionBoards = state.reflections?.visionBoards ?? [];
+  const visionBoards = state.reflections?.visionBoards ?? EMPTY_ARRAY;
 
   const visionComposer = useVisionComposer({ visionBoards, dispatchStore });
-  const { confirm, confirmState } = useConfirmDialog();
-
-  // Autosave drafts after the user has stopped editing for a moment.
-  // Track the full editable form object so item edits (position/text/size/url)
-  // also trigger autosave.
-  const autosaveValue = visionComposer.form;
-
-  const autosaveFn = useCallback(() => {
-    if (!visionComposer.form) return false;
-    // Avoid creating a blank board from autosave when create mode first opens.
-    const hasAutosaveContent =
-      visionComposer.form.items.length > 0 ||
-      visionComposer.form.prompt.trim().length > 0 ||
-      visionComposer.form.playlistNote.trim().length > 0;
-
-    if (!hasAutosaveContent) {
-      return false;
-    }
-    return Boolean(visionComposer.save({ keepEditing: true }));
-  }, [visionComposer.form, visionComposer.save]);
-
-  const autosaveStatus = useAutosave({
-    value: autosaveValue,
-    saveFn: autosaveFn,
-    isEnabled: visionComposer.isEditable,
-  });
-
-  // Cmd/Ctrl+S saves the current editable board.
-  useKeyboardShortcut(
-    { key: "s", meta: true },
-    () => {
-      if (visionComposer.isEditable) visionComposer.save();
-    },
-    { allowInInputs: true },
-  );
-
-  // Escape cancels editing from anywhere.
-  useKeyboardShortcut({ key: "Escape" }, () => {
-    if (visionComposer.isEditable) visionComposer.cancel();
-  });
-
-  // -- Confirmation adapters for destructive / commitment actions.
-  const confirmDelete = useCallback(
-    async ({ title, message, confirmText, tone, onConfirm }) => {
-      const ok = await confirm({ title, message, confirmText, tone });
-      if (ok) onConfirm();
-    },
-    [confirm],
-  );
-
-  const confirmDeleteBoard = useCallback(async () => {
-    if (visionComposer.mode.kind !== "edit") return;
-    const boardId = visionComposer.mode.boardId;
-    const board = visionBoards.find((entry) => entry.id === boardId);
-    const boardMonthLabel = board
-      ? formatMonthLabel(board.month ?? board.createdAt)
-      : "this month";
-    const ok = await confirm({
-      title: "Delete this moodboard?",
-      message: `The board for ${boardMonthLabel} will be removed permanently along with its ${board?.items?.length || 0} items.`,
-      confirmText: "Delete board",
-      tone: "danger",
-    });
-    if (ok) visionComposer.removeBoard(boardId);
-  }, [confirm, visionComposer, visionBoards]);
+  const { autosaveStatus, confirmState, confirmDelete, confirmDeleteBoard } =
+    useReflectOrchestrator({ visionComposer, visionBoards });
 
   // Guard: no user, no page. Render nothing (NOT before the hooks).
   if (!state.user) {
