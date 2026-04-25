@@ -15,7 +15,7 @@ import { ImplementationCard } from "../components/outcome/ImplementationCard";
 
 import { useProposalLifecycle } from "../hooks/useProposalLifecycle";
 import { useVoteTally } from "../hooks/useVoteTally";
-import { formatBytes } from "../../account/utils/nodeStats";
+import { formatBytes } from "../../../utils/format";
 import {
   canPreviewAttachment,
   decodeDataUrlText,
@@ -24,21 +24,6 @@ import {
 import { PHASES } from "../utils/phase";
 import { formatDeadline } from "../utils/voting";
 
-/**
- * The full proposal detail page. Reads the proposal by id param,
- * derives the effective phase, and switches sub-sections on phase.
- *
- * Structure:
- *   - Top: back link + phase badge + title + meta
- *   - Author action bar (if applicable)
- *   - Description
- *   - Phase section:
- *     discussion → CommentList + CommentComposer
- *     voting     → VoteStatus + Ballot + (read-only previous comments)
- *     closed/imp → OutcomeBanner + VoteBreakdown + ImplementationCard
- *                  + (read-only comments, can add new ones post-close)
- *     withdrawn  → OutcomeBanner only + read-only discussion
- */
 export default function ProposalDetail() {
   const { proposalId } = useParams();
   const state = useSOARState();

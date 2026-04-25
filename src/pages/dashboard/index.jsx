@@ -18,11 +18,8 @@ import {
 import { ProgressBar } from "../../components/ProgressBar";
 import { getButtonClasses } from "../../components/buttonStyles";
 import { useSOARState } from "../../store";
-import {
-  deriveNodeStats,
-  formatBytes,
-  formatUptime,
-} from "../account/utils/nodeStats";
+import { formatBytes } from "../../utils/format";
+import { deriveNodeStats, formatUptime } from "../account/utils/nodeStats";
 import {
   PHASES,
   computeEffectivePhase,

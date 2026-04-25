@@ -1,6 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "../../../../components/Button";
 import { InputField } from "../../../../components/InputField";
+import { formatBytes } from "../../../../utils/format";
+import { createAttachmentId } from "../../../../utils/ids";
+import { readFileAsDataUrl } from "../../utils/attachments";
 
 /**
  * Shared form used by new drafts and edits of existing drafts/discussion
@@ -16,23 +19,6 @@ const MIN_TITLE = 5;
 const MIN_DESCRIPTION = 40;
 const MAX_ATTACHMENTS = 3;
 const MAX_ATTACHMENT_BYTES = 2 * 1024 * 1024;
-
-const formatBytes = (bytes) => {
-  if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  if (bytes >= 1024) return `${Math.ceil(bytes / 1024)} KB`;
-  return `${bytes} B`;
-};
-
-const readFileAsDataUrl = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = () => reject(new Error("Failed to read file"));
-    reader.readAsDataURL(file);
-  });
-
-const createAttachmentId = () =>
-  `attachment_${globalThis.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2, 10)}`;
 
 export const ProposalForm = ({
   initialTitle = "",
@@ -50,14 +36,6 @@ export const ProposalForm = ({
   const [description, setDescription] = useState(initialDescription);
   const [attachments, setAttachments] = useState(initialAttachments);
   const [error, setError] = useState("");
-
-  // Re-hydrate if the parent swaps the initial values (e.g. loading a
-  // different proposal into the edit view).
-  useEffect(() => {
-    setTitle(initialTitle);
-    setDescription(initialDescription);
-    setAttachments(initialAttachments);
-  }, [initialTitle, initialDescription, initialAttachments]);
 
   const handleAttachmentPick = async (event) => {
     const files = Array.from(event.target.files ?? []);

@@ -1,3 +1,11 @@
+export const readFileAsDataUrl = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("Failed to read file"));
+    reader.readAsDataURL(file);
+  });
+
 export const getAttachmentKind = (attachment) => {
   const mime = (attachment?.type ?? "").toLowerCase();
   const name = (attachment?.name ?? "").toLowerCase();

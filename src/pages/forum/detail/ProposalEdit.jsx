@@ -4,13 +4,6 @@ import { useSOARDispatch, useSOARState } from "../../../store";
 import { ProposalForm } from "../components/compose/ProposalForm";
 import { useProposalLifecycle } from "../hooks/useProposalLifecycle";
 
-/**
- * Author-only edit page for drafts and discussion-phase proposals.
- * Redirects away if:
- *   - proposal doesn't exist
- *   - viewer isn't the author
- *   - proposal is in a phase that doesn't allow edits (voting, closed, etc.)
- */
 export default function ProposalEdit() {
   const { proposalId } = useParams();
   const state = useSOARState();
@@ -56,6 +49,7 @@ export default function ProposalEdit() {
       </header>
 
       <ProposalForm
+        key={proposal.id}
         initialTitle={proposal.title}
         initialDescription={proposal.description}
         initialAttachments={proposal.attachments ?? []}
