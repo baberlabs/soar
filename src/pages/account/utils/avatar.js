@@ -1,7 +1,3 @@
-/**
- * Convert a File to a data URL for upload preview + localStorage persistence.
- * Rejects files above MAX_BYTES to keep localStorage healthy.
- */
 const MAX_AVATAR_BYTES = 2 * 1024 * 1024; // 2 MB
 
 export const fileToAvatarDataURL = (file) =>
@@ -30,10 +26,7 @@ export const fileToAvatarDataURL = (file) =>
  */
 export const getInitials = (fullName) => {
   if (!fullName) return "?";
-  const words = fullName
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
+  const words = fullName.trim().split(/\s+/).filter(Boolean);
   if (words.length === 0) return "?";
   if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
   return `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase();

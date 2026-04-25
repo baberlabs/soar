@@ -8,15 +8,6 @@ import {
 } from "../../utils/dataTransfer";
 import { formatBytes } from "../../utils/nodeStats";
 
-/**
- * Three stacked cards for the Data tab:
- *   1. Export — download the full local store as JSON
- *   2. Import — load a previously exported JSON file back in
- *   3. Reset  — wipe device data (DangerConfirm gated)
- *
- * Storage usage is rendered at the top of the section so the user knows
- * how much localStorage their account is occupying before they export.
- */
 export const DataPanels = ({ store, onImport, onReset }) => {
   const storeBytes = estimateStoreBytes(store);
 
@@ -24,13 +15,14 @@ export const DataPanels = ({ store, onImport, onReset }) => {
     <div className="space-y-4">
       <div className="rounded-2xl border border-brand/15 bg-page/60 p-4">
         <p className="font-body text-[0.65rem] uppercase tracking-[0.14em] text-brand/50">
-          Local storage
+          Device storage
         </p>
         <p className="mt-1 font-ui text-2xl leading-none text-brand">
           {formatBytes(storeBytes)}
         </p>
         <p className="mt-1.5 font-body text-xs text-brand/60">
-          Everything SOAR knows about you lives on this device.
+          Everything SOAR knows about you is stored securely on this device
+          using your browser's local database.
         </p>
       </div>
 
@@ -51,9 +43,7 @@ const ExportCard = ({ store }) => {
 
   return (
     <article className="rounded-2xl border border-brand/15 bg-cream p-5">
-      <h3 className="font-ui text-base tracking-[0.03em] text-brand">
-        Export
-      </h3>
+      <h3 className="font-ui text-base tracking-[0.03em] text-brand">Export</h3>
       <p className="mt-1 font-body text-sm text-brand/70">
         Download a JSON snapshot of your profile, curriculum, creations, and
         reflections.
@@ -69,7 +59,8 @@ const ExportCard = ({ store }) => {
         />
         {lastFilename ? (
           <p className="font-body text-xs text-brand/60">
-            Saved <span className="font-mono text-brand/80">{lastFilename}</span>
+            Saved{" "}
+            <span className="font-mono text-brand/80">{lastFilename}</span>
           </p>
         ) : null}
       </div>
@@ -101,9 +92,7 @@ const ImportCard = ({ onImport }) => {
 
   return (
     <article className="rounded-2xl border border-brand/15 bg-cream p-5">
-      <h3 className="font-ui text-base tracking-[0.03em] text-brand">
-        Import
-      </h3>
+      <h3 className="font-ui text-base tracking-[0.03em] text-brand">Import</h3>
       <p className="mt-1 font-body text-sm text-brand/70">
         Restore from a JSON export. This replaces everything currently on this
         device.
