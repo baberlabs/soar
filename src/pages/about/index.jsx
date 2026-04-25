@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { LinkButton } from "../../components/LinkButton";
+import { useSOARState } from "../../store";
 
 export default function About() {
+  const state = useSOARState();
   return (
     <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-20 md:pb-32 md:pt-28">
       <div className="mx-auto flex max-w-6xl flex-col gap-16 md:gap-24">
@@ -11,7 +13,7 @@ export default function About() {
         <OriginSection />
         <CurriculumSection />
         <AccreditationSection />
-        <FinalSection />
+        {!state.user && <FinalSection />}
       </div>
     </main>
   );
