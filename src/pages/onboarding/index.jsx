@@ -4,20 +4,21 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { Button } from "../../components/Button";
 import { useSOARDispatch, useSOARState } from "../../store";
 
-const STEP_ORDER = [
-  "welcome",
-  "setup",
-  "vark",
-  "interests",
-  "commitment",
-  "curriculum",
+const ONBOARDING_FLOW_STEPS = [
+  { id: "how-soar-works", label: "How SOAR Works", shortLabel: "How" },
+  { id: "vark", label: "Learning Style", shortLabel: "Style" },
+  { id: "interests", label: "Interests", shortLabel: "Interests" },
+  { id: "commitment", label: "Rhythm", shortLabel: "Rhythm" },
+  { id: "curriculum", label: "Subjects", shortLabel: "Subjects" },
 ];
+
+const STEP_ORDER = ONBOARDING_FLOW_STEPS.map((flowStep) => flowStep.id);
 
 export default function Onboarding() {
   const state = useSOARState();
   const dispatch = useSOARDispatch();
   const navigate = useNavigate();
-  const [step, setStep] = useState("welcome");
+  const [step, setStep] = useState("how-soar-works");
 
   if (!state.user) {
     return <Navigate to="/login" replace />;
@@ -27,7 +28,12 @@ export default function Onboarding() {
     return <Navigate to="/dashboard" replace />;
   }
 
-  const stepIndex = STEP_ORDER.indexOf(step);
+  const stepIndex = Math.max(STEP_ORDER.indexOf(step), 0);
+
+  const goToStep = (nextStep) => {
+    setStep(nextStep);
+    window.scrollTo({ top: 0 });
+  };
 
   // Saves a partial user update and either advances to a named next step
   // or, if no next step is given, completes onboarding and lands the
@@ -41,7 +47,7 @@ export default function Onboarding() {
     }
 
     if (nextStep) {
-      setStep(nextStep);
+      goToStep(nextStep);
       return;
     }
 
@@ -90,24 +96,46 @@ export default function Onboarding() {
     <div className="relative isolate min-h-dvh bg-page">
       <div className="fixed inset-x-0 top-0 z-20 bg-page/85 backdrop-blur-sm">
         <div className="mx-auto max-w-5xl px-6 py-5">
-          <div className="flex items-center justify-between gap-4">
-            <div>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between gap-4">
               <p className="font-ui text-[0.72rem] tracking-[0.16em] text-brand/58">
-                Peer setup
+                PEER SETUP
               </p>
-              <p className="mt-1 font-body text-sm text-brand/72">
-                Step {stepIndex + 1} of {STEP_ORDER.length}
+              <p className="font-body text-xs text-brand/62">
+                Step {stepIndex + 1} of {ONBOARDING_FLOW_STEPS.length}
               </p>
             </div>
-            <div className="flex max-w-sm flex-1 gap-2">
-              {STEP_ORDER.map((currentStep, index) => (
-                <div
-                  key={currentStep}
-                  className={`h-1 flex-1 rounded-full ${
-                    index <= stepIndex ? "bg-brand" : "bg-brand/16"
-                  }`}
-                />
-              ))}
+            <div className="grid grid-cols-5 gap-2">
+              {ONBOARDING_FLOW_STEPS.map((flowStep, index) => {
+                const isActive = flowStep.id === step;
+                const isComplete = index < stepIndex;
+
+                return (
+                  <div key={flowStep.id} className="space-y-1">
+                    <div
+                      className={`h-1.5 rounded-full transition-all duration-400 ${
+                        isActive || isComplete ? "bg-brand" : "bg-brand/18"
+                      }`}
+                    />
+                    <p
+                      className={`font-body text-[0.62rem] leading-tight sm:text-[0.68rem] ${
+                        isActive
+                          ? "text-brand"
+                          : isComplete
+                            ? "text-brand/78"
+                            : "text-brand/52"
+                      }`}
+                    >
+                      <span className="sm:hidden">
+                        {flowStep.shortLabel}
+                      </span>
+                      <span className="hidden sm:inline">
+                        {flowStep.label}
+                      </span>
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -115,20 +143,13 @@ export default function Onboarding() {
 
       <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-28 md:pb-32 md:pt-34">
         <div className="mx-auto max-w-4xl rounded-4xl border border-brand/15 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:p-8">
-          {step === "welcome" ? (
-            <OnboardingWelcome onNext={() => setStep("setup")} />
-          ) : null}
-
-          {step === "setup" ? (
-            <OnboardingSetup
-              onBack={() => setStep("welcome")}
-              onNext={() => setStep("vark")}
-            />
+          {step === "how-soar-works" ? (
+            <OnboardingHowSOARWorks onNext={() => goToStep("vark")} />
           ) : null}
 
           {step === "vark" ? (
             <OnboardingVARK
-              onBack={() => setStep("setup")}
+              onBack={() => goToStep("how-soar-works")}
               onNext={(learningStyle) =>
                 saveAndContinue({ learningStyle }, "interests")
               }
@@ -137,7 +158,7 @@ export default function Onboarding() {
 
           {step === "interests" ? (
             <OnboardingInterests
-              onBack={() => setStep("vark")}
+              onBack={() => goToStep("vark")}
               onComplete={(interests) =>
                 saveAndContinue({ interests }, "commitment")
               }
@@ -147,7 +168,7 @@ export default function Onboarding() {
           {step === "commitment" ? (
             <OnboardingCommitment
               initialDays={state.user?.daysPerWeek ?? 3}
-              onBack={() => setStep("interests")}
+              onBack={() => goToStep("interests")}
               onComplete={(daysPerWeek) =>
                 saveAndContinue({ daysPerWeek }, "curriculum")
               }
@@ -159,7 +180,7 @@ export default function Onboarding() {
               interests={state.user?.interests ?? []}
               daysPerWeek={state.user?.daysPerWeek ?? 3}
               subjects={state.subjects ?? []}
-              onBack={() => setStep("commitment")}
+              onBack={() => goToStep("commitment")}
               onComplete={completeWithCurriculum}
             />
           ) : null}
@@ -169,100 +190,57 @@ export default function Onboarding() {
   );
 }
 
-const OnboardingWelcome = ({ onNext }) => (
-  <article className="grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-start">
-    <div className="space-y-5">
-      <div className="space-y-4">
-        <p className="font-ui text-sm tracking-[0.16em] text-brand/58">
-          Welcome
-        </p>
-        <h1 className="font-display text-[clamp(3rem,7vw,5rem)] leading-[0.92] text-brand">
-          Welcome to SOAR.
-        </h1>
-        <p className="max-w-2xl font-body text-base leading-relaxed text-brand/82 md:text-lg">
-          This short setup gives your account a real starting point: a learning
-          preference, a few interests, and enough context to recommend useful
-          subjects instead of generic content.
-        </p>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-3">
-        <SetupCard
-          title="Set direction"
-          body="Choose a few interests so the library starts in the right neighborhood."
-        />
-        <SetupCard
-          title="Pick a learning style"
-          body="We use a lightweight preference check to shape how guidance feels."
-        />
-        <SetupCard
-          title="Start a path"
-          body="After setup, you can choose a subject and complete your first session right away."
-        />
-      </div>
-    </div>
-
-    <aside className="rounded-[1.75rem] border border-brand/12 bg-page p-5">
-      <h2 className="font-ui text-2xl text-brand">What happens next</h2>
-      <ol className="mt-4 space-y-4">
-        <StepListItem
-          number="01"
-          text="Choose how you like to learn and what currently interests you."
-        />
-        <StepListItem
-          number="02"
-          text="Set a realistic weekly commitment and pick your first subjects."
-        />
-        <StepListItem
-          number="03"
-          text="Track progress honestly, then capture what you made or learned."
-        />
-      </ol>
-      <Button className="mt-6" text="Begin Setup" onClick={onNext} />
-    </aside>
-  </article>
-);
-
-const OnboardingSetup = ({ onBack, onNext }) => (
+const OnboardingHowSOARWorks = ({ onNext }) => (
   <article className="space-y-8">
     <header className="space-y-3">
       <p className="font-ui text-sm tracking-[0.16em] text-brand/58">
-        How this works
+        How SOAR works
       </p>
-      <h1 className="font-display text-[clamp(2.6rem,6vw,4.2rem)] leading-[0.94] text-brand">
-        A calmer setup, not a personality test.
+      <h1 className="font-display text-[clamp(2.8rem,7vw,5rem)] leading-[0.92] text-brand">
+        Your SOAR loop starts here.
       </h1>
-      <p className="max-w-3xl font-body text-base leading-relaxed text-brand/78">
-        We are not trying to define you permanently. We just need enough signal
-        to recommend better starting points than a blank dashboard or an endless
-        feed.
+      <p className="max-w-3xl font-body text-base leading-relaxed text-brand/82 md:text-lg">
+        SOAR is not an infinite feed. It gives you a focused loop: choose a
+        direction, learn in sessions, make something, reflect monthly, and
+        shape the community with peers.
       </p>
     </header>
 
-    <div className="grid gap-4 md:grid-cols-3">
-      <SetupCard
-        title="Short"
-        body="A handful of steps, a few minutes, and no hidden scoring beyond what you can see."
+    <div className="grid gap-4 md:grid-cols-2">
+      <JourneyItem
+        phase="01"
+        title="Set your direction"
+        body="Choose a learning style, interests, and weekly rhythm so recommendations are grounded in your real context."
       />
-      <SetupCard
-        title="Editable"
-        body="You can update your interests and profile later as your focus changes."
+      <JourneyItem
+        phase="02"
+        title="Build a first curriculum"
+        body="Pick one or two subjects and leave onboarding with a concrete next session, not a blank dashboard."
       />
-      <SetupCard
-        title="Grounded"
-        body="The goal is to get you to a useful curriculum quickly, not keep you onboarding."
+      <JourneyItem
+        phase="03"
+        title="Learn, create, reflect"
+        body="Sessions lead into saved creations and monthly reflection so progress becomes visible."
+      />
+      <JourneyItem
+        phase="04"
+        title="Contribute with peers"
+        body="Use Connect and Forum to discuss, vote, and help shape SOAR as a member of the network."
       />
     </div>
 
-    <div className="flex flex-wrap gap-3">
-      <Button
-        variant="secondary"
-        fullWidth={false}
-        text="Back"
-        onClick={onBack}
-      />
-      <Button fullWidth={false} text="Continue" onClick={onNext} />
+    <div className="rounded-3xl border border-brand/12 bg-page p-5">
+      <p className="font-ui text-xs uppercase tracking-[0.14em] text-brand/55">
+        What this setup changes
+      </p>
+      <p className="mt-2 font-body text-sm leading-relaxed text-brand/78">
+        The next screens only collect signal SOAR can use immediately: how you
+        prefer to learn, what you care about, how often you can return, and
+        which subject you want first.
+      </p>
     </div>
+
+    <Button fullWidth={false} text="Start Setup" onClick={onNext} />
   </article>
 );
 
@@ -516,7 +494,7 @@ const OnboardingInterests = ({ onBack, onComplete }) => {
 };
 
 /**
- * Step 5: Commitment.
+ * Step 4: Commitment.
  * Segmented 1–7 day selector with a dynamic projection beneath it. The
  * projection is intentionally hedged, sessions per subject vary, and
  * peers should not feel committed to a precise calendar before they have
@@ -599,7 +577,7 @@ const OnboardingCommitment = ({ initialDays, onBack, onComplete }) => {
 };
 
 /**
- * Step 6: Build Your Curriculum.
+ * Step 5: Build Your Curriculum.
  * Filter the subject library by the peer's interests, allow 1–2 picks,
  * then enrol them. Falls back to all subjects when no tag matches so the
  * step is never an empty grid.
@@ -789,24 +767,16 @@ const SubjectSelectCard = ({
   );
 };
 
-const SetupCard = ({ title, body }) => (
-  <article className="rounded-3xl border border-brand/12 bg-page p-4">
-    <h2 className="font-ui text-xl text-brand">{title}</h2>
+const JourneyItem = ({ phase, title, body }) => (
+  <article className="rounded-3xl border border-brand/12 bg-page p-5 transition duration-300 hover:-translate-y-0.5 hover:border-brand/24">
+    <p className="font-ui text-[0.7rem] uppercase tracking-[0.15em] text-brand/58">
+      {phase}
+    </p>
+    <h2 className="mt-2 font-ui text-xl text-brand">{title}</h2>
     <p className="mt-2 font-body text-sm leading-relaxed text-brand/72">
       {body}
     </p>
   </article>
-);
-
-const StepListItem = ({ number, text }) => (
-  <li className="flex gap-4">
-    <span className="font-ui text-sm tracking-[0.14em] text-brand/55">
-      {number}
-    </span>
-    <span className="font-body text-sm leading-relaxed text-brand/75">
-      {text}
-    </span>
-  </li>
 );
 
 // ---------- helpers ----------

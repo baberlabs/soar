@@ -29,7 +29,6 @@ const JOIN_FLOW_STEPS = [
   { id: "details", label: "Account" },
   { id: "payment", label: "Payment" },
   { id: "review", label: "Review" },
-  { id: "how-soar-works", label: "How SOAR works" },
 ];
 
 export default function Join() {
@@ -74,6 +73,11 @@ export default function Join() {
     (flowStep) => flowStep.id === step,
   );
 
+  const goToStep = (nextStep) => {
+    setStep(nextStep);
+    window.scrollTo({ top: 0 });
+  };
+
   if (state.user && !registeredHere) {
     return (
       <Navigate
@@ -116,7 +120,7 @@ export default function Join() {
 
     setError("");
     setPaymentReceipt(null);
-    setStep("payment");
+    goToStep("payment");
   };
 
   const isValidCardNumber = (value) => {
@@ -285,7 +289,7 @@ export default function Join() {
     });
 
     setPaymentStatus("idle");
-    setStep("review");
+    goToStep("review");
   };
 
   const createPeer = async (event) => {
@@ -318,7 +322,7 @@ export default function Join() {
     setRegisteredHere(true);
     setRegistrationStatus("idle");
     setError("");
-    setStep("how-soar-works");
+    navigate("/onboarding", { replace: true });
   };
 
   return (
@@ -333,24 +337,24 @@ export default function Join() {
               Become a peer.
             </h1>
             <p className="max-w-xl font-body text-base leading-relaxed text-brand/80 md:text-lg">
-              Join a community of peers supporting each other's growth. Your
-              peership helps us keep the platform running and accessible to
-              everyone.
+              Create your peer account, make your one-off contribution, and
+              move straight into onboarding where SOAR shapes your first
+              curriculum.
             </p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
             <ValueCard
-              title="Personalise"
-              body="Save your learning interests, progress, reflections, and creations all in one place."
+              title="Account"
+              body="Save your learning, reflections, creations, and community activity in one place."
             />
             <ValueCard
-              title="Learn your way"
-              body="Choose subjects that matter to you, complete sessions at your own pace, and track your progress."
+              title="Contribution"
+              body="Your peership helps keep the platform running and accessible to more people."
             />
             <ValueCard
-              title="Connect"
-              body="Join a community of like-minded individuals. Share, reflect, and grow together."
+              title="Onboarding"
+              body="After payment, setup takes you into learning preferences, interests, and your first subjects."
             />
           </div>
         </section>
@@ -366,7 +370,7 @@ export default function Join() {
                 {JOIN_FLOW_STEPS.length}
               </p>
             </div>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               {JOIN_FLOW_STEPS.map((flowStep, index) => {
                 const isActive = flowStep.id === step;
                 const isComplete = index < currentFlowIndex;
@@ -402,7 +406,8 @@ export default function Join() {
                   Create your account
                 </h2>
                 <p className="font-body text-sm text-brand/70">
-                  Enter your details before payment.
+                  This becomes your local peer profile for learning and
+                  community spaces.
                 </p>
               </div>
 
@@ -667,7 +672,7 @@ export default function Join() {
                   fullWidth={false}
                   onClick={() => {
                     setError("");
-                    setStep("details");
+                    goToStep("details");
                   }}
                 />
                 <Button
@@ -686,7 +691,7 @@ export default function Join() {
                   Review your peership
                 </h2>
                 <p className="font-body text-sm text-brand/70">
-                  Check your details and payment before confirming.
+                  Confirm your details, then onboarding starts immediately.
                 </p>
               </div>
 
@@ -761,77 +766,19 @@ export default function Join() {
                   fullWidth={false}
                   onClick={() => {
                     setError("");
-                    setStep("payment");
+                    goToStep("payment");
                   }}
                 />
                 <Button
                   type="submit"
                   status={registrationStatus}
                   loadingText="Setting up your account..."
-                  text="Complete Registration"
+                  text="Start Onboarding"
                   fullWidth={false}
                 />
               </div>
             </form>
-          ) : (
-            <section className="space-y-5 soft-enter">
-              <div className="space-y-1">
-                <h2 className="font-ui text-2xl text-brand">How SOAR works</h2>
-                <p className="font-body text-sm text-brand/70">
-                  You are now a peer. This is one continuous journey from
-                  joining through onboarding and into your first session.
-                </p>
-              </div>
-
-              <div className="space-y-4 rounded-3xl border border-brand/12 p-5 soft-rise soft-delay-1">
-                <h3 className="font-ui text-lg text-brand">
-                  Your SOAR journey
-                </h3>
-
-                <JourneyItem
-                  phase="Now"
-                  title="You joined as a peer"
-                  body="You are part of a peer-owned platform where one peer has one vote and your contribution supports shared progress."
-                />
-                <JourneyItem
-                  phase="Next"
-                  title="Onboarding sets your direction"
-                  body="You choose interests and your preferred learning style so SOAR can shape your first curriculum around what matters to you."
-                />
-                <JourneyItem
-                  phase="Then"
-                  title="You build your first curriculum"
-                  body="You select subjects, set intentions, and enter focused sessions with clear outcomes instead of endless feed behaviour."
-                />
-                <JourneyItem
-                  phase="Ongoing"
-                  title="You learn, create, reflect, and contribute"
-                  body="You produce work, review progress monthly, connect with peers, and influence product direction through shared governance."
-                />
-
-                <p className="rounded-2xl border border-brand/12 px-4 py-3 font-body text-xs leading-relaxed text-brand/68 soft-rise soft-delay-2">
-                  Onboarding takes a few minutes and gives you a usable start: a
-                  clear learning direction, your first subject path, and an
-                  immediate next action.
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-3 soft-rise soft-delay-3">
-                <Link
-                  to="/about"
-                  className="inline-flex items-center justify-center rounded-full border border-brand/20 px-5 py-3 font-ui text-sm tracking-wide text-brand transition hover:border-brand/35"
-                >
-                  Read Full About SOAR
-                </Link>
-                <Button
-                  type="button"
-                  text="Continue to Onboarding"
-                  fullWidth={false}
-                  onClick={() => navigate("/onboarding", { replace: true })}
-                />
-              </div>
-            </section>
-          )}
+          ) : null}
 
           <p className="mt-6 border-t border-brand/12 pt-5 font-body text-sm text-brand/70">
             Already have an account?{" "}
@@ -853,18 +800,6 @@ const ValueCard = ({ title, body }) => (
   <article className="rounded-3xl border border-brand/12 bg-page p-4">
     <h2 className="font-ui text-xl text-brand">{title}</h2>
     <p className="mt-2 font-body text-sm leading-relaxed text-brand/72">
-      {body}
-    </p>
-  </article>
-);
-
-const JourneyItem = ({ phase, title, body }) => (
-  <article className="rounded-2xl border border-brand/12 p-4 transition duration-300 hover:-translate-y-0.5 hover:border-brand/22">
-    <p className="font-ui text-[0.7rem] tracking-[0.15em] text-brand/58 uppercase">
-      {phase}
-    </p>
-    <h4 className="mt-1 font-ui text-lg text-brand">{title}</h4>
-    <p className="mt-1 font-body text-sm leading-relaxed text-brand/74">
       {body}
     </p>
   </article>
