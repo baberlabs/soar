@@ -1,92 +1,112 @@
 import { Link, NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { MenuIcon, X } from "lucide-react";
 
-import LogoIcon from "../assets/icons";
 import { useScrolled } from "./hooks/useScrolled";
 import Logo from "../components/Logo";
 
 const PUBLIC_LINKS = [
   { label: "Home", to: "/" },
   { label: "About", to: "/about" },
-  {
-    label: "Donate",
-    to: "/donate",
-    className: "hidden min-[430px]:inline-flex",
-  },
+  { label: "Donate", to: "/donate" },
+  { label: "Login", to: "/login" },
+  { label: "Join", to: "/join" },
 ];
 
 export const PublicHeader = () => {
   const scrolled = useScrolled(60);
+  const [open, setOpen] = useState(false);
+
+  // lock scroll when menu open
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => (document.body.style.overflow = "");
+  }, [open]);
+
+  const getNavClass = ({ isActive }) =>
+    `inline-flex h-10 items-center justify-center rounded-full px-4 font-ui text-sm tracking-[0.08em] transition ${
+      isActive
+        ? "bg-page text-brand shadow-[0_8px_18px_rgba(75,81,149,0.10)]"
+        : "text-brand/72 hover:bg-page/70 hover:text-brand"
+    }`;
+
+  const closeMenu = () => setOpen(false);
 
   return (
-    <header className="fixed inset-x-0 top-3 z-50 px-2 sm:px-3">
-      <div
-        className={`mx-auto grid h-14 w-full max-w-360 grid-cols-[auto_1fr_auto] items-center gap-1.5 rounded-full px-2 transition duration-200 sm:h-16 sm:gap-3 sm:px-3 md:px-4 ${
-          scrolled
-            ? "bg-brand/95 shadow-[inset_0_1px_0_rgba(180,220,245,0.25),0_4px_24px_rgba(75,81,149,0.18)] backdrop-blur-md"
-            : "bg-transparent"
-        }`}
-      >
+    <header className="fixed inset-x-0 top-2 z-50 px-3 sm:top-4 sm:px-4">
+      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 rounded-full border px-3 backdrop-blur-xl transition border-brand/18 bg-page/96 shadow-[0_18px_48px_rgba(75,81,149,0.14)]">
+        {/* Logo */}
         <Link
           to="/"
           aria-label="Go to home"
-          className="inline-flex items-center"
+          className="inline-flex h-12 w-20 shrink-0 items-center justify-center rounded-full hover:bg-brand/6 focus-visible:outline-2 focus-visible:outline-brand/50"
+          onClick={closeMenu}
         >
-          <Logo
-            className={`size-11 sm:size-14 ${scrolled ? "text-cream" : "text-brand"}`}
-          />
+          <Logo className="h-10 w-auto text-brand" />
         </Link>
 
+        {/* Mobile toggle */}
+        <button
+          aria-label="Toggle menu"
+          aria-expanded={open}
+          aria-controls="mobile-menu"
+          onClick={() => setOpen((p) => !p)}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-full text-brand hover:bg-brand/10 sm:hidden"
+        >
+          {open ? <X size={20} /> : <MenuIcon size={20} />}
+        </button>
+
+        {/* Desktop nav */}
         <nav
           aria-label="Public navigation"
-          className="flex min-w-0 justify-center gap-0.5 sm:gap-1"
+          className="hidden rounded-full bg-brand/7 p-1 ring-1 ring-brand/8 sm:flex"
         >
           {PUBLIC_LINKS.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               end={item.to === "/"}
-              className={({ isActive }) =>
-                `${item.className ?? "inline-flex"} rounded-full px-1.5 py-2 font-ui text-[0.78rem] tracking-[0.04em] transition sm:px-4 sm:text-base sm:tracking-[0.06em]  ${
-                  isActive
-                    ? scrolled
-                      ? "bg-cream/12 text-accent"
-                      : "bg-brand/8 text-brand"
-                    : scrolled
-                      ? "text-cream/78 hover:bg-cream/8 hover:text-cream"
-                      : "text-brand/82 hover:bg-brand/8 hover:text-brand"
-                }`
-              }
+              className={getNavClass}
             >
               {item.label}
             </NavLink>
           ))}
         </nav>
-
-        <div className="flex items-center justify-end gap-1 sm:gap-2">
-          <NavLink
-            to="/login"
-            className={({ isActive }) =>
-              `inline-flex min-h-9 items-center justify-center rounded-full border px-2.5 font-ui text-[0.78rem] tracking-[0.04em] transition sm:min-h-10 sm:px-4 sm:text-base sm:tracking-[0.06em] ${
-                isActive
-                  ? scrolled
-                    ? "border-accent/70 bg-cream/10 text-accent"
-                    : "border-brand/22 bg-brand/8 text-brand"
-                  : scrolled
-                    ? "border-cream/18 text-cream/75 hover:border-cream/34 hover:text-cream"
-                    : "border-brand/18 text-brand/82 hover:border-brand/34 hover:text-brand"
-              }`
-            }
-          >
-            Log In
-          </NavLink>
-          <NavLink
-            to="/join"
-            className="inline-flex min-h-9 items-center justify-center rounded-full bg-accent px-2.5 font-ui text-[0.78rem] tracking-[0.04em] text-brand transition hover:bg-cream sm:min-h-10 sm:px-4 sm:text-base sm:tracking-[0.06em]"
-          >
-            Join
-          </NavLink>
-        </div>
       </div>
+
+      {/* Mobile menu */}
+      {open && (
+        <div id="mobile-menu" className="fixed inset-0 z-40 sm:hidden">
+          {/* backdrop */}
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={closeMenu}
+          />
+
+          {/* panel */}
+          <div className="absolute inset-x-3 top-20 rounded-2xl border border-brand/18 bg-page p-4 shadow-xl">
+            <nav className="flex flex-col gap-2">
+              {PUBLIC_LINKS.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.to === "/"}
+                  onClick={closeMenu}
+                  className={({ isActive }) =>
+                    `w-full rounded-xl px-4 py-3 text-left font-ui text-sm tracking-[0.08em] transition ${
+                      isActive
+                        ? "bg-brand text-white"
+                        : "text-brand/80 hover:bg-brand/10"
+                    }`
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              ))}
+            </nav>
+          </div>
+        </div>
+      )}
     </header>
   );
 };
