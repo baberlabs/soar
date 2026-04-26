@@ -23,7 +23,7 @@ export const LetterComposer = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-5 rounded-3xl border border-brand/20 bg-cream/80 p-6 shadow-[0_18px_50px_rgba(55,62,112,0.06)]"
+      className="space-y-5 sm:rounded-3xl sm:border sm:border-brand/20 sm:bg-cream/80 sm:p-6 sm:shadow-[0_18px_50px_rgba(55,62,112,0.06)]"
     >
       <header>
         <h2 className="font-ui text-2xl text-brand">

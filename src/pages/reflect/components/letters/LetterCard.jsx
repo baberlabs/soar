@@ -21,6 +21,7 @@ export const LetterCard = ({
   const canReview =
     letter.effectiveStatus === LETTER_STATUS.UNLOCKED ||
     letter.effectiveStatus === LETTER_STATUS.REVIEWED;
+  const canArchive = letter.effectiveStatus === LETTER_STATUS.REVIEWED;
 
   return (
     <article className="rounded-3xl border border-brand/20 bg-cream p-6 shadow-[0_14px_36px_rgba(75,81,149,0.06)]">
@@ -79,6 +80,7 @@ export const LetterCard = ({
             fullWidth={false}
             text="Archive"
             onClick={() => onArchive(letter)}
+            disabled={!canArchive}
           />
         ) : null}
         <Button
@@ -91,6 +93,12 @@ export const LetterCard = ({
         />
       </div>
 
+      {!canArchive ? (
+        <p className="mt-2 font-body text-xs text-brand/60">
+          Add your reflection to unlock archiving.
+        </p>
+      ) : null}
+
       {isReviewing ? (
         <LetterReviewForm
           form={reviewForm}
@@ -102,7 +110,7 @@ export const LetterCard = ({
       ) : null}
 
       {letter.review && !isReviewing ? (
-        <div className="mt-4 rounded-2xl border border-brand/15 bg-page p-4">
+        <div className="sm:mt-4 sm:rounded-2xl sm:border sm:border-brand/15 sm:bg-page sm:p-4">
           <p className="font-ui text-xs uppercase tracking-[0.14em] text-brand/60">
             Review
           </p>

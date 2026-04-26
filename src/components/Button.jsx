@@ -1,6 +1,7 @@
 import { getButtonClasses } from "./buttonStyles";
 
 export const Button = ({
+  type = "button",
   text,
   loadingText,
   status,
@@ -20,6 +21,7 @@ export const Button = ({
     <button
       {...props}
       disabled={isDisabled}
+      aria-busy={status === "loading" ? "true" : undefined}
       className={getButtonClasses({
         variant,
         size,

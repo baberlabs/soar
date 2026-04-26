@@ -90,7 +90,7 @@ export const MoodboardItem = ({
           ? A11Y_LABELS.moodboardItem(item.category, item.caption)
           : `${item.category}${item.caption ? `: ${item.caption}` : ""}`
       }
-      className={`absolute rounded-2xl border border-brand/12 bg-cream p-1.5 shadow-[0_12px_30px_rgba(42,49,90,0.16)] backdrop-blur-sm transition focus-visible:outline-none ${interactiveClass}`}
+      className={`absolute touch-none rounded-2xl border border-brand/12 bg-cream p-1.5 shadow-[0_12px_30px_rgba(42,49,90,0.16)] backdrop-blur-sm transition focus-visible:outline-none ${interactiveClass}`}
       style={containerStyle}
       onPointerDown={
         isEditable ? (event) => onPointerDown(event, item.id) : undefined

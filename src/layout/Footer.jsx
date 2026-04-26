@@ -8,7 +8,8 @@ const GROUPS = [
     links: [
       { label: "Learn", to: "/learn" },
       { label: "Create", to: "/create" },
-      { label: "Reflect", to: "/reflect" },
+      { label: "Vision Board", to: "/vision-board" },
+      { label: "Monthly Letter", to: "/monthly-letter" },
       { label: "Connect", to: "/connect" },
     ],
   },
@@ -21,11 +22,11 @@ const GROUPS = [
     ],
   },
   {
-    heading: "Principles",
+    heading: "Transparency",
     links: [
-      { label: "No scroll", to: "/principles/no-scroll" },
-      { label: "Data ownership", to: "/principles/data-ownership" },
-      { label: "Governance", to: "/principles/governance" },
+      { label: "Data Manifesto", to: "/data-manifesto" },
+      { label: "Terms of Peership", to: "/terms" },
+      { label: "Accessibility", to: "/accessibility" },
     ],
   },
 ];

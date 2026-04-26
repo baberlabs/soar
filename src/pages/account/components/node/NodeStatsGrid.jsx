@@ -17,8 +17,8 @@ export const NodeStatsGrid = ({ stats }) => {
     },
     {
       label: "Peers",
-      value: String(stats.totalPeers),
-      hint: `${stats.connectedPeers} direct · ${stats.dhtPeers} DHT`,
+      value: String(stats.connectedPeers),
+      hint: `+${stats.dhtPeers} routing peers (DHT)`,
     },
     {
       label: "Storage",

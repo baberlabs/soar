@@ -14,7 +14,7 @@ The following todos are based on feedback from client and my own observations.
 
 ## 2. Session Page (Make this SERIOUSLY Pro)
 
-#TODO 2a. Fix: Rename image files (trailing spaces).
+~~2a. Fix: Rename image files (trailing spaces).~~
 
 #TODO 2b. Feat: For one selected path, design the complete flow in (relative) depth. This path must demonstrate the full Learn → Reflect → Create → Share/Connect journey to show how SOAR's integrated model works end-to-end.
 
@@ -38,15 +38,15 @@ The following todos are based on feedback from client and my own observations.
 
 ## 4. Forum & Governance UI (NEW)
 
-#TODO 4a. Feat: Build Forum page with pro-level UI for peer proposals and discussions.
+~~4a. Feat: Build Forum page with pro-level UI for peer proposals and discussions.~~
 
-#TODO 4b. Feat: Implement proposal submission flow where peers can suggest platform changes with title, description, and optional attachments.
+~~4b. Feat: Implement proposal submission flow where peers can suggest platform changes with title, description, and optional attachments.~~
 
-#TODO 4c. Feat: Create voting interface where peers vote on active proposals (one-peer-one-vote). Display vote counts, status (open/closed), and outcomes.
+~~4c. Feat: Create voting interface where peers vote on active proposals (one-peer-one-vote). Display vote counts, status (open/closed), and outcomes.~~
 
-#TODO 4d. Feat: Display archived proposals and outcomes so peers see decisions made and understand platform evolution.
+~~4d. Feat: Display archived proposals and outcomes so peers see decisions made and understand platform evolution.~~
 
-#TODO 4e. Feat: Connect governance activities to Account > Activity to show peer participation in decision-making.
+~~4e. Feat: Connect governance activities to Account > Activity to show peer participation in decision-making.~~
 
 ## 5. Data Sovereignty & Transparency (NEW)
 
@@ -68,9 +68,9 @@ The following todos are based on feedback from client and my own observations.
 
 ## 7. Home Page & About Page
 
-#TODO 7a. Feat: Rewrite Home and About pages' copy to reflect SOAR's radical mission: data ownership, educational liberation, collective governance, and moving from passive consumption to intentional progress.
+~~7a. Feat: Rewrite Home and About pages' copy to reflect SOAR's radical mission: data ownership, educational liberation, collective governance, and moving from passive consumption to intentional progress.~~
 
-#TODO 7b. Feat: Add visual hierarchy and storytelling to About that communicates the five core shifts (scrolling → completion, consumption → creation, users → peers, central control → shared governance, data extraction → data ownership).
+~~7b. Feat: Add visual hierarchy and storytelling to About that communicates the five core shifts (scrolling → completion, consumption → creation, users → peers, central control → shared governance, data extraction → data ownership).~~
 
 ## 8. Create Page
 

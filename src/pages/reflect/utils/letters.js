@@ -33,14 +33,16 @@ export const computeEffectiveStatus = (letter) => {
 };
 
 // -- Presentation: user-facing label for a status.
-export const getStatusLabel = (status) => {
+export const getStatusLabel = (letter) => {
+  const status = letter.status;
+
   switch (status) {
     case LETTER_STATUS.ARCHIVED:
       return "Archived";
     case LETTER_STATUS.REVIEWED:
       return "Reviewed";
     case LETTER_STATUS.UNLOCKED:
-      return "Ready to open";
+      return letter.sealBroken ? "Opened early" : "Opened";
     case LETTER_STATUS.SEALED:
       return "Sealed";
     case LETTER_STATUS.DRAFT:
@@ -75,7 +77,7 @@ export const getLetterViewModel = (letter) => {
   return {
     ...letter,
     effectiveStatus,
-    statusLabel: getStatusLabel(effectiveStatus),
+    statusLabel: getStatusLabel(letter),
     statusTone: getStatusTone(effectiveStatus),
     unlockHint:
       effectiveStatus === LETTER_STATUS.SEALED
@@ -85,9 +87,11 @@ export const getLetterViewModel = (letter) => {
         : effectiveStatus === LETTER_STATUS.ARCHIVED
           ? "Archived letter"
           : effectiveStatus === LETTER_STATUS.UNLOCKED
-            ? "Ready to open"
+            ? letter.sealBroken
+              ? "Opened early — reflection required before archive."
+              : "Opened — reflection required before archive."
             : effectiveStatus === LETTER_STATUS.REVIEWED
-              ? "Reviewed and archived"
+              ? "Reviewed — ready to archive"
               : "Draft letter",
     isSealed: effectiveStatus === LETTER_STATUS.SEALED,
     isOpenable:

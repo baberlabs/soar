@@ -1,19 +1,36 @@
-import { useState } from "react";
+import { createElement, useState } from "react";
+import {
+  BadgePoundSterling,
+  Bitcoin,
+  BookOpenCheck,
+  CreditCard,
+  HeartHandshake,
+  Landmark,
+  ShieldCheck,
+  Sparkles,
+  UserRoundCheck,
+  Wallet,
+} from "lucide-react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
 import { Button } from "../../components/Button";
 import { InputField } from "../../components/InputField";
-import { useSOARState } from "../../hooks/useSOARState";
+import { useSOARDispatch, useSOARState } from "../../store";
 
 const MIN_CONTRIBUTION = 1;
 
 const PAYMENT_METHODS = [
-  { id: "card", label: "Debit or credit card" },
-  { id: "paypal", label: "PayPal" },
-  { id: "applepay", label: "Apple Pay" },
-  { id: "googlepay", label: "Google Pay" },
-  { id: "bank", label: "Bank transfer" },
-  { id: "bitcoin", label: "Bitcoin" },
+  {
+    id: "card",
+    label: "Debit or credit card",
+    note: "Most flexible",
+    icon: CreditCard,
+  },
+  { id: "applepay", label: "Apple Pay", note: "Fast wallet", icon: Wallet },
+  { id: "googlepay", label: "Google Pay", note: "Fast wallet", icon: Wallet },
+  { id: "paypal", label: "PayPal", note: "Pay by email", icon: Wallet },
+  { id: "bank", label: "Bank transfer", note: "UK account", icon: Landmark },
+  { id: "bitcoin", label: "Bitcoin", note: "Wallet address", icon: Bitcoin },
 ];
 
 const PAYMENT_METHOD_LABELS = {
@@ -29,11 +46,31 @@ const JOIN_FLOW_STEPS = [
   { id: "details", label: "Account" },
   { id: "payment", label: "Payment" },
   { id: "review", label: "Review" },
-  { id: "how-soar-works", label: "How SOAR works" },
+];
+
+const CONTRIBUTION_OPTIONS = ["1.00", "5.00", "10.00", "25.00"];
+
+const VALUE_CARDS = [
+  {
+    title: "Account",
+    body: "Save your learning, reflections, creations, and community activity in one place.",
+    icon: UserRoundCheck,
+  },
+  {
+    title: "Contribution",
+    body: "Your peership helps keep the platform running and accessible to more people.",
+    icon: HeartHandshake,
+  },
+  {
+    title: "Onboarding",
+    body: "After payment, setup turns your preferences into your first subjects.",
+    icon: BookOpenCheck,
+  },
 ];
 
 export default function Join() {
-  const [state, dispatch] = useSOARState();
+  const state = useSOARState();
+  const dispatch = useSOARDispatch();
   const navigate = useNavigate();
   const [step, setStep] = useState("details");
   const [registeredHere, setRegisteredHere] = useState(false);
@@ -73,10 +110,23 @@ export default function Join() {
     (flowStep) => flowStep.id === step,
   );
 
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  const goToStep = (nextStep) => {
+    setStep(nextStep);
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: prefersReducedMotion ? "instant" : "smooth",
+    });
+  };
+
   if (state.user && !registeredHere) {
     return (
       <Navigate
-        to={state.user.onboardingComplete ? "/learn" : "/onboarding"}
+        to={state.user.onboardingComplete ? "/dashboard" : "/onboarding"}
         replace
       />
     );
@@ -115,7 +165,7 @@ export default function Join() {
 
     setError("");
     setPaymentReceipt(null);
-    setStep("payment");
+    goToStep("payment");
   };
 
   const isValidCardNumber = (value) => {
@@ -284,7 +334,7 @@ export default function Join() {
     });
 
     setPaymentStatus("idle");
-    setStep("review");
+    goToStep("review");
   };
 
   const createPeer = async (event) => {
@@ -317,553 +367,513 @@ export default function Join() {
     setRegisteredHere(true);
     setRegistrationStatus("idle");
     setError("");
-    setStep("how-soar-works");
+    navigate("/onboarding", { replace: true });
   };
 
   return (
-    <main className="mx-auto flex w-full max-w-360 items-center px-6 pb-20 pt-28 md:pt-34">
-      <div className="mx-auto grid w-full max-w-5xl gap-8 rounded-4xl border border-brand/15 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:grid-cols-[1.05fr_0.95fr] md:p-8">
-        <section className="space-y-6">
-          <div className="space-y-4">
-            <span className="inline-flex rounded-full bg-sky/35 px-3 py-1 font-ui text-[0.7rem] tracking-[0.14em] text-brand">
-              Join
-            </span>
-            <h1 className="font-display text-[clamp(3rem,7vw,5.25rem)] leading-[0.92] text-brand">
-              Become a peer.
+    <main className="mx-auto flex w-full max-w-360 px-6 pb-20 pt-24 md:pt-34">
+      <section className="mx-auto max-w-lg rounded-3xl sm:border sm:border-brand/12 bg-page sm:p-5 sm:col-start-2 sm:row-span-2 sm:row-start-1 sm:rounded-[1.75rem]">
+        <div className="mb-5 space-y-3 soft-enter">
+          <div className="flex items-center justify-between">
+            <h1 className="font-ui text-xs tracking-[0.15em] text-brand/78">
+              Register as a Peer
             </h1>
-            <p className="max-w-xl font-body text-base leading-relaxed text-brand/80 md:text-lg">
-              Join a community of peers supporting each other's growth. Your
-              peership helps us keep the platform running and accessible to
-              everyone.
+            <p className="font-body text-xs text-brand/78">
+              Step {Math.max(currentFlowIndex + 1, 1)} of{" "}
+              {JOIN_FLOW_STEPS.length}
             </p>
           </div>
+          <div className="grid grid-cols-3 gap-2">
+            {JOIN_FLOW_STEPS.map((flowStep, index) => {
+              const isActive = flowStep.id === step;
+              const isComplete = index < currentFlowIndex;
 
-          <div className="grid gap-4 sm:grid-cols-3">
-            <ValueCard
-              title="Personalise"
-              body="Save your learning interests, progress, reflections, and creations all in one place."
-            />
-            <ValueCard
-              title="Learn your way"
-              body="Choose subjects that matter to you, complete sessions at your own pace, and track your progress."
-            />
-            <ValueCard
-              title="Connect"
-              body="Join a community of like-minded individuals. Share, reflect, and grow together."
-            />
+              return (
+                <div key={flowStep.id} className="space-y-1">
+                  <div
+                    className={`h-1.5 rounded-full transition-all duration-400 ${
+                      isActive || isComplete ? "bg-brand" : "bg-brand/18"
+                    }`}
+                  />
+                  <p
+                    className={`font-body text-[0.68rem] leading-tight ${
+                      isActive
+                        ? "text-brand"
+                        : isComplete
+                          ? "text-brand/78"
+                          : "text-brand/78"
+                    }`}
+                  >
+                    {flowStep.label}
+                  </p>
+                </div>
+              );
+            })}
           </div>
-        </section>
+        </div>
 
-        <section className="rounded-[1.75rem] border border-brand/12 bg-page p-5 md:p-6">
-          <div className="mb-5 space-y-3 soft-enter">
-            <div className="flex items-center justify-between">
-              <p className="font-ui text-xs tracking-[0.15em] text-brand/62">
-                REGISTRATION FLOW
-              </p>
-              <p className="font-body text-xs text-brand/62">
-                Step {Math.max(currentFlowIndex + 1, 1)} of{" "}
-                {JOIN_FLOW_STEPS.length}
+        {step === "details" ? (
+          <form onSubmit={moveToPayment} className="space-y-5 soft-enter">
+            <div className="space-y-1">
+              <h2 className="font-ui text-2xl text-brand">
+                Create your account
+              </h2>
+              <p className="font-body text-sm text-brand/78">
+                This becomes your local peer profile for learning and community
+                spaces.
               </p>
             </div>
-            <div className="grid grid-cols-4 gap-2">
-              {JOIN_FLOW_STEPS.map((flowStep, index) => {
-                const isActive = flowStep.id === step;
-                const isComplete = index < currentFlowIndex;
 
-                return (
-                  <div key={flowStep.id} className="space-y-1">
-                    <div
-                      className={`h-1.5 rounded-full transition-all duration-400 ${
-                        isActive || isComplete ? "bg-brand" : "bg-brand/18"
-                      }`}
-                    />
-                    <p
-                      className={`font-body text-[0.68rem] leading-tight ${
-                        isActive
-                          ? "text-brand"
-                          : isComplete
-                            ? "text-brand/78"
-                            : "text-brand/52"
+            <InputField
+              label="Full name"
+              name="join-full-name"
+              value={form.fullName}
+              onValueChange={(fullName) =>
+                setForm((current) => ({ ...current, fullName }))
+              }
+              placeholder="Jane Smith"
+              autoComplete="name"
+            />
+
+            <InputField
+              label="Email address"
+              name="join-email"
+              type="email"
+              value={form.email}
+              onValueChange={(email) =>
+                setForm((current) => ({ ...current, email }))
+              }
+              placeholder="jane@example.com"
+              autoComplete="email"
+            />
+
+            <InputField
+              label="Password"
+              name="join-password"
+              type="password"
+              value={form.password}
+              onValueChange={(password) =>
+                setForm((current) => ({ ...current, password }))
+              }
+              placeholder="Create a secure password"
+              autoComplete="new-password"
+            />
+
+            <InputField
+              label="Confirm password"
+              name="join-confirm-password"
+              type="password"
+              value={form.confirmPassword}
+              onValueChange={(confirmPassword) =>
+                setForm((current) => ({ ...current, confirmPassword }))
+              }
+              placeholder="Confirm your password"
+              autoComplete="new-password"
+            />
+
+            {error ? (
+              <p className="font-body text-sm text-rose-700" role="alert">
+                {error}
+              </p>
+            ) : null}
+
+            <Button type="submit" text="Continue" />
+          </form>
+        ) : step === "payment" ? (
+          <form onSubmit={processPayment} className="space-y-5 soft-enter">
+            <div className="space-y-1">
+              <h2 className="font-ui text-2xl text-brand">Pay peership fee</h2>
+              <p className="font-body text-sm text-brand/78">
+                Choose your contribution and payment method. Minimum peership
+                contribution is £1.00.
+              </p>
+            </div>
+
+            <div className="space-y-4 rounded-2xl border border-brand/12 p-5 md:rounded-3xl">
+              <div className="grid grid-cols-4 gap-2">
+                {CONTRIBUTION_OPTIONS.map((amount) => {
+                  const active = payment.contribution === amount;
+
+                  return (
+                    <button
+                      key={amount}
+                      type="button"
+                      onClick={() =>
+                        setPayment((current) => ({
+                          ...current,
+                          contribution: amount,
+                        }))
+                      }
+                      className={`min-h-11 rounded-full border px-2 font-ui tracking-[0.04em] transition ${
+                        active
+                          ? "border-brand bg-brand text-cream"
+                          : "border-brand/14 bg-page text-brand/78 hover:border-brand/35 hover:text-brand"
                       }`}
                     >
-                      {flowStep.label}
-                    </p>
-                  </div>
-                );
-              })}
+                      £{Number(amount).toFixed(0)}
+                    </button>
+                  );
+                })}
+              </div>
+              <InputField
+                label="Contribution amount (GBP)"
+                name="join-contribution"
+                type="number"
+                value={payment.contribution}
+                onValueChange={(contribution) =>
+                  setPayment((current) => ({ ...current, contribution }))
+                }
+                placeholder="1.00"
+              />
+              <p className="mt-2 font-body text-xs leading-relaxed text-brand/82">
+                Minimum contribution: £1.00. You can contribute more to support
+                SOAR's community model.
+              </p>
             </div>
-          </div>
 
-          {step === "details" ? (
-            <form onSubmit={moveToPayment} className="space-y-5 soft-enter">
-              <div className="space-y-1">
-                <h2 className="font-ui text-2xl text-brand">
-                  Create your account
-                </h2>
-                <p className="font-body text-sm text-brand/70">
-                  Enter your details before payment.
-                </p>
-              </div>
+            <div className="space-y-3 rounded-2xl border border-brand/12 p-5 md:rounded-3xl">
+              <p className="font-ui text-sm text-brand">Payment method</p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {PAYMENT_METHODS.map((method) => {
+                  const MethodIcon = method.icon;
+                  const active = payment.method === method.id;
 
-              <InputField
-                label="Full name"
-                name="join-full-name"
-                value={form.fullName}
-                onValueChange={(fullName) =>
-                  setForm((current) => ({ ...current, fullName }))
-                }
-                placeholder="Jane Smith"
-                autoComplete="name"
-              />
-
-              <InputField
-                label="Email address"
-                name="join-email"
-                type="email"
-                value={form.email}
-                onValueChange={(email) =>
-                  setForm((current) => ({ ...current, email }))
-                }
-                placeholder="jane@example.com"
-                autoComplete="email"
-              />
-
-              <InputField
-                label="Password"
-                name="join-password"
-                type="password"
-                value={form.password}
-                onValueChange={(password) =>
-                  setForm((current) => ({ ...current, password }))
-                }
-                placeholder="Create a secure password"
-                autoComplete="new-password"
-              />
-
-              <InputField
-                label="Confirm password"
-                name="join-confirm-password"
-                type="password"
-                value={form.confirmPassword}
-                onValueChange={(confirmPassword) =>
-                  setForm((current) => ({ ...current, confirmPassword }))
-                }
-                placeholder="Confirm your password"
-                autoComplete="new-password"
-              />
-
-              {error ? (
-                <p className="font-body text-sm text-rose-700" role="alert">
-                  {error}
-                </p>
-              ) : null}
-
-              <Button type="submit" text="Continue" />
-            </form>
-          ) : step === "payment" ? (
-            <form onSubmit={processPayment} className="space-y-5 soft-enter">
-              <div className="space-y-1">
-                <h2 className="font-ui text-2xl text-brand">
-                  Pay peership fee
-                </h2>
-                <p className="font-body text-sm text-brand/70">
-                  Choose your contribution and payment method. Minimum peership
-                  contribution is £1.00.
-                </p>
-              </div>
-
-              <div className="rounded-3xl border border-brand/12 p-5">
-                <InputField
-                  label="Contribution amount (GBP)"
-                  name="join-contribution"
-                  type="number"
-                  value={payment.contribution}
-                  onValueChange={(contribution) =>
-                    setPayment((current) => ({ ...current, contribution }))
-                  }
-                  placeholder="1.00"
-                />
-                <p className="mt-2 font-body text-xs leading-relaxed text-brand/68">
-                  Minimum contribution: £1.00. You can contribute more to
-                  support SOAR's community model.
-                </p>
-              </div>
-
-              <div className="space-y-3 rounded-3xl border border-brand/12 p-5">
-                <p className="font-ui text-sm text-brand">Payment method</p>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  {PAYMENT_METHODS.map((method) => (
+                  return (
                     <label
                       key={method.id}
-                      className="flex items-center gap-3 rounded-2xl border border-brand/12 bg-page px-3 py-3"
+                      className={`flex cursor-pointer items-center gap-3 rounded-2xl border px-3 py-3 transition has-focus-visible:ring-2 has-focus-visible:ring-accent/50 ${
+                        active
+                          ? "border-brand bg-brand/8 text-brand"
+                          : "border-brand/12 bg-page text-brand/78 hover:border-brand/28 hover:text-brand"
+                      }`}
                     >
                       <input
                         type="radio"
                         name="payment-method"
-                        checked={payment.method === method.id}
+                        checked={active}
                         onChange={() =>
                           setPayment((current) => ({
                             ...current,
                             method: method.id,
                           }))
                         }
-                        className="size-4 border border-navy/40 accent-brand"
+                        className="sr-only"
                       />
-                      <span className="font-body text-sm text-brand/80">
-                        {method.label}
+                      <span
+                        className={`inline-flex size-9 shrink-0 items-center justify-center rounded-full ${
+                          active ? "bg-brand text-cream" : "bg-brand/8"
+                        }`}
+                      >
+                        <MethodIcon className="size-4" aria-hidden="true" />
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block font-body text-sm font-medium">
+                          {method.label}
+                        </span>
+                        <span className="block font-body text-xs text-brand/78">
+                          {method.note}
+                        </span>
                       </span>
                     </label>
-                  ))}
-                </div>
+                  );
+                })}
               </div>
+            </div>
 
-              <div className="rounded-3xl border border-brand/12 p-5">
-                <SummaryRow label="Amount" value={contributionDisplay} />
-                <SummaryRow
-                  label="Charge type"
-                  value="One-off peership share"
-                />
-              </div>
+            <div className="grid gap-2 rounded-2xl border border-brand/12 bg-brand/5 p-4 sm:grid-cols-3 md:rounded-3xl">
+              <TrustItem
+                icon={ShieldCheck}
+                title="One-off"
+                body="No subscription"
+              />
+              <TrustItem
+                icon={BadgePoundSterling}
+                title="From £1"
+                body="Choose the amount"
+              />
+              <TrustItem
+                icon={Sparkles}
+                title="Setup next"
+                body="Curriculum follows"
+              />
+            </div>
 
-              {payment.method === "card" ? (
-                <>
-                  <InputField
-                    label="Cardholder name"
-                    name="join-card-name"
-                    value={payment.cardName}
-                    onValueChange={(cardName) =>
-                      setPayment((current) => ({ ...current, cardName }))
-                    }
-                    placeholder="Jane Smith"
-                    autoComplete="cc-name"
-                  />
+            <div className="rounded-2xl border border-brand/12 p-5 md:rounded-3xl">
+              <SummaryRow label="Amount" value={contributionDisplay} />
+              <SummaryRow label="Charge type" value="One-off peership share" />
+            </div>
 
-                  <InputField
-                    label="Card number"
-                    name="join-card-number"
-                    value={payment.cardNumber}
-                    onValueChange={(cardNumber) =>
-                      setPayment((current) => ({ ...current, cardNumber }))
-                    }
-                    placeholder="4242 4242 4242 4242"
-                    autoComplete="cc-number"
-                  />
-
-                  <div className="grid gap-3 sm:grid-cols-3">
-                    <InputField
-                      label="Expiry"
-                      name="join-card-expiry"
-                      value={payment.expiry}
-                      onValueChange={(expiry) =>
-                        setPayment((current) => ({ ...current, expiry }))
-                      }
-                      placeholder="MM/YY"
-                      autoComplete="cc-exp"
-                    />
-
-                    <InputField
-                      label="Security code"
-                      name="join-card-cvc"
-                      value={payment.cvc}
-                      onValueChange={(cvc) =>
-                        setPayment((current) => ({ ...current, cvc }))
-                      }
-                      placeholder="123"
-                      autoComplete="cc-csc"
-                    />
-
-                    <InputField
-                      label="Billing postcode"
-                      name="join-postcode"
-                      value={payment.postcode}
-                      onValueChange={(postcode) =>
-                        setPayment((current) => ({ ...current, postcode }))
-                      }
-                      placeholder="SW1A 1AA"
-                      autoComplete="postal-code"
-                    />
-                  </div>
-                </>
-              ) : null}
-
-              {payment.method === "paypal" ? (
+            {payment.method === "card" ? (
+              <>
                 <InputField
-                  label="PayPal email"
-                  name="join-paypal-email"
-                  type="email"
-                  value={payment.paypalEmail}
-                  onValueChange={(paypalEmail) =>
-                    setPayment((current) => ({ ...current, paypalEmail }))
+                  label="Cardholder name"
+                  name="join-card-name"
+                  value={payment.cardName}
+                  onValueChange={(cardName) =>
+                    setPayment((current) => ({ ...current, cardName }))
                   }
-                  placeholder="jane@example.com"
-                  autoComplete="email"
+                  placeholder="Jane Smith"
+                  autoComplete="cc-name"
                 />
-              ) : null}
 
-              {payment.method === "bank" ? (
+                <InputField
+                  label="Card number"
+                  name="join-card-number"
+                  value={payment.cardNumber}
+                  onValueChange={(cardNumber) =>
+                    setPayment((current) => ({ ...current, cardNumber }))
+                  }
+                  placeholder="4242 4242 4242 4242"
+                  autoComplete="cc-number"
+                />
+
                 <div className="grid gap-3 sm:grid-cols-3">
                   <InputField
-                    label="Account holder"
-                    name="join-bank-account-name"
-                    value={payment.bankAccountName}
-                    onValueChange={(bankAccountName) =>
-                      setPayment((current) => ({ ...current, bankAccountName }))
+                    label="Expiry"
+                    name="join-card-expiry"
+                    value={payment.expiry}
+                    onValueChange={(expiry) =>
+                      setPayment((current) => ({ ...current, expiry }))
                     }
-                    placeholder="Jane Smith"
+                    placeholder="MM/YY"
+                    autoComplete="cc-exp"
                   />
+
                   <InputField
-                    label="Sort code"
-                    name="join-bank-sort-code"
-                    value={payment.sortCode}
-                    onValueChange={(sortCode) =>
-                      setPayment((current) => ({ ...current, sortCode }))
+                    label="Security code"
+                    name="join-card-cvc"
+                    value={payment.cvc}
+                    onValueChange={(cvc) =>
+                      setPayment((current) => ({ ...current, cvc }))
                     }
-                    placeholder="12-34-56"
+                    placeholder="123"
+                    autoComplete="cc-csc"
                   />
+
                   <InputField
-                    label="Account number"
-                    name="join-bank-account-number"
-                    value={payment.accountNumber}
-                    onValueChange={(accountNumber) =>
-                      setPayment((current) => ({ ...current, accountNumber }))
+                    label="Billing postcode"
+                    name="join-postcode"
+                    value={payment.postcode}
+                    onValueChange={(postcode) =>
+                      setPayment((current) => ({ ...current, postcode }))
                     }
-                    placeholder="12345678"
+                    placeholder="SW1A 1AA"
+                    autoComplete="postal-code"
                   />
                 </div>
-              ) : null}
+              </>
+            ) : null}
 
-              {payment.method === "bitcoin" ? (
+            {payment.method === "paypal" ? (
+              <InputField
+                label="PayPal email"
+                name="join-paypal-email"
+                type="email"
+                value={payment.paypalEmail}
+                onValueChange={(paypalEmail) =>
+                  setPayment((current) => ({ ...current, paypalEmail }))
+                }
+                placeholder="jane@example.com"
+                autoComplete="email"
+              />
+            ) : null}
+
+            {payment.method === "bank" ? (
+              <div className="grid gap-3 sm:grid-cols-3">
                 <InputField
-                  label="Bitcoin wallet address"
-                  name="join-bitcoin-address"
-                  value={payment.bitcoinAddress}
-                  onValueChange={(bitcoinAddress) =>
-                    setPayment((current) => ({ ...current, bitcoinAddress }))
+                  label="Account holder"
+                  name="join-bank-account-name"
+                  value={payment.bankAccountName}
+                  onValueChange={(bankAccountName) =>
+                    setPayment((current) => ({ ...current, bankAccountName }))
                   }
-                  placeholder="bc1..."
+                  placeholder="Jane Smith"
                 />
-              ) : null}
-
-              {payment.method === "applepay" ||
-              payment.method === "googlepay" ? (
-                <p className="rounded-2xl border border-brand/12 px-4 py-3 font-body text-xs leading-relaxed text-brand/68">
-                  You will approve this payment with your device wallet during
-                  authorisation.
-                </p>
-              ) : null}
-
-              {error ? (
-                <p className="font-body text-sm text-rose-700" role="alert">
-                  {error}
-                </p>
-              ) : null}
-
-              <div className="flex flex-wrap gap-3">
-                <Button
-                  type="button"
-                  text="Back"
-                  variant="secondary"
-                  fullWidth={false}
-                  onClick={() => {
-                    setError("");
-                    setStep("details");
-                  }}
-                />
-                <Button
-                  type="submit"
-                  status={paymentStatus}
-                  loadingText="Authorising payment..."
-                  text={`Pay ${contributionDisplay}`}
-                  fullWidth={false}
-                />
-              </div>
-            </form>
-          ) : step === "review" ? (
-            <form onSubmit={createPeer} className="space-y-5 soft-enter">
-              <div className="space-y-1">
-                <h2 className="font-ui text-2xl text-brand">
-                  Review your peership
-                </h2>
-                <p className="font-body text-sm text-brand/70">
-                  Check your details and payment before confirming.
-                </p>
-              </div>
-
-              <div className="space-y-3 rounded-3xl border border-brand/12 p-5">
-                <SummaryRow label="Name" value={form.fullName} />
-                <SummaryRow
-                  label="Email"
-                  value={form.email.trim().toLowerCase()}
-                />
-                <SummaryRow label="Peership type" value="Permanent" />
-                <SummaryRow label="Contribution" value={contributionDisplay} />
-              </div>
-
-              <div className="space-y-3 rounded-3xl border border-brand/12 p-5">
-                <SummaryRow
-                  label="Payment status"
-                  value={paymentReceipt ? "Authorised" : "Pending"}
-                />
-                <SummaryRow
-                  label="Method"
-                  value={
-                    paymentReceipt
-                      ? PAYMENT_METHOD_LABELS[paymentReceipt.method]
-                      : "Not selected"
+                <InputField
+                  label="Sort code"
+                  name="join-bank-sort-code"
+                  value={payment.sortCode}
+                  onValueChange={(sortCode) =>
+                    setPayment((current) => ({ ...current, sortCode }))
                   }
+                  placeholder="12-34-56"
                 />
-                <SummaryRow
-                  label="Reference"
-                  value={
-                    paymentReceipt ? paymentReceipt.paymentRef : "Not provided"
+                <InputField
+                  label="Account number"
+                  name="join-bank-account-number"
+                  value={payment.accountNumber}
+                  onValueChange={(accountNumber) =>
+                    setPayment((current) => ({ ...current, accountNumber }))
                   }
-                />
-                <SummaryRow
-                  label="Transaction"
-                  value={paymentReceipt?.transactionId ?? "Not available"}
+                  placeholder="12345678"
                 />
               </div>
+            ) : null}
 
-              <div className="rounded-3xl border border-brand/12 p-5">
-                <p className="font-body text-sm leading-relaxed text-brand/76">
-                  Your peership supports our mission to make personal growth
-                  accessible to everyone. As a peer, you'll have full access to
-                  all learning materials, the community forum, and our
-                  reflection tools.
-                </p>
-              </div>
+            {payment.method === "bitcoin" ? (
+              <InputField
+                label="Bitcoin wallet address"
+                name="join-bitcoin-address"
+                value={payment.bitcoinAddress}
+                onValueChange={(bitcoinAddress) =>
+                  setPayment((current) => ({ ...current, bitcoinAddress }))
+                }
+                placeholder="bc1..."
+              />
+            ) : null}
 
-              <label className="flex items-start gap-3 rounded-2xl border border-brand/12 px-4 py-4">
-                <input
-                  type="checkbox"
-                  checked={acknowledged}
-                  onChange={(event) => setAcknowledged(event.target.checked)}
-                  className="mt-1 size-4 rounded border border-navy/40 accent-brand"
-                />
-                <span className="font-body text-sm leading-relaxed text-brand/76">
-                  I agree to the terms of peership and understand my
-                  contribution helps keep this community thriving.
-                </span>
-              </label>
+            {payment.method === "applepay" || payment.method === "googlepay" ? (
+              <p className="rounded-2xl border border-brand/12 px-4 py-3 font-body text-xs leading-relaxed text-brand/78">
+                You will approve this payment with your device wallet during
+                authorisation.
+              </p>
+            ) : null}
 
-              {error ? (
-                <p className="font-body text-sm text-rose-700" role="alert">
-                  {error}
-                </p>
-              ) : null}
+            {error ? (
+              <p className="font-body text-sm text-rose-700" role="alert">
+                {error}
+              </p>
+            ) : null}
 
-              <div className="flex flex-wrap gap-3">
-                <Button
-                  type="button"
-                  text="Back to payment"
-                  variant="secondary"
-                  fullWidth={false}
-                  onClick={() => {
-                    setError("");
-                    setStep("payment");
-                  }}
-                />
-                <Button
-                  type="submit"
-                  status={registrationStatus}
-                  loadingText="Setting up your account..."
-                  text="Complete Registration"
-                  fullWidth={false}
-                />
-              </div>
-            </form>
-          ) : (
-            <section className="space-y-5 soft-enter">
-              <div className="space-y-1">
-                <h2 className="font-ui text-2xl text-brand">How SOAR works</h2>
-                <p className="font-body text-sm text-brand/70">
-                  You are now a peer. This is one continuous journey from
-                  joining through onboarding and into your first session.
-                </p>
-              </div>
+            <div className="flex flex-wrap gap-3">
+              <Button
+                type="button"
+                text="Back"
+                variant="secondary"
+                fullWidth={false}
+                onClick={() => {
+                  setError("");
+                  goToStep("details");
+                }}
+              />
+              <Button
+                type="submit"
+                status={paymentStatus}
+                loadingText="Authorising payment..."
+                text={`Pay ${contributionDisplay}`}
+                fullWidth={false}
+              />
+            </div>
+          </form>
+        ) : step === "review" ? (
+          <form onSubmit={createPeer} className="space-y-5 soft-enter">
+            <div className="space-y-1">
+              <h2 className="font-ui text-2xl text-brand">
+                Review your peership
+              </h2>
+              <p className="font-body text-sm text-brand/78">
+                Confirm your details, then onboarding starts immediately.
+              </p>
+            </div>
 
-              <div className="space-y-4 rounded-3xl border border-brand/12 p-5 soft-rise soft-delay-1">
-                <h3 className="font-ui text-lg text-brand">
-                  Your SOAR journey
-                </h3>
+            <div className="space-y-3 rounded-3xl border border-brand/12 p-5">
+              <SummaryRow label="Name" value={form.fullName} />
+              <SummaryRow
+                label="Email"
+                value={form.email.trim().toLowerCase()}
+              />
+              <SummaryRow label="Peership type" value="Permanent" />
+              <SummaryRow label="Contribution" value={contributionDisplay} />
+            </div>
 
-                <JourneyItem
-                  phase="Now"
-                  title="You joined as a peer"
-                  body="You are part of a peer-owned platform where one peer has one vote and your contribution supports shared progress."
-                />
-                <JourneyItem
-                  phase="Next"
-                  title="Onboarding sets your direction"
-                  body="You choose interests and your preferred learning style so SOAR can shape your first curriculum around what matters to you."
-                />
-                <JourneyItem
-                  phase="Then"
-                  title="You build your first curriculum"
-                  body="You select subjects, set intentions, and enter focused sessions with clear outcomes instead of endless feed behaviour."
-                />
-                <JourneyItem
-                  phase="Ongoing"
-                  title="You learn, create, reflect, and contribute"
-                  body="You produce work, review progress monthly, connect with peers, and influence product direction through shared governance."
-                />
+            <div className="space-y-3 rounded-3xl border border-brand/12 p-5">
+              <SummaryRow
+                label="Payment status"
+                value={paymentReceipt ? "Authorised" : "Pending"}
+              />
+              <SummaryRow
+                label="Method"
+                value={
+                  paymentReceipt
+                    ? PAYMENT_METHOD_LABELS[paymentReceipt.method]
+                    : "Not selected"
+                }
+              />
+              <SummaryRow
+                label="Reference"
+                value={
+                  paymentReceipt ? paymentReceipt.paymentRef : "Not provided"
+                }
+              />
+              <SummaryRow
+                label="Transaction"
+                value={paymentReceipt?.transactionId ?? "Not available"}
+              />
+            </div>
 
-                <p className="rounded-2xl border border-brand/12 px-4 py-3 font-body text-xs leading-relaxed text-brand/68 soft-rise soft-delay-2">
-                  Onboarding takes a few minutes and gives you a usable start: a
-                  clear learning direction, your first subject path, and an
-                  immediate next action.
-                </p>
-              </div>
+            <div className="rounded-3xl border border-brand/12 p-5">
+              <p className="font-body text-sm leading-relaxed text-brand/76">
+                Your peership supports our mission to make personal growth
+                accessible to everyone. As a peer, you'll have full access to
+                all learning materials, the community forum, and our reflection
+                tools.
+              </p>
+            </div>
 
-              <div className="flex flex-wrap gap-3 soft-rise soft-delay-3">
-                <Link
-                  to="/about"
-                  className="inline-flex items-center justify-center rounded-full border border-brand/20 px-5 py-3 font-ui text-sm tracking-wide text-brand transition hover:border-brand/35"
-                >
-                  Read Full About SOAR
-                </Link>
-                <Button
-                  type="button"
-                  text="Continue to Onboarding"
-                  fullWidth={false}
-                  onClick={() => navigate("/onboarding", { replace: true })}
-                />
-              </div>
-            </section>
-          )}
+            <label className="flex items-start gap-3 rounded-2xl border border-brand/12 px-4 py-4">
+              <input
+                type="checkbox"
+                checked={acknowledged}
+                onChange={(event) => setAcknowledged(event.target.checked)}
+                className="mt-1 size-4 rounded border border-navy/40 accent-brand"
+              />
+              <span className="font-body text-sm leading-relaxed text-brand/76">
+                I agree to the terms of peership and understand my contribution
+                helps keep this community thriving.
+              </span>
+            </label>
 
-          <p className="mt-6 border-t border-brand/12 pt-5 font-body text-sm text-brand/70">
-            Already have an account?{" "}
-            <Link
-              to="/login"
-              className="font-semibold text-brand hover:underline"
-            >
-              Sign in
-            </Link>
-            .
-          </p>
-        </section>
-      </div>
+            {error ? (
+              <p className="font-body text-sm text-rose-700" role="alert">
+                {error}
+              </p>
+            ) : null}
+
+            <div className="flex flex-wrap gap-3">
+              <Button
+                type="button"
+                text="Back to payment"
+                variant="secondary"
+                fullWidth={false}
+                onClick={() => {
+                  setError("");
+                  goToStep("payment");
+                }}
+              />
+              <Button
+                type="submit"
+                status={registrationStatus}
+                loadingText="Setting up your account..."
+                text="Start Onboarding"
+                fullWidth={false}
+              />
+            </div>
+          </form>
+        ) : null}
+
+        <p className="mt-6 border-t border-brand/12 pt-5 font-body text-sm text-brand/78">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="font-semibold text-brand hover:underline"
+          >
+            Sign in
+          </Link>
+          .
+        </p>
+      </section>
     </main>
   );
 }
 
-const ValueCard = ({ title, body }) => (
-  <article className="rounded-3xl border border-brand/12 bg-page p-4">
+const ValueCard = ({ title, body, icon: Icon }) => (
+  <article className="rounded-2xl border border-brand/12 bg-page p-4">
+    {createElement(Icon, {
+      className: "mb-3 size-5 text-brand/78",
+      "aria-hidden": "true",
+    })}
     <h2 className="font-ui text-xl text-brand">{title}</h2>
-    <p className="mt-2 font-body text-sm leading-relaxed text-brand/72">
-      {body}
-    </p>
-  </article>
-);
-
-const JourneyItem = ({ phase, title, body }) => (
-  <article className="rounded-2xl border border-brand/12 p-4 transition duration-300 hover:-translate-y-0.5 hover:border-brand/22">
-    <p className="font-ui text-[0.7rem] tracking-[0.15em] text-brand/58 uppercase">
-      {phase}
-    </p>
-    <h4 className="mt-1 font-ui text-lg text-brand">{title}</h4>
-    <p className="mt-1 font-body text-sm leading-relaxed text-brand/74">
+    <p className="mt-2 font-body text-sm leading-relaxed text-brand/78">
       {body}
     </p>
   </article>
@@ -871,7 +881,24 @@ const JourneyItem = ({ phase, title, body }) => (
 
 const SummaryRow = ({ label, value }) => (
   <div className="flex flex-wrap items-center justify-between gap-3">
-    <span className="font-body text-sm text-brand/62">{label}</span>
+    <span className="font-body text-sm text-brand/78">{label}</span>
     <span className="font-body text-sm font-medium text-brand">{value}</span>
   </div>
+);
+
+const TrustItem = ({ icon: Icon, title, body }) => (
+  <article className="flex items-center gap-2.5">
+    <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-page text-brand">
+      {createElement(Icon, {
+        className: "size-4",
+        "aria-hidden": "true",
+      })}
+    </span>
+    <span>
+      <span className="block font-ui text-sm tracking-[0.04em] text-brand">
+        {title}
+      </span>
+      <span className="block font-body text-xs text-brand/78">{body}</span>
+    </span>
+  </article>
 );

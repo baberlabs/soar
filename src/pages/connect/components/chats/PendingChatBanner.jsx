@@ -23,8 +23,8 @@ export const PendingChatBanner = ({ peerName, onAccept }) => (
           Request pending
         </p>
         <p className="font-body text-sm leading-relaxed text-brand/80">
-          {peerName ?? "This peer"} is a mock profile for demo purposes —
-          there&rsquo;s no real person on the other end. Accept on their behalf
+          {peerName ?? "This peer"} is a mock profile for demo purposes.
+          There&rsquo;s no real person on the other end. Accept on their behalf
           to continue the conversation.
         </p>
       </div>

@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Badge } from "../components/Badge";
+import { InputField } from "../components/InputField";
+import { Button } from "../components/Button";
 
 const BENEFITS = [
-  "Platform updates voted on by the community — before they ship",
+  "Platform updates voted on by the community before they ship",
   "Monthly peer stories: what people are learning and making",
   "New subjects, seasonal themes, and Forum highlights",
 ];
@@ -43,7 +45,7 @@ export const Newsletter = () => {
 const NewsletterCopy = () => (
   <div className="flex flex-col gap-6">
     <Badge variant="cream" className="self-start">
-      The SOAR dispatch
+      The SOAR Mailing List
     </Badge>
 
     <h2 className="font-display text-[clamp(2.5rem,5vw,4rem)] leading-[1.05] tracking-[-0.02em] text-cream">
@@ -53,7 +55,7 @@ const NewsletterCopy = () => (
     </h2>
 
     <p className="font-body font-light text-lg text-cream/70 leading-relaxed max-w-[38ch]">
-      Occasional, intentional updates from the community. No noise — just the
+      Occasional, intentional updates from the community. No noise. Just the
       things that actually matter to peers.
     </p>
 
@@ -68,7 +70,7 @@ const NewsletterCopy = () => (
       ))}
     </ul>
 
-    <p className="font-ui text-[0.65rem] tracking-[0.12em] text-cream/40">
+    <p className="font-ui text-[0.65rem] tracking-[0.12em] text-cream/60">
       No ads · No data sold · Unsubscribe anytime
     </p>
   </div>
@@ -83,7 +85,7 @@ const NewsletterForm = ({ email, onEmail, onSubmit, status }) => (
       <>
         <div className="flex flex-col gap-1">
           <h3 className="font-ui text-xl tracking-[0.06em] text-cream">
-            Join the dispatch
+            Join the Mailing List
           </h3>
           <p className="font-body font-light text-sm text-cream/50">
             One email. Worth reading.
@@ -111,15 +113,12 @@ const NewsletterForm = ({ email, onEmail, onSubmit, status }) => (
             />
           </div>
 
-          <button
+          <Button
             type="submit"
             disabled={status === "loading" || !email.trim()}
-            className="w-full rounded-xl bg-yellow px-6 py-3 font-ui tracking-[0.08em] text-navy transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(238,237,147,0.35)] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {status === "loading"
-              ? "Subscribing…"
-              : "Subscribe to the dispatch"}
-          </button>
+            text={status === "loading" ? "Subscribing…" : "Subscribe"}
+            className="bg-yellow text-navy hover:bg-cream"
+          />
         </form>
       </>
     )}
@@ -133,7 +132,7 @@ const SuccessState = () => (
     <h3 className="font-ui text-xl tracking-[0.06em] text-cream">You're in.</h3>
     <p className="font-body font-light text-sm text-cream/60 leading-relaxed max-w-[28ch]">
       Welcome to the dispatch. You'll hear from us when something worth saying
-      happens — not before.
+      happens. Not before. Not after.
     </p>
   </div>
 );

@@ -8,9 +8,10 @@ export const InputField = ({
   onValueChange,
   onChange,
   value,
-  autoComplete,
+  autoComplete = "off", // Default to off to help suppress warnings
   required = true,
   className = "",
+  error,
   ...props
 }) => {
   const generatedId = useId();
@@ -21,23 +22,41 @@ export const InputField = ({
     onChange?.(e);
   };
 
+  const errorId = `${inputId}-error`;
+
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={inputId} className="font-body text-navy/60">
+      <label htmlFor={inputId} className="font-body text-navy/78">
         {label}
       </label>
       <input
         id={inputId}
         type={type}
         name={name}
-        autoComplete={autoComplete ?? type}
+        autoComplete={autoComplete}
         placeholder={placeholder}
         value={value}
         onChange={handleChange}
         required={required}
+        aria-invalid={error ? "true" : undefined}
+        aria-describedby={error ? errorId : undefined}
         {...props}
-        className={`w-full rounded-2xl border border-black/15 bg-cream px-4 py-3 font-body text-base text-navy outline-none placeholder:text-navy/35 transition duration-200 focus:border-brand focus:ring-2 focus:ring-brand/15 ${className}`}
+        className={`w-full rounded-2xl border bg-cream px-4 py-3 font-body text-base text-navy outline-none placeholder:text-navy/35 transition duration-200 focus:ring-2 focus:ring-brand/15 ${
+          error
+            ? "border-rose-500 focus:border-rose-500"
+            : "border-black/15 focus:border-brand"
+        } ${className}`}
       />
+      {/* Inline Error Message */}
+      {error && (
+        <p
+          id={errorId}
+          role="alert"
+          className="font-body text-xs text-rose-600 mt-0.5"
+        >
+          {error}
+        </p>
+      )}
     </div>
   );
 };

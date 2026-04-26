@@ -1,40 +1,34 @@
 import { Link } from "react-router-dom";
+import {
+  ArrowLeft,
+  X,
+  Handshake,
+  CheckCircle,
+  Accessibility,
+} from "lucide-react";
 import { Button } from "../../../../components/Button";
 
-/**
- * Event detail panel. Matches PeerDetail's structural pattern: close
- * control top-right on desktop, back button top-left on mobile, then
- * a header block and sections below.
- */
-export const EventDetail = ({ event, userInterests = [], onClose }) => {
-  const shared = event.tags.filter((tag) => userInterests.includes(tag));
-  const otherTags = event.tags.filter((tag) => !userInterests.includes(tag));
+export const EventDetail = ({ event, isRsvped, onRsvp, onClose }) => {
+  const ctaText = isRsvped
+    ? "Cancel Registration"
+    : event.impact
+      ? "Register & Request Device"
+      : "RSVP & Begin Peership";
 
   return (
-    <article className="relative overflow-hidden rounded-3xl border border-brand/15 bg-cream shadow-[0_24px_48px_rgba(75,81,149,0.08)] lg:sticky lg:top-28">
+    <article className="relative rounded-xl">
       <button
-        type="button"
         onClick={onClose}
         className="absolute left-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full border border-brand/18 px-3 py-1.5 font-ui text-xs text-brand backdrop-blur transition hover:border-brand/35 lg:hidden"
-        aria-label="Back to events"
       >
-        <span aria-hidden="true">←</span>
-        <span>Back</span>
+        <ArrowLeft size={14} /> <span>Back</span>
       </button>
-
       <button
-        type="button"
         onClick={onClose}
         className="absolute right-4 top-4 z-10 hidden h-9 w-9 items-center justify-center rounded-full border border-brand/18 font-ui text-base text-brand backdrop-blur transition hover:border-brand/35 lg:inline-flex"
-        aria-label="Close event"
       >
-        ×
+        <X size={16} />
       </button>
-
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-linear-to-b from-yellow/20 to-transparent"
-      />
 
       <header className="relative px-6 pt-14 pb-5 md:px-8 md:pt-12">
         <p className="font-body text-xs uppercase tracking-[0.2em] text-brand/55">
@@ -44,9 +38,25 @@ export const EventDetail = ({ event, userInterests = [], onClose }) => {
           {event.title}
         </h2>
         <p className="mt-3 font-body text-sm text-brand/72">
-          {event.city} · {event.dateLabel}
+          {event.city} · {event.dateLabel} @ {event.timeLabel}
         </p>
       </header>
+
+      {event.impact && (
+        <section className="border-t border-brand/10 bg-sage/5 px-6 py-4 md:px-8">
+          <div className="flex items-center gap-2">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-sage/20 text-sage">
+              <Handshake size={12} strokeWidth={2.5} />
+            </span>
+            <h3 className="font-ui text-sm font-medium text-brand">
+              Partnership: {event.impact.partner}
+            </h3>
+          </div>
+          <p className="mt-2 font-body text-sm text-brand/80">
+            <strong>{event.impact.initiative}:</strong> {event.impact.perks}
+          </p>
+        </section>
+      )}
 
       <section className="border-t border-brand/10 px-6 py-5 md:px-8">
         <p className="font-body text-sm leading-relaxed text-brand/82">
@@ -54,45 +64,34 @@ export const EventDetail = ({ event, userInterests = [], onClose }) => {
         </p>
       </section>
 
-      <section
-        aria-labelledby="event-tags-heading"
-        className="border-t border-brand/10 px-6 py-5 md:px-8"
-      >
-        <h3
-          id="event-tags-heading"
-          className="font-ui text-sm uppercase tracking-[0.14em] text-brand/55"
-        >
-          Topics
+      <section className="border-t border-brand/10 px-6 py-5 md:px-8">
+        <h3 className="font-ui text-sm uppercase tracking-[0.14em] text-brand/55">
+          Session Outcomes
         </h3>
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {[...shared, ...otherTags].map((tag) => {
-            const isShared = shared.includes(tag);
-            return (
-              <span
-                key={tag}
-                className={`rounded-full border px-3 py-1 font-body text-xs ${
-                  isShared
-                    ? "border-sage/40 bg-sage/10 text-sage"
-                    : "border-brand/18 text-brand/75"
-                }`}
-              >
-                {tag}
-              </span>
-            );
-          })}
-        </div>
+        <ul className="mt-3 space-y-2">
+          {event.learningOutcomes.map((outcome, idx) => (
+            <li
+              key={idx}
+              className="flex items-start gap-2.5 text-sm text-brand/82"
+            >
+              <CheckCircle size={16} className="mt-0.5 shrink-0 text-sage/70" />
+              <span className="font-body leading-relaxed">{outcome}</span>
+            </li>
+          ))}
+        </ul>
       </section>
 
-      <section className="flex flex-wrap gap-2 border-t border-brand/10 px-6 py-5 md:px-8">
+      <section className="flex flex-wrap items-center gap-3 border-t border-brand/10 px-6 py-5 md:px-8">
         <Button
           type="button"
-          variant="primary"
+          variant={isRsvped ? "secondary" : "primary"}
           size="sm"
           fullWidth={false}
-          text="Add to calendar"
+          text={ctaText}
+          onClick={() => onRsvp(event.id)}
         />
         <Link
-          to="/connect/peers"
+          to="/connect/find-peers"
           className="inline-flex items-center rounded-full border border-brand/18 px-4 py-2 font-ui text-sm tracking-[0.06em] text-brand transition hover:border-brand/35"
         >
           Find peers going

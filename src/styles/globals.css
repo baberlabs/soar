@@ -25,10 +25,15 @@
   --color-accent-glow: rgba(238, 237, 147, 0.55);
 }
 
+* {
+  /* outline: 1px solid rgba(255, 1, 1, 0.706); */
+}
+
 html,
 body,
 #root {
   min-height: 100%;
+  font-family: var(--font-body);
 }
 
 html,
@@ -47,6 +52,10 @@ body {
 a,
 button {
   cursor: pointer;
+}
+
+.touch-none {
+  touch-action: none;
 }
 
 /* Global custom scrollbars */
@@ -82,6 +91,14 @@ button {
 
 *::-webkit-scrollbar-thumb:active {
   background: color-mix(in srgb, var(--color-sky) 94%, var(--color-page));
+}
+
+/* hide scrollbar cleanly */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
 }
 
 /* Vision library gets a warmer, beige scrollbar treatment */
@@ -137,6 +154,19 @@ button {
 
 .soft-delay-3 {
   animation-delay: 180ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+
+  .soft-enter,
+  .soft-rise {
+    animation: none !important;
+  }
 }
 
 @media (pointer: coarse) {

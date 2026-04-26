@@ -1,4 +1,4 @@
-import { Modal } from "../shared/Modal";
+import { Modal } from "../../../../components/Modal";
 
 export const ImagePreviewModal = ({ image, onClose }) => (
   <Modal

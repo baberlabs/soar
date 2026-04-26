@@ -31,7 +31,7 @@ export const PeerDetail = ({
     : peer.lastActiveLabel;
 
   return (
-    <article className="relative overflow-hidden rounded-3xl border border-brand/15 bg-cream shadow-[0_24px_48px_rgba(75,81,149,0.08)] lg:sticky lg:top-28">
+    <article className="relative overflow-hidden rounded-3xl">
       {/* Back control — only visible on mobile where the detail replaces the list. */}
       <button
         type="button"
@@ -52,12 +52,6 @@ export const PeerDetail = ({
       >
         Close
       </button>
-
-      {/* Decorative tints keyed off the peer's avatar colour sit behind the header. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-linear-to-b from-brand/8 to-transparent"
-      />
 
       <header className="relative px-6 pt-14 pb-6 md:px-8 md:pt-12">
         <div className="flex flex-wrap items-start gap-5">
@@ -152,14 +146,6 @@ export const PeerDetail = ({
   );
 };
 
-/**
- * The CTA row under the bio. Split out because its conditional branches
- * were making the header block hard to read.
- *
- * Pending state renders TWO controls: a muted "Request sent" stub and a
- * primary "Accept as [first name]" button with the honest mock disclosure
- * below as a helper line.
- */
 const ActionRow = ({
   isConnected,
   connectionStatus,
@@ -180,7 +166,7 @@ const ActionRow = ({
           onClick={onOpenChat}
         />
         <Link
-          to="/connect/events"
+          to="/connect/all-events"
           className="inline-flex items-center rounded-full border border-brand/18 px-4 py-2 font-ui text-sm tracking-[0.06em] text-brand transition hover:border-brand/35"
         >
           Meet at an event
@@ -230,7 +216,7 @@ const ActionRow = ({
         onClick={onSendRequest}
       />
       <Link
-        to="/connect/events"
+        to="/connect/all-events"
         className="inline-flex items-center rounded-full border border-brand/18 px-4 py-2 font-ui text-sm tracking-[0.06em] text-brand transition hover:border-brand/35"
       >
         Meet at an event

@@ -53,6 +53,8 @@ export const LetterTabPanel = ({
     !!activeLetter &&
     !isMonthUnlocked(activeLetter.targetMonth) &&
     activeLetter.effectiveStatus === LETTER_STATUS.SEALED;
+  const shouldShowComposer =
+    !activeLetter || activeLetter.effectiveStatus === LETTER_STATUS.DRAFT;
 
   const handleDelete = (letter) =>
     onConfirmDelete({
@@ -70,7 +72,7 @@ export const LetterTabPanel = ({
       onConfirm: () => breakSeal(letter.id),
     });
 
-  const handleArchive = (letter) => archiveLetter(letter.id);
+  const handleArchive = (letter) => archiveLetter(letter);
 
   const handleRequestSeal = (afterConfirm) =>
     onConfirmSeal({
@@ -84,34 +86,24 @@ export const LetterTabPanel = ({
       aria-labelledby="reflect-tab-letters"
       className="space-y-4"
     >
-      <header className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <p className="font-ui text-xs uppercase tracking-[0.14em] text-brand/60">
-            Future letters
-          </p>
-          <h3 className="mt-0.5 font-ui text-2xl text-brand">
-            {view === "active" ? "Current" : "Archive"}
-          </h3>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant={view === "active" ? "secondary" : "ghost"}
-            size="sm"
-            fullWidth={false}
-            text="Current"
-            onClick={() => setView("active")}
-          />
-          <Button
-            type="button"
-            variant={view === "archive" ? "secondary" : "ghost"}
-            size="sm"
-            fullWidth={false}
-            text={`Archive (${archivedLetters.length})`}
-            onClick={() => setView("archive")}
-          />
-        </div>
-      </header>
+      <div className="flex items-center gap-2 pb-2 sm:pb-4">
+        <Button
+          type="button"
+          variant={view === "active" ? "primary" : "ghost"}
+          size="sm"
+          fullWidth={false}
+          text="Current"
+          onClick={() => setView("active")}
+        />
+        <Button
+          type="button"
+          variant={view === "archive" ? "primary" : "ghost"}
+          size="sm"
+          fullWidth={false}
+          text={`Archive (${archivedLetters.length})`}
+          onClick={() => setView("archive")}
+        />
+      </div>
 
       {view === "archive" ? (
         archivedLetters.length === 0 ? (
@@ -140,7 +132,28 @@ export const LetterTabPanel = ({
               letter={activeLetter}
               onBreakSeal={handleBreakSeal}
               onDelete={handleDelete}
+            />
+          ) : (
+            <LetterCard
+              letter={activeLetter}
+              reviewForm={reviewForm}
+              reviewError={reviewError}
+              isReviewing={reviewForm.letterId === activeLetter.id}
+              onEdit={loadLetter}
+              onDelete={handleDelete}
               onArchive={handleArchive}
+              onBeginReview={beginReview}
+              onCancelReview={cancelReview}
+              onReviewFieldChange={setReviewField}
+              onSubmitReview={saveReview}
+            />
+          )
+        ) : !shouldShowComposer ? (
+          activeLetter.effectiveStatus === LETTER_STATUS.SEALED ? (
+            <SealedLetterCard
+              letter={activeLetter}
+              onBreakSeal={handleBreakSeal}
+              onDelete={handleDelete}
             />
           ) : (
             <LetterCard
@@ -175,7 +188,6 @@ export const LetterTabPanel = ({
                 letter={activeLetter}
                 onBreakSeal={handleBreakSeal}
                 onDelete={handleDelete}
-                onArchive={handleArchive}
               />
             ) : (
               <LetterCard

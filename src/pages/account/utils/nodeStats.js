@@ -1,4 +1,5 @@
 import { makeCID, makePeerID, makeMultiaddrs } from "./ipfs";
+export { formatBytes } from "../../../utils/format";
 
 /**
  * Derive node-level stats entirely from real data in the store.
@@ -136,22 +137,6 @@ export const deriveNodeStats = ({
     // Status — always "online" so long as the app is running.
     status: "online",
   };
-};
-
-/**
- * Human-friendly byte formatter. Matches units used by common IPFS tooling.
- */
-export const formatBytes = (bytes) => {
-  if (!Number.isFinite(bytes) || bytes < 0) return "0 B";
-  if (bytes < 1024) return `${bytes} B`;
-  const units = ["KB", "MB", "GB", "TB"];
-  let value = bytes / 1024;
-  let unit = 0;
-  while (value >= 1024 && unit < units.length - 1) {
-    value /= 1024;
-    unit += 1;
-  }
-  return `${value.toFixed(value >= 10 ? 0 : 1)} ${units[unit]}`;
 };
 
 /**

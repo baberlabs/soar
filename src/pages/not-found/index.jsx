@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 
 import { getButtonClasses } from "../../components/buttonStyles";
-import { useSOARState } from "../../hooks/useSOARState";
+import { useSOARState } from "../../store";
 
 export default function NotFound() {
-  const [state] = useSOARState();
+  const state = useSOARState();
 
   return (
     <main className="mx-auto flex min-h-[70vh] w-full max-w-360 items-center px-6 py-24">
@@ -19,13 +19,13 @@ export default function NotFound() {
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link
-            to={state.user ? "/learn" : "/"}
+            to={state.user ? "/dashboard" : "/"}
             className={getButtonClasses({
               variant: "primary",
               fullWidth: false,
             })}
           >
-            {state.user ? "Go To Learn" : "Go Home"}
+            {state.user ? "Go To Dashboard" : "Go Home"}
           </Link>
           <Link
             to="/about"

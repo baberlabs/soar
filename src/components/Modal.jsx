@@ -79,7 +79,6 @@ export const Modal = ({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  // Body scroll lock while open.
   useEffect(() => {
     if (!isOpen) return undefined;
     const prev = document.body.style.overflow;
@@ -96,7 +95,7 @@ export const Modal = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4"
       aria-hidden="false"
     >
       <button
@@ -111,7 +110,7 @@ export const Modal = ({
         role="dialog"
         aria-modal="true"
         aria-label={ariaLabel ?? title}
-        className={`relative z-10 w-full ${widthClass} rounded-3xl border border-brand/10 bg-page p-6 shadow-[0_30px_60px_rgba(75,81,149,0.25)]`}
+        className={`relative z-10 w-full ${widthClass} max-h-full overflow-y-auto rounded-3xl border border-brand/10 bg-page p-4 shadow-[0_30px_60px_rgba(75,81,149,0.25)] sm:p-6 vision-library-scrollbar`}
       >
         {title ? (
           <h2 className="mb-4 font-ui text-2xl text-brand">{title}</h2>

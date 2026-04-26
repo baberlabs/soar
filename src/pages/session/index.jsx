@@ -1,10 +1,20 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
+import {
+  Brain,
+  Camera,
+  ChefHat,
+  Code2,
+  Leaf,
+  Mic,
+  Palette,
+  PenLine,
+  Sparkles,
+} from "lucide-react";
 
-import { Button } from "../../components/Button";
 import { getButtonClasses } from "../../components/buttonStyles";
 import { getSubjectById } from "../../data/subjects";
-import { useSOARState } from "../../hooks/useSOARState";
+import { useSOARDispatch, useSOARState } from "../../store";
 
 import BackgroundLayer1Image from "../../assets/images/background-layer-1.svg";
 import BackgroundLayer2Image from "../../assets/images/background-layer-2.svg";
@@ -14,105 +24,197 @@ import LearnImage3 from "./imagery/3.jpg";
 import LearnImage4 from "./imagery/4.jpg";
 import LearnImage5 from "./imagery/5.jpg";
 import LearnImage6 from "./imagery/6.jpg";
-import LearnImage7 from "./imagery/7 .jpg";
-import LearnCreateImage from "./imagery/create imagery .jpg";
-import LearnMeditationImage from "./imagery/meditation image .jpg";
-import LearnPhotographyImage from "./imagery/photography image .jpg";
+import LearnImage7 from "./imagery/7.jpg";
+import LearnCreateImage from "./imagery/create-imagery.jpg";
+import LearnMeditationImage from "./imagery/meditation-image.jpg";
+import LearnPhotographyImage from "./imagery/photography-image.jpg";
+
+import { SessionProgress } from "./components/SessionProgress";
+import { LessonStep } from "./components/LessonStep";
+import { FlashcardsStep } from "./components/FlashcardsStep";
+import { QuizStep } from "./components/QuizStep";
+import { ReflectionStep } from "./components/ReflectionStep";
+import { ChallengeStep } from "./components/ChallengeStep";
+import Page from "../../layout/Page";
+
+const STEPS = ["lesson", "flashcards", "quiz", "reflection", "challenge"];
+
+const STEP_LABELS = {
+  lesson: "Lesson",
+  flashcards: "Flashcards",
+  quiz: "Quiz",
+  reflection: "Reflection",
+  challenge: "Challenge",
+};
 
 export default function SessionPage() {
   const { subjectId, lessonId } = useParams();
-  const [state, dispatch] = useSOARState();
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [showResult, setShowResult] = useState(false);
-  const [completeStatus, setCompleteStatus] = useState("idle");
-  const [reflectionText, setReflectionText] = useState("");
-  const [reflectionStatus, setReflectionStatus] = useState("idle");
+  const state = useSOARState();
+  const dispatch = useSOARDispatch();
 
   const subject = getSubjectById(subjectId, state.subjects);
-
-  if (!subject) {
-    return <Navigate to="/404" replace />;
-  }
-
-  const lessonIndex = subject.lessons.findIndex(
-    (lesson) => lesson.id === lessonId,
-  );
+  const lessonIndex =
+    subject?.lessons.findIndex((entry) => entry.id === lessonId) ?? -1;
   const lesson = lessonIndex >= 0 ? subject.lessons[lessonIndex] : null;
 
-  if (!lesson) {
-    return <Navigate to="/404" replace />;
-  }
+  const enrollment = subject
+    ? (state.curriculum.find((entry) => entry.subjectId === subject.id) ?? null)
+    : null;
 
-  const enrollment = state.curriculum.find(
-    (entry) => entry.subjectId === subject.id,
-  );
   const completedLessonIds = enrollment?.completedLessonIds ?? [];
   const completedCount = completedLessonIds.length;
-  const isComplete = completedLessonIds.includes(lesson.id);
+  const isComplete = lesson ? completedLessonIds.includes(lesson.id) : false;
   const isCurrent = lessonIndex === completedCount;
   const isLocked = !enrollment || (!isComplete && !isCurrent);
 
+  // Derived content — memoised so prop identity stays stable for steps.
   const lessonContent = useMemo(
-    () => buildLessonContent(subject, lesson, lessonIndex),
+    () =>
+      subject && lesson
+        ? buildLessonContent(subject, lesson, lessonIndex)
+        : null,
     [subject, lesson, lessonIndex],
   );
+
   const media = useMemo(
-    () => getSessionMedia(subject.id, lessonIndex, lesson.title),
-    [subject.id, lessonIndex, lesson.title],
+    () =>
+      subject && lesson
+        ? getSessionMedia(subject.id, lessonIndex, lesson.title)
+        : null,
+    [subject, lesson, lessonIndex],
   );
-  const quiz = useMemo(
-    () => buildQuiz(lesson, lessonContent),
-    [lesson, lessonContent],
-  );
+
   const keyFacts = useMemo(
-    () => buildKeyFacts(subject, lesson, lessonContent),
+    () =>
+      subject && lesson && lessonContent
+        ? buildKeyFacts(subject, lesson, lessonContent)
+        : [],
     [subject, lesson, lessonContent],
   );
-  const visual = getSessionVisual(subject.id);
-  const existingReflection = useMemo(
-    () =>
-      (state.reflections?.lessonEntries ?? []).find(
-        (entry) =>
-          entry.subjectId === subject.id && entry.lessonId === lesson.id,
-      ) ?? null,
-    [state.reflections, subject.id, lesson.id],
+
+  const quiz = useMemo(
+    () => (lesson && lessonContent ? buildQuiz(lesson, lessonContent) : null),
+    [lesson, lessonContent],
   );
 
-  useEffect(() => {
-    setReflectionText(existingReflection?.content ?? "");
-    setReflectionStatus("idle");
-  }, [existingReflection]);
+  const flashcards = useMemo(
+    () =>
+      lesson && lessonContent && keyFacts.length > 0
+        ? buildFlashcards(lesson, keyFacts)
+        : [],
+    [lesson, lessonContent, keyFacts],
+  );
 
-  const isCorrect = selectedAnswer === quiz.correctIndex;
-  const canComplete =
-    isCurrent && showResult && isCorrect && completeStatus !== "loading";
+  const existingReflection = useMemo(
+    () =>
+      subject && lesson
+        ? ((state.reflections?.lessonEntries ?? []).find(
+            (entry) =>
+              entry.subjectId === subject.id && entry.lessonId === lesson.id,
+          ) ?? null)
+        : null,
+    [state.reflections, subject, lesson],
+  );
 
-  const handleCheckAnswer = () => {
-    if (selectedAnswer === null) return;
-    setShowResult(true);
+  // Early-return guards must run AFTER all hooks above to keep hook
+  // order stable across renders.
+  if (!subject || !lesson) {
+    return <Navigate to="/404" replace />;
+  }
+
+  const visual = getSessionVisual(subject.id);
+
+  const nextLesson =
+    lessonIndex + 1 < subject.lessons.length
+      ? subject.lessons[lessonIndex + 1]
+      : null;
+
+  return (
+    <Page
+      heading={lesson.title}
+      description={lesson.summary}
+      contentClassName="mx-auto space-y-6"
+    >
+      <div className="flex w-fit gap-4 items-center justify-between rounded-xl border border-brand/12 bg-page/80 px-3 py-2">
+        {/* Left: Session identity */}
+        <span className="text-xs font-medium text-brand/60">
+          Session {lessonIndex + 1}
+        </span>
+
+        {/* Right: Status (dominant) */}
+        {isComplete ? (
+          <span className="rounded-full bg-sage px-3 py-1 text-[0.7rem] font-semibold text-white">
+            Completed
+          </span>
+        ) : isCurrent ? (
+          <span className="rounded-full bg-yellow px-3 py-1 text-[0.7rem] font-semibold text-brand">
+            Current
+          </span>
+        ) : (
+          <span className="rounded-full bg-brand/15 px-3 py-1 text-[0.7rem] font-medium text-brand/70">
+            Locked
+          </span>
+        )}
+      </div>
+
+      {isLocked ? (
+        <LockedPanel subjectId={subject.id} />
+      ) : (
+        <SessionExperience
+          key={`${subject.id}:${lesson.id}`}
+          subject={subject}
+          lesson={lesson}
+          enrollment={enrollment}
+          isComplete={isComplete}
+          media={media}
+          lessonContent={lessonContent}
+          keyFacts={keyFacts}
+          flashcards={flashcards}
+          quiz={quiz}
+          existingReflection={existingReflection}
+          nextLesson={nextLesson}
+          dispatch={dispatch}
+        />
+      )}
+    </Page>
+  );
+}
+
+const SessionExperience = ({
+  subject,
+  lesson,
+  enrollment,
+  isComplete,
+  media,
+  lessonContent,
+  keyFacts,
+  flashcards,
+  quiz,
+  existingReflection,
+  nextLesson,
+  dispatch,
+}) => {
+  const [currentStep, setCurrentStep] = useState("lesson");
+  const [completedSteps, setCompletedSteps] = useState(
+    () => new Set(isComplete ? STEPS : []),
+  );
+  const [justFinished, setJustFinished] = useState(false);
+
+  const advanceStep = () => {
+    setCompletedSteps((prev) => new Set([...prev, currentStep]));
+    const idx = STEPS.indexOf(currentStep);
+    if (idx < STEPS.length - 1) {
+      setCurrentStep(STEPS[idx + 1]);
+    }
   };
 
-  const handleCompleteSession = () => {
-    if (!canComplete) return;
-
-    setCompleteStatus("loading");
-    dispatch({
-      type: "COMPLETE_LESSON",
-      payload: {
-        subjectId: subject.id,
-        lessonId: lesson.id,
-      },
-    });
-
-    setCompleteStatus("success");
-    window.setTimeout(() => setCompleteStatus("idle"), 700);
+  const goToStep = (stepId) => {
+    if (completedSteps.has(stepId) || stepId === currentStep) {
+      setCurrentStep(stepId);
+    }
   };
 
-  const handleSaveReflection = () => {
-    const content = reflectionText.trim();
-    if (!content) return;
-
-    setReflectionStatus("loading");
+  const handleSaveReflection = (content) => {
     dispatch({
       type: "UPSERT_LESSON_REFLECTION",
       payload: {
@@ -123,326 +225,131 @@ export default function SessionPage() {
         content,
       },
     });
+  };
 
-    setReflectionStatus("success");
-    window.setTimeout(() => setReflectionStatus("idle"), 1100);
+  const handleChallengeAcknowledge = () => {
+    if (!isComplete && enrollment) {
+      dispatch({
+        type: "COMPLETE_LESSON",
+        payload: { subjectId: subject.id, lessonId: lesson.id },
+      });
+    }
+    setCompletedSteps((prev) => new Set([...prev, "challenge"]));
+    setJustFinished(true);
   };
 
   return (
-    <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-28 md:pb-32 md:pt-34">
-      <div className="mx-auto max-w-5xl space-y-8">
-        <Link
-          to={`/learn/${subject.id}`}
-          className="inline-flex items-center gap-2 font-ui text-sm tracking-[0.08em] text-brand/70 hover:text-brand"
-        >
-          ← Back to subject room
-        </Link>
+    <div className="space-y-6">
+      <SessionProgress
+        steps={STEPS}
+        labels={STEP_LABELS}
+        currentStep={currentStep}
+        completedSteps={completedSteps}
+        onStepClick={goToStep}
+      />
 
-        <header className="relative overflow-hidden rounded-4xl border border-brand/15 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:p-8">
-          <img
-            src={BackgroundLayer1Image}
-            alt=""
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 -z-20 w-full select-none"
-          />
-          <img
-            src={BackgroundLayer2Image}
-            alt=""
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 -z-10 w-full select-none"
-          />
+      {justFinished ? (
+        <FinishedBanner subjectId={subject.id} nextLesson={nextLesson} />
+      ) : null}
 
-          <div className="grid gap-6 md:grid-cols-[1.25fr_0.75fr] md:items-end">
-            <div className="space-y-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-sky/35 px-3 py-1 font-ui text-[0.7rem] tracking-[0.14em] text-brand">
-                  {subject.name}
-                </span>
-                <span className="rounded-full border border-brand/12 bg-page px-3 py-1 font-body text-xs text-brand/72">
-                  Session {lessonIndex + 1}
-                </span>
-                {isComplete ? (
-                  <span className="rounded-full bg-sage/18 px-3 py-1 font-body text-xs text-sage">
-                    Completed
-                  </span>
-                ) : isCurrent ? (
-                  <span className="rounded-full bg-yellow/30 px-3 py-1 font-body text-xs text-brand">
-                    Current session
-                  </span>
-                ) : (
-                  <span className="rounded-full bg-brand/8 px-3 py-1 font-body text-xs text-brand/65">
-                    Locked
-                  </span>
-                )}
-              </div>
+      {currentStep === "lesson" && (
+        <LessonStep
+          media={media}
+          lessonContent={lessonContent}
+          keyFacts={keyFacts}
+          onContinue={advanceStep}
+        />
+      )}
 
-              <h1 className="font-display text-[clamp(2.6rem,7vw,4.8rem)] leading-[0.94] text-brand">
-                {lesson.title}
-              </h1>
-              <p className="max-w-3xl font-body text-base leading-relaxed text-brand/80 md:text-lg">
-                {lesson.summary}
-              </p>
-            </div>
+      {currentStep === "flashcards" && (
+        <FlashcardsStep flashcards={flashcards} onContinue={advanceStep} />
+      )}
 
-            <aside
-              className={`rounded-3xl border border-brand/12 p-5 ${visual.panel}`}
-              aria-label="Session visual"
-            >
-              <p className="font-ui text-4xl leading-none">{visual.emoji}</p>
-              <p className="mt-3 font-ui text-sm tracking-[0.08em] text-brand">
-                {visual.title}
-              </p>
-              <p className="mt-2 font-body text-sm leading-relaxed text-brand/75">
-                {visual.body}
-              </p>
-            </aside>
-          </div>
-        </header>
+      {currentStep === "quiz" && (
+        <QuizStep quiz={quiz} onContinue={advanceStep} />
+      )}
 
-        {isLocked ? (
-          <section className="rounded-4xl border border-brand/12 bg-page p-6">
-            <h2 className="font-ui text-2xl text-brand">Session locked</h2>
-            <p className="mt-2 font-body text-sm leading-relaxed text-brand/74">
-              Complete earlier sessions first, then come back to unlock this
-              one.
-            </p>
-            <div className="mt-4">
-              <Link
-                to={`/learn/${subject.id}`}
-                className={getButtonClasses({
-                  variant: "secondary",
-                  fullWidth: false,
-                })}
-              >
-                Return To Subject Room
-              </Link>
-            </div>
-          </section>
-        ) : (
-          <div className="space-y-6">
-            <section className="rounded-4xl border border-brand/12 bg-cream/75 p-6">
-              <h2 className="font-ui text-3xl text-brand">
-                1. Session content
-              </h2>
+      {currentStep === "reflection" && (
+        <ReflectionStep
+          prompt={lesson.reflectionPrompt}
+          existingReflection={existingReflection}
+          onSave={handleSaveReflection}
+          onContinue={advanceStep}
+        />
+      )}
 
-              <figure className="mt-4 overflow-hidden rounded-3xl border border-brand/12 bg-page">
-                <img
-                  src={media.hero.src}
-                  alt={media.hero.alt}
-                  className="h-56 w-full object-cover md:h-72"
-                  loading="lazy"
-                />
-                <figcaption className="px-4 py-3 font-body text-xs text-brand/64">
-                  {media.hero.caption}
-                </figcaption>
-              </figure>
-
-              <div className="mt-5 space-y-4">
-                {lessonContent.paragraphs.map((paragraph) => (
-                  <p
-                    key={paragraph}
-                    className="font-body text-sm leading-relaxed text-brand/78"
-                  >
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-
-              <div className="mt-5 rounded-3xl border border-brand/10 bg-page p-5">
-                <p className="font-body text-xs uppercase tracking-[0.12em] text-brand/55">
-                  Practice flow
-                </p>
-                <ol className="mt-3 space-y-3">
-                  {lessonContent.practiceSteps.map((step, index) => (
-                    <li
-                      key={step}
-                      className="flex gap-3 font-body text-sm leading-relaxed text-brand/78"
-                    >
-                      <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand/10 font-ui text-xs text-brand">
-                        {index + 1}
-                      </span>
-                      <span>{step}</span>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            </section>
-
-            <section className="rounded-4xl border border-brand/12 bg-page p-6">
-              <h2 className="font-ui text-3xl text-brand">
-                2. Highlighted key facts
-              </h2>
-
-              <div className="mt-5 grid gap-4 md:grid-cols-2">
-                {media.supporting.map((image) => (
-                  <figure
-                    key={image.caption}
-                    className="overflow-hidden rounded-3xl border border-brand/12"
-                  >
-                    <img
-                      src={image.src}
-                      alt={image.alt}
-                      className="h-44 w-full object-cover"
-                      loading="lazy"
-                    />
-                    <figcaption className="px-4 py-3 font-body text-xs text-brand/64">
-                      {image.caption}
-                    </figcaption>
-                  </figure>
-                ))}
-              </div>
-
-              <div className="mt-5 grid gap-4 md:grid-cols-3">
-                {keyFacts.map((fact) => (
-                  <article
-                    key={fact.title}
-                    className="rounded-3xl border border-brand/12 p-4"
-                  >
-                    <p className="font-ui text-sm tracking-[0.08em] text-brand">
-                      {fact.title}
-                    </p>
-                    <p className="mt-2 font-body text-sm leading-relaxed text-brand/74">
-                      {fact.body}
-                    </p>
-                  </article>
-                ))}
-              </div>
-            </section>
-
-            <section className="rounded-4xl border border-brand/12 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.06)]">
-              <h2 className="font-ui text-3xl text-brand">3. Quick quiz</h2>
-              <p className="mt-3 font-body text-sm leading-relaxed text-brand/76">
-                {quiz.question}
-              </p>
-
-              <div className="mt-4 grid gap-3">
-                {quiz.options.map((option, index) => {
-                  const selected = selectedAnswer === index;
-                  const showCorrect = showResult && index === quiz.correctIndex;
-                  const showWrong = showResult && selected && !isCorrect;
-
-                  return (
-                    <button
-                      key={`${option}-${index}`}
-                      type="button"
-                      onClick={() => {
-                        if (showResult) {
-                          setShowResult(false);
-                        }
-                        setSelectedAnswer(index);
-                      }}
-                      className={`rounded-2xl border px-4 py-3 text-left font-body text-sm transition ${
-                        showCorrect
-                          ? "border-sage/40 bg-sage/10 text-brand"
-                          : showWrong
-                            ? "border-rose-300 bg-rose-50 text-brand"
-                            : selected
-                              ? "border-brand bg-brand/8 text-brand"
-                              : "border-brand/12 bg-page text-brand/75 hover:border-brand/24"
-                      }`}
-                    >
-                      {option}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="mt-5 flex flex-wrap gap-3">
-                <Button
-                  type="button"
-                  fullWidth={false}
-                  text="Check Answer"
-                  onClick={handleCheckAnswer}
-                  disabled={selectedAnswer === null}
-                />
-                {isCurrent ? (
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    fullWidth={false}
-                    text="Mark Session Complete"
-                    status={completeStatus}
-                    loadingText="Saving..."
-                    onClick={handleCompleteSession}
-                    disabled={!canComplete}
-                  />
-                ) : null}
-              </div>
-
-              {showResult ? (
-                <div
-                  className={`mt-4 rounded-2xl border p-4 ${
-                    isCorrect
-                      ? "border-sage/30 bg-sage/10"
-                      : "border-yellow/35 bg-yellow/15"
-                  }`}
-                >
-                  <p className="font-ui text-sm text-brand">
-                    {isCorrect ? "Correct" : "Not quite"}
-                  </p>
-                  <p className="mt-1 font-body text-sm leading-relaxed text-brand/74">
-                    {quiz.explanation}
-                  </p>
-                </div>
-              ) : null}
-
-              <div className="mt-4 rounded-2xl border border-brand/12 bg-page p-4">
-                <p className="font-body text-xs uppercase tracking-[0.12em] text-brand/55">
-                  Reflection prompt
-                </p>
-                <p className="mt-2 font-body text-sm leading-relaxed text-brand/78">
-                  {lesson.reflectionPrompt}
-                </p>
-
-                <label
-                  htmlFor="lesson-reflection"
-                  className="mt-4 block font-body text-xs uppercase tracking-[0.12em] text-brand/55"
-                >
-                  Your reflection
-                </label>
-                <textarea
-                  id="lesson-reflection"
-                  value={reflectionText}
-                  onChange={(event) => {
-                    setReflectionText(event.target.value);
-                    if (reflectionStatus !== "idle") {
-                      setReflectionStatus("idle");
-                    }
-                  }}
-                  placeholder="Write a short reflection from this session..."
-                  className="mt-2 min-h-32 w-full rounded-2xl border border-brand/16 px-4 py-3 font-body text-sm leading-relaxed text-brand placeholder:text-brand/40 focus:border-brand/28 focus:outline-none"
-                />
-
-                <div className="mt-3 flex flex-wrap items-center gap-3">
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    fullWidth={false}
-                    text="Save Reflection"
-                    loadingText="Saving reflection..."
-                    status={reflectionStatus}
-                    onClick={handleSaveReflection}
-                    disabled={!reflectionText.trim()}
-                  />
-                  {existingReflection?.savedAt ? (
-                    <p className="font-body text-xs text-brand/62">
-                      Last saved{" "}
-                      {new Date(existingReflection.savedAt).toLocaleString()}
-                    </p>
-                  ) : (
-                    <p className="font-body text-xs text-brand/62">
-                      Saved to your account on this device.
-                    </p>
-                  )}
-                </div>
-              </div>
-            </section>
-          </div>
-        )}
-      </div>
-    </main>
+      {currentStep === "challenge" && (
+        <ChallengeStep
+          curatedChallenge={lesson.activity}
+          alreadyComplete={isComplete}
+          onAcknowledge={handleChallengeAcknowledge}
+        />
+      )}
+    </div>
   );
-}
+};
+
+// ---------- Inline subcomponents (page-local, not reused elsewhere) ----------
+
+const LockedPanel = ({ subjectId }) => (
+  <section className="rounded-4xl border border-brand/12 bg-page p-6">
+    <h2 className="font-ui text-2xl text-brand">Session locked</h2>
+    <p className="mt-2 font-body text-sm leading-relaxed text-brand/74">
+      Complete earlier sessions first, then come back to unlock this one.
+    </p>
+    <div className="mt-4">
+      <Link
+        to={`/learn/${subjectId}`}
+        className={getButtonClasses({
+          variant: "secondary",
+          fullWidth: false,
+        })}
+      >
+        Return To Subject Room
+      </Link>
+    </div>
+  </section>
+);
+
+const FinishedBanner = ({ subjectId, nextLesson }) => (
+  <div className="rounded-4xl border border-sage/35 bg-sage/12 p-6">
+    <p className="font-ui text-sm tracking-[0.12em] text-sage">
+      Session complete
+    </p>
+    <h3 className="mt-2 font-display text-3xl leading-[0.95] text-brand">
+      Nice work! That one&rsquo;s done.
+    </h3>
+    <p className="mt-2 max-w-2xl font-body text-sm leading-relaxed text-brand/75">
+      Your progress is saved. Take a break, or move into the next session.
+    </p>
+    <div className="mt-4 flex flex-wrap gap-3">
+      {nextLesson ? (
+        <Link
+          to={`/learn/${subjectId}/sessions/${nextLesson.id}`}
+          className={getButtonClasses({
+            variant: "primary",
+            size: "md",
+            fullWidth: false,
+          })}
+        >
+          Next session
+        </Link>
+      ) : null}
+      <Link
+        to={`/learn/${subjectId}`}
+        className={getButtonClasses({
+          variant: "secondary",
+          size: "md",
+          fullWidth: false,
+        })}
+      >
+        Back to subject room
+      </Link>
+    </div>
+  </div>
+);
+
+// ---------- Content builders ----------
 
 const buildKeyFacts = (subject, lesson, lessonContent) => [
   {
@@ -466,6 +373,38 @@ const buildQuiz = (lesson, lessonContent) => ({
   explanation: `The method in this lesson is action plus reflection: ${lesson.activity}`,
 });
 
+/**
+ * Builds four flashcards from the lesson content + key facts so we
+ * don't need to add new fields to subjects.js. Each card has a short
+ * front prompt and a longer back answer.
+ */
+const buildFlashcards = (lesson, keyFacts) => [
+  {
+    front: "What is this session about?",
+    back: lesson.summary,
+    frontLabel: "Concept",
+    backLabel: "Summary",
+  },
+  {
+    front: "What is the core method?",
+    back: keyFacts[1].body,
+    frontLabel: "Method",
+    backLabel: "Approach",
+  },
+  {
+    front: "How will you know it worked?",
+    back: keyFacts[2].body,
+    frontLabel: "Evidence",
+    backLabel: "Signal",
+  },
+  {
+    front: "What's your hands-on practice?",
+    back: lesson.activity,
+    frontLabel: "Practice",
+    backLabel: "Activity",
+  },
+];
+
 const buildLessonContent = (subject, lesson, lessonIndex) => {
   const focusStages = ["Foundation", "Application", "Refinement", "Delivery"];
   const focusLabel = focusStages[Math.min(lessonIndex, focusStages.length - 1)];
@@ -482,90 +421,90 @@ const buildLessonContent = (subject, lesson, lessonIndex) => {
       ],
     },
     "creative-writing": {
-      lens: "voice, image, and narrative movement",
-      habit: "draft first, then shape language around one live idea",
-      evidence: "a stronger draft with one clear emotional center",
+      lens: "voice, structure, and revision",
+      habit: "draft fast, then shape the line that carries the most weight",
+      evidence: "a paragraph where one sentence does more work than before",
       distractors: [
-        "Rewrite each sentence immediately so no rough lines remain",
-        "Collect notes indefinitely before drafting a first version",
-        "Use broad abstractions so the piece sounds universally relatable",
+        "Polish a single sentence until it feels perfect before drafting",
+        "Avoid revising so the original feeling stays intact",
+        "Write only when inspiration strikes and skip practice sessions",
       ],
     },
     "javascript-fundamentals": {
-      lens: "inputs, logic, and visible output",
-      habit: "turn each concept into a tiny working interaction",
-      evidence: "a small runnable snippet with predictable behavior",
+      lens: "syntax, behaviour, and debugging",
+      habit: "run small experiments to confirm what the language actually does",
+      evidence: "a working snippet that proves the concept",
       distractors: [
-        "Memorize syntax lists before trying any implementation",
-        "Build the UI first and postpone logic until the very end",
-        "Copy code blocks unchanged without checking understanding",
+        "Memorise syntax tables instead of running real code",
+        "Skip console output and assume the result you expected",
+        "Copy a tutorial verbatim without changing any variable",
       ],
     },
     "mindfulness-and-meditation": {
-      lens: "attention, breath, and response",
-      habit: "return to a short practice at the first sign of drift",
-      evidence: "one logged moment where reactivity turned into choice",
+      lens: "breath, body, and attention",
+      habit: "return gently when attention wanders rather than forcing focus",
+      evidence: "a session log that names what pulled your attention",
       distractors: [
-        "Force perfect silence before practicing for five minutes",
-        "Track your practice only when sessions feel easy",
-        "Add longer sessions immediately instead of building consistency",
+        "Push attention harder until distractions disappear entirely",
+        "Skip practice on busy days to make up later",
+        "Judge each session by how relaxed you felt at the end",
       ],
     },
     "cooking-fundamentals": {
-      lens: "flavor balance, timing, and texture",
-      habit: "change one variable at a time and taste intentionally",
-      evidence: "notes that connect one change to one flavor result",
+      lens: "heat, salt, and timing",
+      habit: "taste at each stage and adjust before plating",
+      evidence: "a dish you can describe in terms of the choices you made",
       distractors: [
-        "Add several new ingredients at once to discover what works",
-        "Cook from memory and skip tasting until plating",
-        "Change heat, salt, and acid together so the dish evolves faster",
+        "Follow the recipe without tasting to keep the result consistent",
+        "Add all seasoning at the start so the flavour develops on its own",
+        "Plate immediately and adjust only at the table",
       ],
     },
     "graphic-design": {
-      lens: "hierarchy, contrast, and spacing",
-      habit: "guide the eye by simplifying and prioritizing",
-      evidence: "a layout where message order is obvious at a glance",
+      lens: "hierarchy, contrast, and rhythm",
+      habit: "decide what the eye reaches for first, then defend that choice",
+      evidence: "a layout where one element clearly leads",
       distractors: [
-        "Add extra elements to avoid empty space",
-        "Set all text in similar size to keep visual consistency",
-        "Delay alignment decisions until final export",
+        "Apply more decoration so every element feels important",
+        "Match every spacing value to a default grid without judgement",
+        "Pick a font you like and reuse it across every weight",
       ],
     },
     "ecology-and-sustainability": {
-      lens: "systems, leverage points, and tradeoffs",
-      habit: "map one loop, then test one realistic intervention",
-      evidence: "tracked behavior data connected to one local system",
+      lens: "systems, flows, and feedback",
+      habit: "trace a single resource through one full cycle",
+      evidence: "a map that shows where impact concentrates",
       distractors: [
-        "Study global policy only and postpone local action",
-        "Pick the largest intervention possible before mapping constraints",
-        "Change goals weekly so progress stays flexible",
+        "Focus on individual choices and ignore the system around them",
+        "Treat sustainability as a marketing label rather than a behaviour",
+        "Wait for global consensus before changing local practice",
       ],
     },
     "public-speaking": {
-      lens: "message clarity, structure, and delivery",
-      habit: "practice one idea with one clear arc",
-      evidence: "a rehearsal recording with one measurable improvement",
+      lens: "message, presence, and pace",
+      habit: "rehearse aloud and adjust to what your ear actually hears",
+      evidence: "a talk outline tightened around one clear idea",
       distractors: [
-        "Write a long script and memorize every word before speaking",
-        "Focus on slide design first and postpone message decisions",
-        "Practice silently and skip recording to reduce pressure",
+        "Memorise the script word for word so nothing surprises you",
+        "Avoid recording rehearsals so you can stay confident",
+        "Add more slides so the audience has more to look at",
       ],
     },
   };
 
   const frame = subjectFrames[subject.id] ?? {
-    lens: "clear focus, concrete action, and reflection",
-    habit: "make one deliberate attempt and review the result",
-    evidence: "a visible before-and-after of your approach",
+    lens: "focus, action, and review",
+    habit: "do one concrete pass and capture what changed",
+    evidence: "a small artefact that shows what you practised",
     distractors: [
-      "Delay practice until all resources are perfect",
-      "Jump ahead before checking what this session teaches",
-      "Repeat work without noting what changed",
+      "Read the material once and call the session done",
+      "Skip the practice step and rely on intuition next time",
+      "Defer the work until you feel more prepared",
     ],
   };
 
   const paragraphs = [
-    `${lesson.summary} In this ${focusLabel.toLowerCase()} stage, focus on ${frame.lens} instead of trying to optimize everything at once. Depth comes from precision, not volume.`,
+    `This session focuses on ${frame.lens}. You are not trying to cover everything — you are practising one specific move that compounds over time. Depth comes from precision, not volume.`,
     `Start by naming a single target for this session. Then run one concentrated pass where you ${frame.habit}. This keeps your effort anchored to a result you can evaluate, rather than vague momentum.`,
     `Close by documenting evidence. Your goal is ${frame.evidence}. Treat this evidence as a baseline for the next session so each step in ${subject.name} builds on reality, not memory.`,
   ];
@@ -664,49 +603,49 @@ const getSessionMedia = (subjectId, lessonIndex, lessonTitle) => {
 const getSessionVisual = (subjectId) => {
   const visuals = {
     "digital-photography": {
-      emoji: "📷",
+      Icon: Camera,
       panel: "bg-sky/20",
       title: "Visual framing",
       body: "Look for contrast, depth, and story in each scene you capture.",
     },
     "creative-writing": {
-      emoji: "✍️",
+      Icon: PenLine,
       panel: "bg-yellow/25",
       title: "Drafting mode",
       body: "Move from raw thought to shaped language, one paragraph at a time.",
     },
     "javascript-fundamentals": {
-      emoji: "💻",
+      Icon: Code2,
       panel: "bg-brand/10",
       title: "Code in context",
       body: "Make each concept concrete by applying it to a small working example.",
     },
     "mindfulness-and-meditation": {
-      emoji: "🧘",
+      Icon: Brain,
       panel: "bg-sage/16",
       title: "Steady attention",
       body: "Slow down, observe clearly, and return to intention with less friction.",
     },
     "cooking-fundamentals": {
-      emoji: "🍳",
+      Icon: ChefHat,
       panel: "bg-yellow/22",
       title: "Flavor and timing",
       body: "Notice how simple ingredient choices shift the result of a whole dish.",
     },
     "graphic-design": {
-      emoji: "🎨",
+      Icon: Palette,
       panel: "bg-sky/22",
       title: "Hierarchy first",
       body: "Guide the eye with spacing, type contrast, and intentional rhythm.",
     },
     "ecology-and-sustainability": {
-      emoji: "🌿",
+      Icon: Leaf,
       panel: "bg-sage/18",
       title: "Systems thinking",
       body: "Map connections, identify leverage points, and act where impact is real.",
     },
     "public-speaking": {
-      emoji: "🎤",
+      Icon: Mic,
       panel: "bg-brand/10",
       title: "Message and delivery",
       body: "Shape one clear idea and practice saying it with confidence.",
@@ -715,7 +654,7 @@ const getSessionVisual = (subjectId) => {
 
   return (
     visuals[subjectId] ?? {
-      emoji: "✨",
+      Icon: Sparkles,
       panel: "bg-page",
       title: "Focused session",
       body: "Work through the core action, then reflect and move forward.",

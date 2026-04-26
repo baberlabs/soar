@@ -5,7 +5,7 @@
  * This is the structural primitive that makes the three tabs feel
  * consistent — all share the same "list on left, panel on right" geometry.
  *
- * The detail panel gets `sticky top-28` on desktop so long peer lists
+ * The detail panel gets `sticky top-6` on desktop so long peer lists
  * don't push the profile out of view when scrolling.
  */
 export const SplitPane = ({
