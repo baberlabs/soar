@@ -7,17 +7,15 @@ export default function About() {
 
   return (
     <main className="relative min-h-screen bg-page text-brand">
-      <div className="mx-auto w-full max-w-360 px-6 pb-24 pt-28 md:pb-32">
-        <div className="mx-auto flex max-w-6xl flex-col gap-16 md:gap-24">
-          <HeroSection />
-          <ManifestoSection />
-          <CoreShiftsSection />
-          <OriginSection />
-          <CurriculumSection />
-          <GovernanceSection />
-          <AccreditationSection />
-          {!state.user && <FinalSection />}
-        </div>
+      <div className="mx-auto w-full max-w-6xl space-y-16 px-6 pt-32 pb-16">
+        <HeroSection />
+        <ManifestoSection />
+        <CoreShiftsSection />
+        <OriginSection />
+        <CurriculumSection />
+        <GovernanceSection />
+        <AccreditationSection />
+        {!state.user && <FinalSection />}
       </div>
     </main>
   );
@@ -27,10 +25,12 @@ export default function About() {
 const HeroSection = () => (
   <section className="space-y-8">
     <div className="soft-enter space-y-6">
-      <p className="font-ui text-sm tracking-wider text-brand/55">SOAR</p>
-      <h1 className="max-w-4xl font-display text-[clamp(3rem,7vw,5.5rem)] leading-[1.2] text-brand">
-        Nutritious use, collective-ownership and decentralised networks.
+      <h1 className="font-ui text-sm tracking-wider text-brand/55">
+        About SOAR
       </h1>
+      <p className="max-w-4xl font-display text-3xl md:text-5xl leading-[1.2] text-brand">
+        Nutritious use, collective-ownership and decentralised networks.
+      </p>
     </div>
     <div className="soft-enter soft-delay-1 max-w-3xl space-y-5 font-body text-base leading-relaxed text-brand/78 md:text-lg">
       <p>

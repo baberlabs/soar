@@ -12,14 +12,14 @@ export default function Home() {
       <div className="mx-auto w-full max-w-360 px-6 pb-24">
         <div className="mx-auto flex max-w-6xl flex-col gap-16 md:gap-24">
           <HeroSection />
-          <ProblemSection />
+          {/* <ProblemSection />
           <WhatSOARChangesSection />
           <NoScrollSection />
-          <WhatYouDoSection />
-          <DataOwnershipSection />
-          <PeershipSection />
-          <LearningSection />
-          <FinalCtaSection />
+          <WhatYouDoSection /> */}
+          {/* <DataOwnershipSection />
+          <PeershipSection /> */}
+          {/* <LearningSection />
+          <FinalCtaSection /> */}
         </div>
       </div>
     </main>
@@ -45,10 +45,10 @@ const PageBackground = () => (
 
 const HeroSection = () => {
   return (
-    <section className="relative mx-auto px-6 mt-32 md:py-16 w-full max-w-6xl">
+    <section className="soft-enter relative mx-auto px-6 mt-32 md:py-16 w-full max-w-6xl">
       <div className="max-w-3xl">
         <Logo className="text-brand size-64" />
-        <h1 className="font-display text-3xl mb-6">
+        <h1 className="font-display text-3xl md:text-5xl mb-6">
           YOUR DATA. YOUR RULES. YOUR NETWORK
         </h1>
 

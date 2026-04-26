@@ -93,202 +93,210 @@ export default function Donate() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-6 pb-24 pt-28 md:pb-32 md:pt-34">
-      <header className="mb-12 max-w-2xl space-y-4">
-        <h1 className="font-display text-[clamp(3rem,6vw,4.5rem)] leading-[0.92] text-brand">
-          Fund the next iteration.
-        </h1>
-        <p className="font-body text-base leading-relaxed text-brand/80 md:text-lg">
-          SOAR runs on peer support. Your contribution keeps the platform
-          ad-free, sustains the decentralised network, and funds new features.
-        </p>
-      </header>
+    <main className="relative min-h-screen bg-page text-brand">
+      <div className="soft-enter mx-auto w-full max-w-6xl space-y-16 px-6 pt-32 pb-16">
+        <header className="mb-12 max-w-2xl space-y-6">
+          <h1 className="font-ui text-sm tracking-wider text-brand/55">
+            Donate
+          </h1>
+          <p className="max-w-4xl font-display text-3xl md:text-5xl leading-[1.2] text-brand">
+            Fund the next iteration.
+          </p>
+          <div className="max-w-3xl space-y-5 font-body text-base leading-relaxed text-brand/78 md:text-lg">
+            <p>
+              SOAR runs on peer support. Your contribution keeps the platform
+              ad-free, sustains the decentralised network, and funds new
+              features.
+            </p>
+          </div>
+        </header>
 
-      <form
-        onSubmit={handleCheckout}
-        className="grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:gap-16"
-      >
-        {/* Left Column: Amount Selection */}
-        <section className="space-y-8">
-          <div>
-            <h2 className="font-ui text-xl text-brand mb-4">
-              1. Select Contribution
-            </h2>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {AMOUNTS.map((val) => (
-                <Button
-                  key={val}
-                  type="button"
-                  text={`£${val}`}
-                  onClick={() => {
-                    setIsCustom(false);
-                    setAmount(val);
-                    setErrors({ ...errors, amount: null });
-                  }}
-                  variant={!isCustom && amount === val ? "primary" : "ghost"}
-                />
-              ))}
-            </div>
-
-            <div className="mt-4 flex flex-wrap items-center gap-4">
-              <button
-                type="button"
-                onClick={() => setIsCustom(true)}
-                className={`rounded-xl px-4 py-2 font-ui text-sm transition-all ${
-                  isCustom
-                    ? "bg-brand/10 text-brand"
-                    : "text-brand/60 hover:text-brand"
-                }`}
-              >
-                Custom Amount
-              </button>
-              {isCustom && (
-                <div className="flex-1 min-w-50">
-                  <InputField
-                    name="custom-amount-val"
-                    type="number"
-                    placeholder="Minimum £1"
-                    value={customAmount}
-                    onValueChange={(val) => {
-                      setCustomAmount(val);
+        <form
+          onSubmit={handleCheckout}
+          className="grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:gap-16"
+        >
+          {/* Left Column: Amount Selection */}
+          <section className="space-y-8">
+            <div>
+              <h2 className="font-ui text-xl text-brand mb-4">
+                1. Select Contribution
+              </h2>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {AMOUNTS.map((val) => (
+                  <Button
+                    key={val}
+                    type="button"
+                    text={`£${val}`}
+                    onClick={() => {
+                      setIsCustom(false);
+                      setAmount(val);
                       setErrors({ ...errors, amount: null });
                     }}
-                    error={errors.amount}
+                    variant={!isCustom && amount === val ? "primary" : "ghost"}
                   />
+                ))}
+              </div>
+
+              <div className="mt-4 flex flex-wrap items-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => setIsCustom(true)}
+                  className={`rounded-xl px-4 py-2 font-ui text-sm transition-all ${
+                    isCustom
+                      ? "bg-brand/10 text-brand"
+                      : "text-brand/60 hover:text-brand"
+                  }`}
+                >
+                  Custom Amount
+                </button>
+                {isCustom && (
+                  <div className="flex-1 min-w-50">
+                    <InputField
+                      name="custom-amount-val"
+                      type="number"
+                      placeholder="Minimum £1"
+                      value={customAmount}
+                      onValueChange={(val) => {
+                        setCustomAmount(val);
+                        setErrors({ ...errors, amount: null });
+                      }}
+                      error={errors.amount}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="rounded-3xl border border-brand/10 bg-brand/5 p-6">
+              <h3 className="font-ui text-sm tracking-widest text-brand/60 uppercase">
+                Impact Summary
+              </h3>
+              <p className="mt-3 font-body text-sm leading-relaxed text-brand/80">
+                A contribution of <strong>£{finalAmount}</strong> goes directly
+                into the Community Benefit Society treasury. It will be
+                allocated democratically by peers in the next governance vote.
+              </p>
+            </div>
+          </section>
+
+          {/* Right Column: Payment Details */}
+          <section className="space-y-6 rounded-4xl border border-brand/15 bg-page p-6 shadow-[0_24px_48px_rgba(75,81,149,0.06)] md:p-8">
+            <div className="flex flex-col gap-2">
+              <h2 className="font-ui text-xl text-brand">2. Payment Method</h2>
+
+              <div className="flex flex-wrap gap-2 mt-2">
+                {PAYMENT_METHODS.map((method) => (
+                  <Button
+                    key={method.id}
+                    type="button"
+                    text={method.label}
+                    onClick={() => {
+                      setPaymentMethod(method.id);
+                      setErrors({});
+                    }}
+                    fullWidth={false}
+                    variant={paymentMethod === method.id ? "primary" : "ghost"}
+                    className="text-sm"
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-4 pt-2">
+              <InputField
+                label="Email Address for Receipt"
+                name="chk-eml"
+                type="email"
+                value={email}
+                onValueChange={setEmail}
+                error={errors.email}
+              />
+
+              {paymentMethod === "card" && (
+                <>
+                  <InputField
+                    label="Name on Card"
+                    name="chk-nm"
+                    value={name}
+                    onValueChange={setName}
+                    error={errors.name}
+                  />
+                  <div className="grid gap-4 sm:grid-cols-[1fr_auto_auto]">
+                    <InputField
+                      label="Card Number"
+                      name="chk-num"
+                      placeholder="0000 0000 0000 0000"
+                      value={cardNumber}
+                      onValueChange={setCardNumber}
+                      error={errors.cardNumber}
+                    />
+                    <div className="w-24">
+                      <InputField
+                        label="Expiry"
+                        name="chk-exp"
+                        placeholder="MM/YY"
+                        value={expiry}
+                        onValueChange={setExpiry}
+                        error={errors.expiry}
+                      />
+                    </div>
+                    <div className="w-24">
+                      <InputField
+                        label="CVC"
+                        name="chk-sec"
+                        placeholder="123"
+                        value={cvc}
+                        onValueChange={setCvc}
+                        error={errors.cvc}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {(paymentMethod === "google-pay" ||
+                paymentMethod === "apple-pay" ||
+                paymentMethod === "paypal") && (
+                <div className="rounded-2xl border border-brand/10 bg-brand/5 p-5 text-center">
+                  <p className="font-ui text-brand mb-1">
+                    Fast Checkout Selected
+                  </p>
+                  <p className="font-body text-sm text-brand/60">
+                    Clicking Pay will launch the provider's secure window.
+                  </p>
                 </div>
               )}
-            </div>
-          </div>
 
-          <div className="rounded-3xl border border-brand/10 bg-brand/5 p-6">
-            <h3 className="font-ui text-sm tracking-widest text-brand/60 uppercase">
-              Impact Summary
-            </h3>
-            <p className="mt-3 font-body text-sm leading-relaxed text-brand/80">
-              A contribution of <strong>£{finalAmount}</strong> goes directly
-              into the Community Benefit Society treasury. It will be allocated
-              democratically by peers in the next governance vote.
-            </p>
-          </div>
-        </section>
-
-        {/* Right Column: Payment Details */}
-        <section className="space-y-6 rounded-4xl border border-brand/15 bg-page p-6 shadow-[0_24px_48px_rgba(75,81,149,0.06)] md:p-8">
-          <div className="flex flex-col gap-2">
-            <h2 className="font-ui text-xl text-brand">2. Payment Method</h2>
-
-            <div className="flex flex-wrap gap-2 mt-2">
-              {PAYMENT_METHODS.map((method) => (
-                <Button
-                  key={method.id}
-                  type="button"
-                  text={method.label}
-                  onClick={() => {
-                    setPaymentMethod(method.id);
-                    setErrors({});
-                  }}
-                  fullWidth={false}
-                  variant={paymentMethod === method.id ? "primary" : "ghost"}
-                  className="text-sm"
-                />
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-4 pt-2">
-            <InputField
-              label="Email Address for Receipt"
-              name="chk-eml"
-              type="email"
-              value={email}
-              onValueChange={setEmail}
-              error={errors.email}
-            />
-
-            {paymentMethod === "card" && (
-              <>
+              {(paymentMethod === "bank" || paymentMethod === "bitcoin") && (
                 <InputField
-                  label="Name on Card"
-                  name="chk-nm"
-                  value={name}
-                  onValueChange={setName}
-                  error={errors.name}
+                  label={
+                    paymentMethod === "bank"
+                      ? "Account / Sort Code"
+                      : "Wallet Address"
+                  }
+                  name="chk-misc"
+                  value={walletOrBank}
+                  onValueChange={setWalletOrBank}
+                  error={errors.walletOrBank}
                 />
-                <div className="grid gap-4 sm:grid-cols-[1fr_auto_auto]">
-                  <InputField
-                    label="Card Number"
-                    name="chk-num"
-                    placeholder="0000 0000 0000 0000"
-                    value={cardNumber}
-                    onValueChange={setCardNumber}
-                    error={errors.cardNumber}
-                  />
-                  <div className="w-24">
-                    <InputField
-                      label="Expiry"
-                      name="chk-exp"
-                      placeholder="MM/YY"
-                      value={expiry}
-                      onValueChange={setExpiry}
-                      error={errors.expiry}
-                    />
-                  </div>
-                  <div className="w-24">
-                    <InputField
-                      label="CVC"
-                      name="chk-sec"
-                      placeholder="123"
-                      value={cvc}
-                      onValueChange={setCvc}
-                      error={errors.cvc}
-                    />
-                  </div>
-                </div>
-              </>
-            )}
+              )}
+            </div>
 
-            {(paymentMethod === "google-pay" ||
-              paymentMethod === "apple-pay" ||
-              paymentMethod === "paypal") && (
-              <div className="rounded-2xl border border-brand/10 bg-brand/5 p-5 text-center">
-                <p className="font-ui text-brand mb-1">
-                  Fast Checkout Selected
-                </p>
-                <p className="font-body text-sm text-brand/60">
-                  Clicking Pay will launch the provider's secure window.
-                </p>
-              </div>
-            )}
-
-            {(paymentMethod === "bank" || paymentMethod === "bitcoin") && (
-              <InputField
-                label={
-                  paymentMethod === "bank"
-                    ? "Account / Sort Code"
-                    : "Wallet Address"
-                }
-                name="chk-misc"
-                value={walletOrBank}
-                onValueChange={setWalletOrBank}
-                error={errors.walletOrBank}
+            <div className="pt-4">
+              <Button
+                type="submit"
+                text={`Pay £${finalAmount}`}
+                loadingText="Processing securely..."
+                status={status === "processing" ? "loading" : "idle"}
+                fullWidth={true}
               />
-            )}
-          </div>
-
-          <div className="pt-4">
-            <Button
-              type="submit"
-              text={`Pay £${finalAmount}`}
-              loadingText="Processing securely..."
-              status={status === "processing" ? "loading" : "idle"}
-              fullWidth={true}
-            />
-            <p className="mt-3 text-center font-body text-xs text-brand/50">
-              Payments are processed securely via SSL.
-            </p>
-          </div>
-        </section>
-      </form>
+              <p className="mt-3 text-center font-body text-xs text-brand/50">
+                Payments are processed securely via SSL.
+              </p>
+            </div>
+          </section>
+        </form>
+      </div>
     </main>
   );
 }
