@@ -1,7 +1,9 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
-import { Header } from "./layout/Header";
+import { AppSidebar } from "./layout/AppSidebar";
+import { MobileBottomBar } from "./layout/MobileBottomBar";
+import { PublicHeader } from "./layout/PublicHeader";
 import { Newsletter } from "./layout/Newsletter";
 import { Donation } from "./layout/Donation";
 import { Footer } from "./layout/Footer";
@@ -79,187 +81,205 @@ const RootRoute = () => {
   return user ? <Navigate to="/dashboard" replace /> : <Home />;
 };
 
+const AppRoutes = () => (
+  <Suspense fallback={<PageSkeleton />}>
+    <Routes>
+      {/* Public */}
+      <Route path="/" element={<RootRoute />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/join" element={<Join />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/donate" element={<Donate />} />
+      {/* Legal & Transparency */}
+      <Route path="/data-manifesto" element={<DataManifesto />} />
+      <Route path="/terms" element={<Terms />} />
+      <Route path="/accessibility" element={<Accessibility />} />
+      {/* Auth flows */}
+      <Route
+        path="/onboarding"
+        element={
+          <ProtectedRoute requireOnboarding={false}>
+            <Onboarding />
+          </ProtectedRoute>
+        }
+      />
+      {/* Protected platform pages */}
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/learn"
+        element={
+          <ProtectedRoute>
+            <Learn />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/learn/:subjectId"
+        element={
+          <ProtectedRoute>
+            <Subject />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/learn/:subjectId/sessions/:lessonId"
+        element={
+          <ProtectedRoute>
+            <Session />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/create"
+        element={
+          <ProtectedRoute>
+            <Create />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/create/:creationId"
+        element={
+          <ProtectedRoute>
+            <CreationDetail />
+          </ProtectedRoute>
+        }
+      />
+      {/* Reflection: split into Vision Board + Monthly Letter (spec 8.11/8.12) */}
+      <Route
+        path="/vision-board"
+        element={
+          <ProtectedRoute>
+            <VisionBoard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/monthly-letter"
+        element={
+          <ProtectedRoute>
+            <MonthlyLetter />
+          </ProtectedRoute>
+        }
+      />
+      {/* /reflect is a legacy alias, keep it working for any saved links. */}
+      <Route
+        path="/reflect"
+        element={<Navigate to="/vision-board" replace />}
+      />
+
+      {/* Connect: shell + nested tabs  */}
+      <Route
+        path="/connect"
+        element={
+          <ProtectedRoute>
+            <Connect />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<Navigate to="chats" replace />} />
+        <Route path="chats" element={<ChatsTab />} />
+        <Route path="my-peers" element={<MyPeersTab />} />
+        <Route path="find-peers" element={<FindPeersTab />} />
+        <Route path="my-events" element={<MyEventsTab />} />
+        <Route path="all-events" element={<AllEventsTab />} />
+      </Route>
+
+      {/* Account: shell + nested tabs */}
+      <Route
+        path="/account"
+        element={
+          <ProtectedRoute>
+            <Account />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<Navigate to="profile" replace />} />
+        <Route path="profile" element={<AccountProfileTab />} />
+        <Route path="activity" element={<AccountActivityTab />} />
+        <Route path="peers" element={<AccountPeersTab />} />
+        <Route path="node" element={<AccountNodeTab />} />
+        <Route path="data" element={<AccountDataTab />} />
+        <Route path="coming-soon" element={<AccountComingSoonTab />} />
+      </Route>
+      <Route
+        path="/forum"
+        element={
+          <ProtectedRoute>
+            <Forum />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<Navigate to="all" replace />} />
+        <Route
+          path="all"
+          element={<ForumFilteredListTab routeFilter="all" />}
+        />
+        <Route
+          path="discussion"
+          element={<ForumFilteredListTab routeFilter="discussion" />}
+        />
+        <Route
+          path="voting"
+          element={<ForumFilteredListTab routeFilter="voting" />}
+        />
+        <Route
+          path="closed"
+          element={<ForumFilteredListTab routeFilter="closed" />}
+        />
+        <Route path="new" element={<ForumNewProposalTab />} />
+        <Route path="drafts" element={<ForumDraftsTab />} />
+        <Route path=":proposalId/edit" element={<ForumProposalEdit />} />
+        <Route path=":proposalId" element={<ForumProposalDetail />} />
+      </Route>
+      {/* /feedback is a legacy alias for /forum, keep it working */}
+      <Route path="/feedback" element={<Navigate to="/forum/all" replace />} />
+      <Route path="/404" element={<NotFound />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  </Suspense>
+);
+
 const App = () => {
   const location = useLocation();
-  const showDonation = location.pathname !== "/donate";
+  const { user } = useSOARState();
+  const hasAppChrome =
+    user?.onboardingComplete === true && location.pathname !== "/onboarding";
+  const showPublicHeader = !user;
+  const showMarketingChrome = !user;
+  const showDonation = showMarketingChrome && location.pathname !== "/donate";
 
   return (
-    <div className="relative isolate flex min-h-dvh flex-col overflow-x-hidden bg-page text-navy">
+    <div className="relative isolate min-h-dvh overflow-x-hidden bg-page text-navy">
       <ScrollToTop />
-      <Header />
+      {showPublicHeader ? <PublicHeader /> : null}
+      {hasAppChrome ? (
+        <>
+          <AppSidebar />
+          <MobileBottomBar />
+        </>
+      ) : null}
 
-      <div className="flex-1">
-        <Suspense fallback={<PageSkeleton />}>
-          <Routes>
-            {/* Public */}
-            <Route path="/" element={<RootRoute />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/join" element={<Join />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/donate" element={<Donate />} />
-            {/* Legal & Transparency */}
-            <Route path="/data-manifesto" element={<DataManifesto />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/accessibility" element={<Accessibility />} />
-            {/* Auth flows */}
-            <Route
-              path="/onboarding"
-              element={
-                <ProtectedRoute requireOnboarding={false}>
-                  <Onboarding />
-                </ProtectedRoute>
-              }
-            />
-            {/* Protected platform pages */}
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/learn"
-              element={
-                <ProtectedRoute>
-                  <Learn />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/learn/:subjectId"
-              element={
-                <ProtectedRoute>
-                  <Subject />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/learn/:subjectId/sessions/:lessonId"
-              element={
-                <ProtectedRoute>
-                  <Session />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/create"
-              element={
-                <ProtectedRoute>
-                  <Create />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/create/:creationId"
-              element={
-                <ProtectedRoute>
-                  <CreationDetail />
-                </ProtectedRoute>
-              }
-            />
-            {/* Reflection: split into Vision Board + Monthly Letter (spec 8.11/8.12) */}
-            <Route
-              path="/vision-board"
-              element={
-                <ProtectedRoute>
-                  <VisionBoard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/monthly-letter"
-              element={
-                <ProtectedRoute>
-                  <MonthlyLetter />
-                </ProtectedRoute>
-              }
-            />
-            {/* /reflect is a legacy alias, keep it working for any saved links. */}
-            <Route
-              path="/reflect"
-              element={<Navigate to="/vision-board" replace />}
-            />
+      <div
+        className={
+          hasAppChrome ? "min-h-dvh md:ms-60" : "flex min-h-dvh flex-col"
+        }
+      >
+        <div className="flex-1">
+          <AppRoutes />
+        </div>
 
-            {/* Connect: shell + nested tabs  */}
-            <Route
-              path="/connect"
-              element={
-                <ProtectedRoute>
-                  <Connect />
-                </ProtectedRoute>
-              }
-            >
-              <Route index element={<Navigate to="chats" replace />} />
-              <Route path="chats" element={<ChatsTab />} />
-              <Route path="my-peers" element={<MyPeersTab />} />
-              <Route path="find-peers" element={<FindPeersTab />} />
-              <Route path="my-events" element={<MyEventsTab />} />
-              <Route path="all-events" element={<AllEventsTab />} />
-            </Route>
-
-            {/* Account: shell + nested tabs */}
-            <Route
-              path="/account"
-              element={
-                <ProtectedRoute>
-                  <Account />
-                </ProtectedRoute>
-              }
-            >
-              <Route index element={<Navigate to="profile" replace />} />
-              <Route path="profile" element={<AccountProfileTab />} />
-              <Route path="activity" element={<AccountActivityTab />} />
-              <Route path="peers" element={<AccountPeersTab />} />
-              <Route path="node" element={<AccountNodeTab />} />
-              <Route path="data" element={<AccountDataTab />} />
-              <Route path="coming-soon" element={<AccountComingSoonTab />} />
-            </Route>
-            <Route
-              path="/forum"
-              element={
-                <ProtectedRoute>
-                  <Forum />
-                </ProtectedRoute>
-              }
-            >
-              <Route index element={<Navigate to="all" replace />} />
-              <Route
-                path="all"
-                element={<ForumFilteredListTab routeFilter="all" />}
-              />
-              <Route
-                path="discussion"
-                element={<ForumFilteredListTab routeFilter="discussion" />}
-              />
-              <Route
-                path="voting"
-                element={<ForumFilteredListTab routeFilter="voting" />}
-              />
-              <Route
-                path="closed"
-                element={<ForumFilteredListTab routeFilter="closed" />}
-              />
-              <Route path="new" element={<ForumNewProposalTab />} />
-              <Route path="drafts" element={<ForumDraftsTab />} />
-              <Route path=":proposalId/edit" element={<ForumProposalEdit />} />
-              <Route path=":proposalId" element={<ForumProposalDetail />} />
-            </Route>
-            {/* /feedback is a legacy alias for /forum, keep it working */}
-            <Route
-              path="/feedback"
-              element={<Navigate to="/forum/all" replace />}
-            />
-            <Route path="/404" element={<NotFound />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
+        {showDonation ? <Donation /> : null}
+        {showMarketingChrome ? <Newsletter /> : null}
+        {showMarketingChrome ? <Footer /> : null}
       </div>
-
-      {showDonation && <Donation />}
-      <Newsletter />
-      <Footer />
     </div>
   );
 };

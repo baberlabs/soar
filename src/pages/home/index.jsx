@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-import Logo from "./components/Logo";
+import Logo from "../../components/Logo";
 import BackgroundLayer1Image from "../../assets/images/background-layer-1.svg";
 import BackgroundLayer2Image from "../../assets/images/background-layer-2.svg";
 import { LinkButton } from "../../components/LinkButton";

@@ -42,7 +42,7 @@ export default function Dashboard() {
   }
 
   return (
-    <main className="relative mx-auto w-full max-w-360 overflow-hidden px-6 pb-24 pt-28 md:pb-32 md:pt-34">
+    <main className="relative mx-auto w-full max-w-360 overflow-hidden px-6 pb-24 pt-8 md:pb-8 md:pt-10">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-136 bg-[linear-gradient(180deg,rgba(180,220,245,0.24),rgba(251,247,236,0))]"
@@ -397,7 +397,7 @@ const MonthlyCyclePanel = ({ cycle }) => (
 );
 
 const CycleStatusCard = ({
-  icon: Icon,
+  icon,
   label,
   status,
   title,
@@ -405,8 +405,11 @@ const CycleStatusCard = ({
   href,
   cta,
   tone,
-}) => (
-  <article className="flex min-h-56 flex-col justify-between rounded-[1.15rem] border border-brand/10 bg-page/72 p-4">
+}) => {
+  const Icon = icon;
+
+  return (
+    <article className="flex min-h-56 flex-col justify-between rounded-[1.15rem] border border-brand/10 bg-page/72 p-4">
     <div>
       <div className="flex items-center justify-between gap-3">
         <p className="font-body text-xs uppercase tracking-[0.12em] text-brand/50">
@@ -437,8 +440,9 @@ const CycleStatusCard = ({
       {cta}
       <ArrowRight size={15} strokeWidth={1.8} aria-hidden="true" />
     </Link>
-  </article>
-);
+    </article>
+  );
+};
 
 const CreatePanel = ({ creations }) => (
   <section className="rounded-[1.35rem] border border-brand/12 bg-cream/88 p-5 shadow-[0_16px_38px_rgba(75,81,149,0.05)] md:p-6">
@@ -585,8 +589,11 @@ const DataOwnershipPanel = ({ dataOwnership }) => (
   </section>
 );
 
-const DataMetric = ({ icon: Icon, label, value }) => (
-  <div className="rounded-2xl border border-sage/18 bg-cream/72 p-4">
+const DataMetric = ({ icon, label, value }) => {
+  const Icon = icon;
+
+  return (
+    <div className="rounded-2xl border border-sage/18 bg-cream/72 p-4">
     <div className="flex items-center gap-2 text-brand/52">
       <Icon size={15} strokeWidth={1.8} aria-hidden="true" />
       <p className="font-body text-[0.66rem] uppercase tracking-[0.12em]">
@@ -594,8 +601,9 @@ const DataMetric = ({ icon: Icon, label, value }) => (
       </p>
     </div>
     <p className="mt-2 font-ui text-xl leading-none text-brand">{value}</p>
-  </div>
-);
+    </div>
+  );
+};
 
 const PanelHeader = ({
   eyebrow,

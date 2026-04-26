@@ -69,7 +69,7 @@ export default function CreationDetail() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-28 md:pb-32 md:pt-34">
+    <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-8 md:pb-8 md:pt-10">
       <div className="mx-auto max-w-4xl space-y-6">
         <Link
           to="/create"

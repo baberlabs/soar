@@ -43,7 +43,7 @@ export default function SubjectRoom() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-28 md:pb-32 md:pt-34">
+    <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-8 md:pb-8 md:pt-10">
       <div className="mx-auto max-w-5xl space-y-10">
         <div className="space-y-4">
           <Link

@@ -24,7 +24,7 @@ export default function VisionBoard() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-360 px-4 pb-20 pt-28 sm:px-6 sm:pb-24 sm:pt-32 md:pb-32 md:pt-40">
+    <main className="mx-auto w-full max-w-360 px-4 pb-24 pt-8 sm:px-6 md:pb-8 md:pt-10">
       <div className="mx-auto max-w-5xl space-y-8">
         <header className="space-y-3">
           <p className="font-ui text-xs uppercase tracking-[0.2em] text-brand/55">

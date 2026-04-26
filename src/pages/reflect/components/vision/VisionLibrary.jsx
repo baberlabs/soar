@@ -1,6 +1,4 @@
 import { Button } from "../../../../components/Button";
-import { formatMonthLabel } from "../../utils/month";
-import { getBoardMonthValue } from "../../utils/moodboard";
 import { VisionLibraryCard } from "./VisionLibraryCard";
 
 export const VisionLibrary = ({
@@ -10,11 +8,8 @@ export const VisionLibrary = ({
   onSelectBoard,
   onCreate,
 }) => {
-  const activeBoard =
-    boards.find((board) => board.id === activeBoardId) ?? null;
-
   return (
-    <aside className="space-y-4 rounded-3xl border border-brand/15 p-3 shadow-[0_18px_50px_rgba(55,62,112,0.08)] sm:p-4 xl:sticky xl:top-28">
+    <aside className="space-y-4 rounded-3xl border border-brand/15 p-3 shadow-[0_18px_50px_rgba(55,62,112,0.08)] sm:p-4 xl:sticky xl:top-6">
       <div className="flex items-end justify-between gap-3">
         <div>
           <p className="font-ui text-xs uppercase tracking-[0.14em] text-brand/60">

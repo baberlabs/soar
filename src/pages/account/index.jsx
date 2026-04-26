@@ -21,7 +21,7 @@ export default function Account() {
   const navigate = useNavigate();
 
   const user = state.user;
-  const connections = state.connections ?? [];
+  const connections = useMemo(() => state.connections ?? [], [state.connections]);
   const acceptedCount = connections.filter(
     (c) => c.status === "accepted",
   ).length;
@@ -53,7 +53,7 @@ export default function Account() {
   ];
 
   return (
-    <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-32 md:pb-32 md:pt-40">
+    <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-8 md:pb-8 md:pt-10">
       <div className="space-y-8">
         <AccountHeader user={user} stats={headerStats} />
 

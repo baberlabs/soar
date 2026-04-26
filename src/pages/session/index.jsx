@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import {
   Brain,
@@ -56,13 +56,9 @@ export default function SessionPage() {
     subject?.lessons.findIndex((entry) => entry.id === lessonId) ?? -1;
   const lesson = lessonIndex >= 0 ? subject.lessons[lessonIndex] : null;
 
-  const enrollment = useMemo(
-    () =>
-      subject
-        ? state.curriculum.find((entry) => entry.subjectId === subject.id)
-        : null,
-    [subject, state.curriculum],
-  );
+  const enrollment = subject
+    ? (state.curriculum.find((entry) => entry.subjectId === subject.id) ?? null)
+    : null;
 
   const completedLessonIds = enrollment?.completedLessonIds ?? [];
   const completedCount = completedLessonIds.length;
@@ -119,30 +115,6 @@ export default function SessionPage() {
     [state.reflections, subject, lesson],
   );
 
-  // Step state
-  const [currentStep, setCurrentStep] = useState("lesson");
-  const [completedSteps, setCompletedSteps] = useState(new Set());
-  const [justFinished, setJustFinished] = useState(false);
-
-  // Reset wizard state when navigating to a different lesson within the
-  // same subject. Without this, the previous lesson's currentStep,
-  // completedSteps, and justFinished would bleed into the new view —
-  // peers would land on the challenge step with the success banner still
-  // showing because the SessionPage component itself stays mounted.
-  useEffect(() => {
-    setCurrentStep("lesson");
-    setJustFinished(false);
-    setCompletedSteps(new Set());
-  }, [lessonId]);
-
-  // If the session is already complete (revisit case), unlock every step
-  // so the peer can navigate freely for review.
-  useEffect(() => {
-    if (isComplete) {
-      setCompletedSteps(new Set(STEPS));
-    }
-  }, [isComplete]);
-
   // Early-return guards must run AFTER all hooks above to keep hook
   // order stable across renders.
   if (!subject || !lesson) {
@@ -150,6 +122,74 @@ export default function SessionPage() {
   }
 
   const visual = getSessionVisual(subject.id);
+
+  const nextLesson =
+    lessonIndex + 1 < subject.lessons.length
+      ? subject.lessons[lessonIndex + 1]
+      : null;
+
+  return (
+    <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-8 md:pb-8 md:pt-10">
+      <div className="mx-auto max-w-5xl space-y-8">
+        <Link
+          to={`/learn/${subject.id}`}
+          className="inline-flex items-center gap-2 font-ui text-sm tracking-[0.08em] text-brand/70 hover:text-brand"
+        >
+          ← Back to subject room
+        </Link>
+
+        <SessionHeader
+          subject={subject}
+          lesson={lesson}
+          lessonIndex={lessonIndex}
+          isComplete={isComplete}
+          isCurrent={isCurrent}
+          visual={visual}
+        />
+
+        {isLocked ? (
+          <LockedPanel subjectId={subject.id} />
+        ) : (
+          <SessionExperience
+            key={`${subject.id}:${lesson.id}`}
+            subject={subject}
+            lesson={lesson}
+            enrollment={enrollment}
+            isComplete={isComplete}
+            media={media}
+            lessonContent={lessonContent}
+            keyFacts={keyFacts}
+            flashcards={flashcards}
+            quiz={quiz}
+            existingReflection={existingReflection}
+            nextLesson={nextLesson}
+            dispatch={dispatch}
+          />
+        )}
+      </div>
+    </main>
+  );
+}
+
+const SessionExperience = ({
+  subject,
+  lesson,
+  enrollment,
+  isComplete,
+  media,
+  lessonContent,
+  keyFacts,
+  flashcards,
+  quiz,
+  existingReflection,
+  nextLesson,
+  dispatch,
+}) => {
+  const [currentStep, setCurrentStep] = useState("lesson");
+  const [completedSteps, setCompletedSteps] = useState(
+    () => new Set(isComplete ? STEPS : []),
+  );
+  const [justFinished, setJustFinished] = useState(false);
 
   const advanceStep = () => {
     setCompletedSteps((prev) => new Set([...prev, currentStep]));
@@ -189,88 +229,56 @@ export default function SessionPage() {
     setJustFinished(true);
   };
 
-  const nextLesson =
-    lessonIndex + 1 < subject.lessons.length
-      ? subject.lessons[lessonIndex + 1]
-      : null;
-
   return (
-    <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-28 md:pb-32 md:pt-34">
-      <div className="mx-auto max-w-5xl space-y-8">
-        <Link
-          to={`/learn/${subject.id}`}
-          className="inline-flex items-center gap-2 font-ui text-sm tracking-[0.08em] text-brand/70 hover:text-brand"
-        >
-          ← Back to subject room
-        </Link>
+    <div className="space-y-6">
+      <SessionProgress
+        steps={STEPS}
+        labels={STEP_LABELS}
+        currentStep={currentStep}
+        completedSteps={completedSteps}
+        onStepClick={goToStep}
+      />
 
-        <SessionHeader
-          subject={subject}
-          lesson={lesson}
-          lessonIndex={lessonIndex}
-          isComplete={isComplete}
-          isCurrent={isCurrent}
-          visual={visual}
+      {justFinished ? (
+        <FinishedBanner subjectId={subject.id} nextLesson={nextLesson} />
+      ) : null}
+
+      {currentStep === "lesson" && (
+        <LessonStep
+          media={media}
+          lessonContent={lessonContent}
+          keyFacts={keyFacts}
+          onContinue={advanceStep}
         />
+      )}
 
-        {isLocked ? (
-          <LockedPanel subjectId={subject.id} />
-        ) : (
-          <div className="space-y-6">
-            <SessionProgress
-              steps={STEPS}
-              labels={STEP_LABELS}
-              currentStep={currentStep}
-              completedSteps={completedSteps}
-              onStepClick={goToStep}
-            />
+      {currentStep === "flashcards" && (
+        <FlashcardsStep flashcards={flashcards} onContinue={advanceStep} />
+      )}
 
-            {justFinished ? (
-              <FinishedBanner subjectId={subject.id} nextLesson={nextLesson} />
-            ) : null}
+      {currentStep === "quiz" && (
+        <QuizStep quiz={quiz} onContinue={advanceStep} />
+      )}
 
-            {currentStep === "lesson" && (
-              <LessonStep
-                media={media}
-                lessonContent={lessonContent}
-                keyFacts={keyFacts}
-                onContinue={advanceStep}
-              />
-            )}
+      {currentStep === "reflection" && (
+        <ReflectionStep
+          prompt={lesson.reflectionPrompt}
+          existingReflection={existingReflection}
+          onSave={handleSaveReflection}
+          onContinue={advanceStep}
+        />
+      )}
 
-            {currentStep === "flashcards" && (
-              <FlashcardsStep
-                flashcards={flashcards}
-                onContinue={advanceStep}
-              />
-            )}
-
-            {currentStep === "quiz" && (
-              <QuizStep quiz={quiz} onContinue={advanceStep} />
-            )}
-
-            {currentStep === "reflection" && (
-              <ReflectionStep
-                prompt={lesson.reflectionPrompt}
-                existingReflection={existingReflection}
-                onSave={handleSaveReflection}
-                onContinue={advanceStep}
-              />
-            )}
-
-            {currentStep === "challenge" && (
-              <ChallengeStep
-                curatedChallenge={lesson.activity}
-                alreadyComplete={isComplete}
-                onAcknowledge={handleChallengeAcknowledge}
-              />
-            )}
-          </div>
-        )}
-      </div>
-    </main>
+      {currentStep === "challenge" && (
+        <ChallengeStep
+          curatedChallenge={lesson.activity}
+          alreadyComplete={isComplete}
+          onAcknowledge={handleChallengeAcknowledge}
+        />
+      )}
+    </div>
   );
-}
+};
 
 // ---------- Inline subcomponents (page-local, not reused elsewhere) ----------
 

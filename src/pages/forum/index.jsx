@@ -34,7 +34,7 @@ export default function Forum() {
   if (!state.user) return null;
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-6 pb-24 pt-32 md:pb-32 md:pt-40">
+    <main className="mx-auto w-full max-w-7xl px-6 pb-24 pt-8 md:pb-8 md:pt-10">
       <div className="space-y-6">
         <ForumHeader />
         <ForumTabs counts={counts} />

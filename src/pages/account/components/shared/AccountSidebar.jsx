@@ -38,7 +38,7 @@ export const AccountSidebar = ({ onSignOut, peerCount, pinCount }) => {
   return (
     <nav
       aria-label="Account sections"
-      className="sticky top-28 flex flex-col gap-1 self-start rounded-3xl border border-brand/15 bg-cream p-3 shadow-[0_14px_36px_rgba(75,81,149,0.05)]"
+      className="sticky top-6 flex flex-col gap-1 self-start rounded-3xl border border-brand/15 bg-cream p-3 shadow-[0_14px_36px_rgba(75,81,149,0.05)]"
     >
       <ul role="tablist" aria-orientation="vertical" className="flex flex-col gap-0.5">
         {ITEMS.map((item, index) => (

@@ -6,7 +6,7 @@ export const PageSkeleton = () => (
     <div className="mx-auto max-w-6xl space-y-6 motion-safe:animate-pulse">
       <div className="space-y-3">
         <div className="h-4 w-28 rounded-full bg-brand/10" />
-        <div className="h-16 w-full max-w-3xl rounded-[1rem] bg-brand/10 md:h-20" />
+        <div className="h-16 w-full max-w-3xl rounded-2xl bg-brand/10 md:h-20" />
         <div className="h-4 w-full max-w-2xl rounded-full bg-brand/8" />
       </div>
 

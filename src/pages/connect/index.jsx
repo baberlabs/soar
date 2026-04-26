@@ -34,7 +34,7 @@ export default function Connect() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-32 md:pb-32 md:pt-40">
+    <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-8 md:pb-8 md:pt-10">
       <div className="space-y-10">
         <ConnectHeader stats={stats} />
         <ConnectTabs counts={counts} />
