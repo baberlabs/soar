@@ -33,8 +33,8 @@ export const AuthorActions = ({
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-brand/15 bg-cream/70 p-3">
-        <p className="mr-auto font-body text-xs uppercase tracking-[0.14em] text-brand/55">
+      <div className="flex flex-wrap sm:items-center gap-2 sm:rounded-2xl sm:border sm:border-brand/15 sm:bg-cream/70 sm:p-3">
+        <p className="mr-auto font-body text-xs uppercase tracking-[0.14em] hidden sm:block text-brand/55">
           Your proposal
         </p>
 

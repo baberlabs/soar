@@ -86,34 +86,24 @@ export const LetterTabPanel = ({
       aria-labelledby="reflect-tab-letters"
       className="space-y-4"
     >
-      <header className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <p className="font-ui text-xs uppercase tracking-[0.14em] text-brand/60">
-            Future letters
-          </p>
-          <h3 className="mt-0.5 font-ui text-2xl text-brand">
-            {view === "active" ? "Current" : "Archive"}
-          </h3>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant={view === "active" ? "secondary" : "ghost"}
-            size="sm"
-            fullWidth={false}
-            text="Current"
-            onClick={() => setView("active")}
-          />
-          <Button
-            type="button"
-            variant={view === "archive" ? "secondary" : "ghost"}
-            size="sm"
-            fullWidth={false}
-            text={`Archive (${archivedLetters.length})`}
-            onClick={() => setView("archive")}
-          />
-        </div>
-      </header>
+      <div className="flex items-center gap-2 pb-2 sm:pb-4">
+        <Button
+          type="button"
+          variant={view === "active" ? "primary" : "ghost"}
+          size="sm"
+          fullWidth={false}
+          text="Current"
+          onClick={() => setView("active")}
+        />
+        <Button
+          type="button"
+          variant={view === "archive" ? "primary" : "ghost"}
+          size="sm"
+          fullWidth={false}
+          text={`Archive (${archivedLetters.length})`}
+          onClick={() => setView("archive")}
+        />
+      </div>
 
       {view === "archive" ? (
         archivedLetters.length === 0 ? (

@@ -83,7 +83,7 @@ export const ProposalForm = ({
     }
     if (description.trim().length < MIN_DESCRIPTION) {
       setError(
-        `Give peers enough context — at least ${MIN_DESCRIPTION} characters.`,
+        `Give peers enough context. At least ${MIN_DESCRIPTION} characters.`,
       );
       return false;
     }
@@ -218,7 +218,7 @@ export const ProposalForm = ({
         </p>
       ) : null}
 
-      <div className="flex flex-wrap gap-2 border-t border-brand/10 pt-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 border-t border-brand/10 pt-5">
         <Button
           type="submit"
           variant="primary"

@@ -68,7 +68,7 @@ export default function ChatsTab() {
 
   const openProfile = () => {
     if (!activeChat?.peerId) return;
-    navigate(`/connect/peers?peerId=${activeChat.peerId}`);
+    navigate(`/connect/my-peers?peerId=${activeChat.peerId}`);
   };
 
   if (chats.length === 0) {
@@ -80,7 +80,7 @@ export default function ChatsTab() {
         </p>
         <div className="mt-5 inline-flex">
           <Link
-            to="/connect/peers"
+            to="/connect/find-peers"
             className="inline-flex items-center rounded-full border border-brand/20 px-4 py-2 font-ui text-sm tracking-[0.06em] text-brand transition hover:border-brand/35"
           >
             Find peers

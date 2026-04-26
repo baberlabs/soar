@@ -33,7 +33,7 @@ export const FlashcardsStep = ({ flashcards, onContinue }) => {
   };
 
   return (
-    <section className="space-y-6 rounded-4xl border border-brand/12 bg-page p-6 md:p-8">
+    <section className="space-y-6 sm:rounded-4xl sm:border sm:border-brand/12 sm:bg-page sm:p-6 md:p-8">
       <header className="space-y-1">
         <p className="font-ui text-xs uppercase tracking-[0.16em] text-brand/55">
           Step 2 of 5

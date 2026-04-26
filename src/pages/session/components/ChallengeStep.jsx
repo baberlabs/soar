@@ -12,7 +12,7 @@ export const ChallengeStep = ({
   const isCustomReady = mode === "custom" ? customText.trim().length > 0 : true;
 
   return (
-    <section className="space-y-6 rounded-4xl border border-brand/12 bg-page p-6 md:p-8">
+    <section className="space-y-6 sm:rounded-4xl sm:border sm:border-brand/12 sm:bg-page sm:p-6 md:p-8">
       <header className="space-y-1">
         <p className="font-ui text-xs uppercase tracking-[0.16em] text-brand/55">
           Step 5 of 5
@@ -75,7 +75,7 @@ export const ChallengeStep = ({
           fullWidth={false}
           text={
             alreadyComplete
-              ? "Already complete — review only"
+              ? "Already complete (review only)"
               : "Acknowledge & finish session"
           }
           onClick={() =>
@@ -89,7 +89,7 @@ export const ChallengeStep = ({
         {alreadyComplete ? (
           <p className="font-body text-xs text-brand/62">
             This session is already marked complete. Pick a fresh challenge
-            anytime — your progress stays the same.
+            anytime. Your progress stays the same.
           </p>
         ) : null}
       </div>

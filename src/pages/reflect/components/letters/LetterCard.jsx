@@ -110,7 +110,7 @@ export const LetterCard = ({
       ) : null}
 
       {letter.review && !isReviewing ? (
-        <div className="mt-4 rounded-2xl border border-brand/15 bg-page p-4">
+        <div className="sm:mt-4 sm:rounded-2xl sm:border sm:border-brand/15 sm:bg-page sm:p-4">
           <p className="font-ui text-xs uppercase tracking-[0.14em] text-brand/60">
             Review
           </p>

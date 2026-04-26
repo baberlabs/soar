@@ -127,7 +127,7 @@ export const VisionBoardStage = ({
   );
 
   return (
-    <section className="space-y-4 rounded-3xl border border-brand/15 bg-linear-to-b from-cream to-page p-4 shadow-[0_18px_50px_rgba(55,62,112,0.08)] sm:space-y-5 sm:p-5">
+    <section className="space-y-4 sm:rounded-3xl sm:border sm:border-brand/15 bg-linear-to-b from-cream to-page sm:shadow-[0_18px_50px_rgba(55,62,112,0.08)] sm:space-y-5 sm:p-5">
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-2">
           {board && board.playlistNote && (

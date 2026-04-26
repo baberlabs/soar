@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useSOARState } from "../../../store";
 import { PEER_DIRECTORY } from "../../../data/peers";
 import { NetworkCreationCard } from "./NetworkCreationCard";
+import { ChevronRight, Search } from "lucide-react";
+import { LinkButton } from "../../../components/LinkButton";
 
 const PAGE_SIZE = 6;
 
@@ -113,15 +115,19 @@ export const NetworkFeed = () => {
 
 const EmptyState = ({ message, ctaLabel, ctaTo }) => (
   <div className="rounded-[1.75rem] border border-dashed border-brand/24 bg-page p-12 text-center">
-    <p className="mx-auto max-w-xl font-body text-base leading-relaxed text-brand/76">
+    <p className="mx-auto max-w-xl font-body text-sm sm:text-base leading-relaxed text-brand/76">
       {message}
     </p>
-    <Link
-      to={ctaTo}
-      className="mt-4 inline-flex items-center gap-1.5 font-ui text-sm tracking-[0.04em] text-brand transition hover:text-brand/80"
+    <LinkButton
+      href={ctaTo}
+      variant="ghost"
+      size="sm"
+      fullWidth={false}
+      className="mt-4"
     >
       {ctaLabel}
-      <span aria-hidden="true">→</span>
-    </Link>
+      <span aria-hidden="true"></span>
+      <ChevronRight aria-hidden="true" className="size-4" />
+    </LinkButton>
   </div>
 );

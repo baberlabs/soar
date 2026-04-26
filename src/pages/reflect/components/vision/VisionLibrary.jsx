@@ -9,7 +9,7 @@ export const VisionLibrary = ({
   onCreate,
 }) => {
   return (
-    <aside className="space-y-4 rounded-3xl border border-brand/15 p-3 shadow-[0_18px_50px_rgba(55,62,112,0.08)] sm:p-4 xl:sticky xl:top-6">
+    <aside className="space-y-4 sm:rounded-3xl sm:border sm:border-brand/15 sm:shadow-[0_18px_50px_rgba(55,62,112,0.08)] sm:p-4 xl:sticky xl:top-6">
       <div className="flex items-end justify-between gap-3">
         <div>
           <p className="font-ui text-xs uppercase tracking-[0.14em] text-brand/60">

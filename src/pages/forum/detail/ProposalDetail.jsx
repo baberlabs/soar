@@ -139,7 +139,7 @@ export default function ProposalDetail() {
         </button>
       </nav>
 
-      <header className="space-y-3">
+      <div className="space-y-3">
         <div className="flex items-center gap-2">
           <PhaseBadge phase={phase} />
           {phase === PHASES.VOTING && proposal.votingDeadline ? (
@@ -164,7 +164,7 @@ export default function ProposalDetail() {
             </>
           ) : null}
         </p>
-      </header>
+      </div>
 
       {lifecycle.isAuthor &&
       (lifecycle.authorCanEdit ||
@@ -189,12 +189,11 @@ export default function ProposalDetail() {
 
       <section
         aria-label="Proposal description"
-        className="rounded-3xl border border-brand/15 bg-cream p-5 md:p-6"
+        className="min-w-0 rounded-3xl border border-brand/15 bg-cream p-5 md:p-6"
       >
-        <p className="whitespace-pre-line font-body text-base leading-relaxed text-brand/85">
+        <p className="font-body text-base leading-relaxed text-brand/85 wrap-break-word">
           {proposal.description}
         </p>
-
         {proposal.attachments?.length ? (
           <div className="mt-5 border-t border-brand/10 pt-4">
             <p className="font-ui text-xs uppercase tracking-[0.14em] text-brand/55">

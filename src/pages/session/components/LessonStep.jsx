@@ -1,7 +1,7 @@
 import { Button } from "../../../components/Button";
 
 export const LessonStep = ({ media, lessonContent, keyFacts, onContinue }) => (
-  <section className="space-y-6 rounded-4xl border border-brand/12 bg-cream/75 p-6 md:p-8">
+  <section className="space-y-6 rounded-4xl sm:border sm:border-brand/12 bg-cream/75 sm:p-6 md:p-8">
     <StepHeader number={1} of={5} title="Session content" />
 
     <figure className="overflow-hidden rounded-3xl border border-brand/12 bg-page">
@@ -62,23 +62,28 @@ export const LessonStep = ({ media, lessonContent, keyFacts, onContinue }) => (
       ))}
     </div>
 
-    <div className="rounded-3xl border border-brand/10 bg-page p-5">
-      <p className="font-body text-xs uppercase tracking-[0.12em] text-brand/55">
+    <div className="rounded-2xl border border-brand/10 bg-page p-5">
+      <p className="text-[0.65rem] uppercase tracking-[0.12em] text-brand/55">
         Practice flow
       </p>
-      <ol className="mt-3 space-y-3">
+
+      <div className="mt-4 space-y-3">
         {lessonContent.practiceSteps.map((step, index) => (
-          <li
-            key={step}
-            className="flex gap-3 font-body text-sm leading-relaxed text-brand/78"
-          >
-            <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand/10 font-ui text-xs text-brand">
-              {index + 1}
-            </span>
-            <span>{step}</span>
-          </li>
+          <div key={step} className="flex gap-3">
+            <div className="flex flex-col items-center">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand text-[0.7rem] font-semibold text-white">
+                {index + 1}
+              </span>
+
+              {index < lessonContent.practiceSteps.length - 1 && (
+                <span className="mt-1 h-full w-px bg-brand/10" />
+              )}
+            </div>
+
+            <p className="text-sm leading-relaxed text-brand/80">{step}</p>
+          </div>
         ))}
-      </ol>
+      </div>
     </div>
 
     <div className="flex flex-wrap gap-3 border-t border-brand/10 pt-5">

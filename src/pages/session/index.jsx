@@ -35,6 +35,7 @@ import { FlashcardsStep } from "./components/FlashcardsStep";
 import { QuizStep } from "./components/QuizStep";
 import { ReflectionStep } from "./components/ReflectionStep";
 import { ChallengeStep } from "./components/ChallengeStep";
+import Page from "../../layout/Page";
 
 const STEPS = ["lesson", "flashcards", "quiz", "reflection", "challenge"];
 
@@ -129,45 +130,53 @@ export default function SessionPage() {
       : null;
 
   return (
-    <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-8 md:pb-8 md:pt-10">
-      <div className="mx-auto max-w-5xl space-y-8">
-        <Link
-          to={`/learn/${subject.id}`}
-          className="inline-flex items-center gap-2 font-ui text-sm tracking-[0.08em] text-brand/70 hover:text-brand"
-        >
-          ← Back to subject room
-        </Link>
+    <Page
+      heading={lesson.title}
+      description={lesson.summary}
+      contentClassName="mx-auto space-y-6"
+    >
+      <div className="flex w-fit gap-4 items-center justify-between rounded-xl border border-brand/12 bg-page/80 px-3 py-2">
+        {/* Left: Session identity */}
+        <span className="text-xs font-medium text-brand/60">
+          Session {lessonIndex + 1}
+        </span>
 
-        <SessionHeader
-          subject={subject}
-          lesson={lesson}
-          lessonIndex={lessonIndex}
-          isComplete={isComplete}
-          isCurrent={isCurrent}
-          visual={visual}
-        />
-
-        {isLocked ? (
-          <LockedPanel subjectId={subject.id} />
+        {/* Right: Status (dominant) */}
+        {isComplete ? (
+          <span className="rounded-full bg-sage px-3 py-1 text-[0.7rem] font-semibold text-white">
+            Completed
+          </span>
+        ) : isCurrent ? (
+          <span className="rounded-full bg-yellow px-3 py-1 text-[0.7rem] font-semibold text-brand">
+            Current
+          </span>
         ) : (
-          <SessionExperience
-            key={`${subject.id}:${lesson.id}`}
-            subject={subject}
-            lesson={lesson}
-            enrollment={enrollment}
-            isComplete={isComplete}
-            media={media}
-            lessonContent={lessonContent}
-            keyFacts={keyFacts}
-            flashcards={flashcards}
-            quiz={quiz}
-            existingReflection={existingReflection}
-            nextLesson={nextLesson}
-            dispatch={dispatch}
-          />
+          <span className="rounded-full bg-brand/15 px-3 py-1 text-[0.7rem] font-medium text-brand/70">
+            Locked
+          </span>
         )}
       </div>
-    </main>
+
+      {isLocked ? (
+        <LockedPanel subjectId={subject.id} />
+      ) : (
+        <SessionExperience
+          key={`${subject.id}:${lesson.id}`}
+          subject={subject}
+          lesson={lesson}
+          enrollment={enrollment}
+          isComplete={isComplete}
+          media={media}
+          lessonContent={lessonContent}
+          keyFacts={keyFacts}
+          flashcards={flashcards}
+          quiz={quiz}
+          existingReflection={existingReflection}
+          nextLesson={nextLesson}
+          dispatch={dispatch}
+        />
+      )}
+    </Page>
   );
 }
 
@@ -282,76 +291,6 @@ const SessionExperience = ({
 
 // ---------- Inline subcomponents (page-local, not reused elsewhere) ----------
 
-const SessionHeader = ({
-  subject,
-  lesson,
-  lessonIndex,
-  isComplete,
-  isCurrent,
-  visual,
-}) => (
-  <header className="relative overflow-hidden rounded-4xl border border-brand/15 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:p-8">
-    <img
-      src={BackgroundLayer1Image}
-      alt=""
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-x-0 top-0 -z-20 w-full select-none"
-    />
-    <img
-      src={BackgroundLayer2Image}
-      alt=""
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-x-0 top-0 -z-10 w-full select-none"
-    />
-
-    <div className="grid gap-6 md:grid-cols-[1.25fr_0.75fr] md:items-end">
-      <div className="space-y-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="rounded-full bg-sky/35 px-3 py-1 font-ui text-[0.7rem] tracking-[0.14em] text-brand">
-            {subject.name}
-          </span>
-          <span className="rounded-full border border-brand/12 bg-page px-3 py-1 font-body text-xs text-brand/72">
-            Session {lessonIndex + 1}
-          </span>
-          {isComplete ? (
-            <span className="rounded-full bg-sage/18 px-3 py-1 font-body text-xs text-sage">
-              Completed
-            </span>
-          ) : isCurrent ? (
-            <span className="rounded-full bg-yellow/30 px-3 py-1 font-body text-xs text-brand">
-              Current session
-            </span>
-          ) : (
-            <span className="rounded-full bg-brand/8 px-3 py-1 font-body text-xs text-brand/65">
-              Locked
-            </span>
-          )}
-        </div>
-
-        <h1 className="font-display text-[clamp(2.6rem,7vw,4.8rem)] leading-[0.94] text-brand">
-          {lesson.title}
-        </h1>
-        <p className="max-w-3xl font-body text-base leading-relaxed text-brand/80 md:text-lg">
-          {lesson.summary}
-        </p>
-      </div>
-
-      <aside
-        className={`rounded-3xl border border-brand/12 p-5 ${visual.panel}`}
-        aria-label="Session visual"
-      >
-        <visual.Icon size={32} strokeWidth={1.5} className="text-brand" />
-        <p className="mt-3 font-ui text-sm tracking-[0.08em] text-brand">
-          {visual.title}
-        </p>
-        <p className="mt-2 font-body text-sm leading-relaxed text-brand/75">
-          {visual.body}
-        </p>
-      </aside>
-    </div>
-  </header>
-);
-
 const LockedPanel = ({ subjectId }) => (
   <section className="rounded-4xl border border-brand/12 bg-page p-6">
     <h2 className="font-ui text-2xl text-brand">Session locked</h2>
@@ -378,7 +317,7 @@ const FinishedBanner = ({ subjectId, nextLesson }) => (
       Session complete
     </p>
     <h3 className="mt-2 font-display text-3xl leading-[0.95] text-brand">
-      Nice work — that one&rsquo;s done.
+      Nice work! That one&rsquo;s done.
     </h3>
     <p className="mt-2 max-w-2xl font-body text-sm leading-relaxed text-brand/75">
       Your progress is saved. Take a break, or move into the next session.

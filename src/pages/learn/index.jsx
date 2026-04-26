@@ -5,6 +5,8 @@ import { Button } from "../../components/Button";
 import { SubjectCard } from "../../components/SubjectCard";
 import { useSOARState } from "../../store";
 import { LEARNING_STYLE_LABELS } from "../../data/subjects";
+import Page from "../../layout/Page";
+import { ChevronRight, Sparkles } from "lucide-react";
 
 export default function Learn() {
   const state = useSOARState();
@@ -42,124 +44,112 @@ export default function Learn() {
         });
 
   return (
-    <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-8 md:pb-8 md:pt-10">
-      <div className="mx-auto max-w-6xl space-y-12">
-        <header className="space-y-4 rounded-4xl border border-brand/15 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:p-8">
-          <span className="inline-flex items-center rounded-full bg-sky/35 px-3 py-1 font-ui text-[0.7rem] tracking-[0.14em] text-brand">
-            Learn
+    <Page
+      heading="Learn"
+      description="Resume your current curriculum, browse recommended subjects, and choose the next path."
+      contentClassName="mx-auto space-y-6"
+    >
+      <section className="flex items-center gap-2 overflow-x-auto no-scrollbar mb-8">
+        {state.user?.learningStyle && (
+          <span className="shrink-0 inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-3 py-1.5 text-xs font-medium text-brand">
+            <span className="opacity-60">Style</span>
+            <span className="font-semibold">
+              {LEARNING_STYLE_LABELS[state.user.learningStyle]}
+            </span>
           </span>
-          <div className="space-y-3">
-            <h1 className="font-display text-[clamp(3rem,7vw,5.5rem)] leading-[0.92] text-brand">
-              Build a path that feels worth returning to.
-            </h1>
-            <p className="max-w-3xl font-body text-base leading-relaxed text-brand/82 md:text-lg">
-              Pick one subject, move through short guided sessions, and let your
-              progress reflect real work instead of time spent on a feed.
+        )}
+
+        {state.user?.interests?.map((interest) => (
+          <span
+            key={interest}
+            className="shrink-0 inline-flex items-center rounded-full bg-muted px-3 py-1.5 text-xs font-medium text-foreground/80"
+          >
+            {interest}
+          </span>
+        ))}
+      </section>
+
+      <section className="space-y-5">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="space-y-1">
+            <h2 className="font-ui text-3xl text-brand">Your Curriculum</h2>
+            <p className="font-body text-sm text-brand/72">
+              Resume the next session or review what you have already finished.
             </p>
           </div>
-          <div className="flex flex-wrap gap-3">
-            {state.user?.learningStyle ? (
-              <span className="rounded-full border border-brand/15 px-4 py-2 font-body text-sm text-brand/75">
-                Learning style:{" "}
-                <strong>
-                  {LEARNING_STYLE_LABELS[state.user.learningStyle]}
-                </strong>
-              </span>
-            ) : null}
-            {state.user?.interests?.slice(0, 4).map((interest) => (
-              <span
-                key={interest}
-                className="rounded-full border border-brand/12 px-4 py-2 font-body text-sm text-brand/70"
-              >
-                {interest}
-              </span>
+        </div>
+
+        {currentSubjects.length === 0 ? (
+          <EmptyPanel
+            title="Your curriculum is empty"
+            copy="Choose a subject below to begin."
+          />
+        ) : (
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {currentSubjects.map((subject) => (
+              <SubjectCard
+                key={subject.id}
+                subject={subject}
+                enrollment={enrolledBySubjectId.get(subject.id)}
+              />
             ))}
           </div>
-        </header>
+        )}
+      </section>
 
-        <section className="space-y-5">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="space-y-1">
-              <h2 className="font-ui text-3xl text-brand">Your Curriculum</h2>
-              <p className="font-body text-sm text-brand/72">
-                Resume the next session or review what you have already
-                finished.
-              </p>
-            </div>
+      <section id="subject-library" className="space-y-5">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="space-y-1">
+            <h2 className="font-ui text-3xl text-brand">Subject Library</h2>
+            <p className="font-body text-sm text-brand/72">
+              Start with recommendations based on your interests, or browse the
+              full library.
+            </p>
           </div>
-
-          {currentSubjects.length === 0 ? (
-            <EmptyPanel
-              title="Your curriculum is empty"
-              copy="Choose a subject below to begin."
-            />
-          ) : (
-            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {currentSubjects.map((subject) => (
-                <SubjectCard
-                  key={subject.id}
-                  subject={subject}
-                  enrollment={enrolledBySubjectId.get(subject.id)}
-                />
-              ))}
-            </div>
-          )}
-        </section>
-
-        <section id="subject-library" className="space-y-5">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="space-y-1">
-              <h2 className="font-ui text-3xl text-brand">Subject Library</h2>
-              <p className="font-body text-sm text-brand/72">
-                Start with recommendations based on your interests, or browse
-                the full library.
-              </p>
-            </div>
-            <div
-              role="tablist"
-              aria-label="Subject library filter"
-              className="flex flex-wrap gap-2"
+          <div
+            role="tablist"
+            aria-label="Subject library filter"
+            className="flex flex-wrap gap-2"
+          >
+            <Button
+              size="sm"
+              fullWidth={false}
+              variant={filter === "recommended" ? "primary" : "secondary"}
+              onClick={() => setFilter("recommended")}
+              role="tab"
+              aria-selected={filter === "recommended"}
             >
-              <Button
-                size="sm"
-                fullWidth={false}
-                variant={filter === "recommended" ? "primary" : "secondary"}
-                onClick={() => setFilter("recommended")}
-                role="tab"
-                aria-selected={filter === "recommended"}
-              >
-                Recommended
-              </Button>
-              <Button
-                size="sm"
-                fullWidth={false}
-                variant={filter === "all" ? "primary" : "secondary"}
-                onClick={() => setFilter("all")}
-                role="tab"
-                aria-selected={filter === "all"}
-              >
-                All Subjects
-              </Button>
-            </div>
+              Recommended
+            </Button>
+            <Button
+              size="sm"
+              fullWidth={false}
+              variant={filter === "all" ? "primary" : "secondary"}
+              onClick={() => setFilter("all")}
+              role="tab"
+              aria-selected={filter === "all"}
+            >
+              All Subjects
+            </Button>
           </div>
+        </div>
 
-          {librarySubjects.length === 0 ? (
-            <EmptyPanel
-              title="No direct matches yet"
-              copy="Your interests are saved, but none of the remaining subjects line up exactly. Switch to All Subjects to browse everything."
-            />
-          ) : (
-            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {librarySubjects.map((subject) => (
-                <SubjectCard key={subject.id} subject={subject} />
-              ))}
-            </div>
-          )}
+        {librarySubjects.length === 0 ? (
+          <EmptyPanel
+            title="No direct matches yet"
+            copy="Your interests are saved, but none of the remaining subjects line up exactly. Switch to All Subjects to browse everything."
+          />
+        ) : (
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {librarySubjects.map((subject) => (
+              <SubjectCard key={subject.id} subject={subject} />
+            ))}
+          </div>
+        )}
 
-          <SubjectRequestCallout />
-        </section>
-      </div>
-    </main>
+        <SubjectRequestCallout />
+      </section>
+    </Page>
   );
 }
 
@@ -180,10 +170,10 @@ const SubjectRequestCallout = () => (
     </p>
     <Link
       to="/forum/all"
-      className="inline-flex shrink-0 items-center gap-2 rounded-full border border-brand/20 px-4 py-2 font-ui text-sm tracking-[0.06em] text-brand transition hover:border-brand/40 hover:bg-brand/5"
+      className="flex items-center gap-1 rounded-full border border-brand/20 px-4 py-2 font-ui text-sm tracking-[0.06em] text-brand transition hover:border-brand/40 hover:bg-brand/5"
     >
       Open the Forum
-      <span aria-hidden="true">→</span>
+      <ChevronRight className="size-4" aria-hidden="true" />
     </Link>
   </div>
 );

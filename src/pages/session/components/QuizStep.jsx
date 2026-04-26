@@ -1,12 +1,40 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "../../../components/Button";
+
+// Fisher-Yates shuffle (correct + stable)
+const shuffle = (array) => {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+};
 
 export const QuizStep = ({ quiz, onContinue }) => {
   const [selected, setSelected] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const [hardestNote, setHardestNote] = useState("");
 
-  const isCorrect = selected === quiz.correctIndex;
+  const shuffled = useMemo(() => {
+    const mapped = quiz.options.map((option, index) => ({
+      option,
+      originalIndex: index,
+    }));
+
+    const shuffledOptions = shuffle(mapped);
+
+    const correctIndex = shuffledOptions.findIndex(
+      (o) => o.originalIndex === quiz.correctIndex,
+    );
+
+    return {
+      options: shuffledOptions.map((o) => o.option),
+      correctIndex,
+    };
+  }, [quiz]);
+
+  const isCorrect = selected === shuffled.correctIndex;
 
   const checkAnswer = () => {
     if (selected === null) return;
@@ -19,7 +47,7 @@ export const QuizStep = ({ quiz, onContinue }) => {
   };
 
   return (
-    <section className="space-y-6 rounded-4xl border border-brand/12 bg-page p-6 md:p-8">
+    <section className="space-y-6 sm:rounded-4xl sm:border sm:border-brand/12 sm:bg-page sm:p-6 md:p-8">
       <header className="space-y-1">
         <p className="font-ui text-xs uppercase tracking-[0.16em] text-brand/55">
           Step 3 of 5
@@ -31,9 +59,10 @@ export const QuizStep = ({ quiz, onContinue }) => {
       </header>
 
       <div className="grid gap-3">
-        {quiz.options.map((option, optionIndex) => {
+        {shuffled.options.map((option, optionIndex) => {
           const isSelected = selected === optionIndex;
-          const showAsCorrect = showResult && optionIndex === quiz.correctIndex;
+          const showAsCorrect =
+            showResult && optionIndex === shuffled.correctIndex;
           const showAsWrong = showResult && isSelected && !isCorrect;
 
           return (
@@ -61,7 +90,7 @@ export const QuizStep = ({ quiz, onContinue }) => {
         })}
       </div>
 
-      {showResult ? (
+      {showResult && (
         <div
           className={`rounded-2xl border p-4 ${
             isCorrect
@@ -76,7 +105,7 @@ export const QuizStep = ({ quiz, onContinue }) => {
             {quiz.explanation}
           </p>
 
-          {!isCorrect ? (
+          {!isCorrect && (
             <div className="mt-4">
               <label
                 htmlFor="quiz-hardest-note"
@@ -88,14 +117,14 @@ export const QuizStep = ({ quiz, onContinue }) => {
               <textarea
                 id="quiz-hardest-note"
                 value={hardestNote}
-                onChange={(event) => setHardestNote(event.target.value)}
+                onChange={(e) => setHardestNote(e.target.value)}
                 placeholder="A quick note can sharpen the next attempt..."
                 className="mt-2 min-h-20 w-full rounded-2xl border border-brand/16 bg-cream px-4 py-3 font-body text-sm leading-relaxed text-brand placeholder:text-brand/40 focus:border-brand/28 focus:outline-none"
               />
             </div>
-          ) : null}
+          )}
         </div>
-      ) : null}
+      )}
 
       <div className="flex flex-wrap gap-3 border-t border-brand/10 pt-5">
         {!showResult ? (

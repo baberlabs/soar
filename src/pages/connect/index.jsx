@@ -1,9 +1,10 @@
 // src/pages/connect/index.jsx
 import { Outlet } from "react-router-dom";
 import { useSOARState } from "../../store";
-import { ConnectHeader } from "./components/shared/ConnectHeader";
+import { Stats } from "./components/shared/Stats";
 import { ConnectTabs } from "./components/shared/ConnectTabs";
 import { LOCAL_EVENTS } from "./utils/events";
+import Page from "../../layout/Page";
 
 export default function Connect() {
   const state = useSOARState();
@@ -34,14 +35,16 @@ export default function Connect() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-8 md:pb-8 md:pt-10">
-      <div className="space-y-10">
-        <ConnectHeader stats={stats} />
-        <ConnectTabs counts={counts} />
-        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <Outlet />
-        </div>
+    <Page
+      heading="Connect"
+      description="Find peers who share your passion and interests. Explore SOAR events happening this year."
+      contentClassName="mx-auto space-y-6"
+    >
+      <Stats stats={stats} />
+      <ConnectTabs counts={counts} />
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <Outlet />
       </div>
-    </main>
+    </Page>
   );
 }

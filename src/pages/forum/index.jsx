@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 import { Outlet } from "react-router-dom";
 import { useSOARState } from "../../store";
-import { ForumHeader } from "./components/shared/ForumHeader";
 import { ForumTabs } from "./components/shared/ForumTabs";
 import { PHASES, computeEffectivePhase } from "./utils/phase";
+import Page from "../../layout/Page";
 
 export default function Forum() {
   const state = useSOARState();
@@ -34,15 +34,16 @@ export default function Forum() {
   if (!state.user) return null;
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-6 pb-24 pt-8 md:pb-8 md:pt-10">
-      <div className="space-y-6">
-        <ForumHeader />
-        <ForumTabs counts={counts} />
+    <Page
+      heading="Forum"
+      description="Propose, discuss, and vote on how SOAR evolves."
+      contentClassName="mx-auto space-y-6"
+    >
+      <ForumTabs counts={counts} />
 
-        <div className="mt-4">
-          <Outlet />
-        </div>
+      <div className="mt-4">
+        <Outlet />
       </div>
-    </main>
+    </Page>
   );
 }
