@@ -3,7 +3,7 @@ import { LinkButton } from "../components/LinkButton";
 
 export const Donation = () => {
   return (
-    <aside className="p-6 md:py-16 bg-linear-to-br from-brand/5 to-transparent border-t border-brand/20">
+    <aside className="px-6 py-16 bg-linear-to-br from-brand/5 to-transparent border-t border-brand/20">
       <div className="max-w-6xl mx-auto">
         <div className="relative z-10 grid gap-8 md:grid-cols-[1fr_auto] md:items-center">
           <div className="max-w-2xl space-y-4">
@@ -11,7 +11,7 @@ export const Donation = () => {
               COMMUNITY BENEFIT SOCIETY
             </p>
             <h2 className="font-display text-3xl text-brand md:text-4xl">
-              Owned by peers. Not private capital.
+              Fund the platform
             </h2>
             <p className="font-body text-base leading-relaxed text-brand/80">
               A £1 share makes you an equal peer with one vote. Additional
@@ -20,7 +20,7 @@ export const Donation = () => {
               into the platform.
             </p>
             <LinkButton
-              text="Fund the Platform"
+              text="Donate"
               href="/donate"
               fullWidth={false}
               className="mt-2"
