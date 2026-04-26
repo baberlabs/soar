@@ -19,6 +19,7 @@ export const Button = ({
 
   return (
     <button
+      type={type}
       {...props}
       disabled={isDisabled}
       aria-busy={status === "loading" ? "true" : undefined}
