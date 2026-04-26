@@ -140,6 +140,19 @@ button {
   animation-delay: 180ms;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+
+  .soft-enter,
+  .soft-rise {
+    animation: none !important;
+  }
+}
+
 @media (pointer: coarse) {
   html,
   body,

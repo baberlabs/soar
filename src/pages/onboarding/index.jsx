@@ -1,4 +1,16 @@
-import { useMemo, useState } from "react";
+import { createElement, useMemo, useState } from "react";
+import {
+  BookOpenCheck,
+  BookOpenText,
+  CalendarDays,
+  CircleCheck,
+  Layers,
+  Milestone,
+  Route,
+  SmilePlus,
+  Sparkles,
+  UsersRound,
+} from "lucide-react";
 import { Navigate, useNavigate } from "react-router-dom";
 
 import { Button } from "../../components/Button";
@@ -6,13 +18,50 @@ import { useSOARDispatch, useSOARState } from "../../store";
 
 const ONBOARDING_FLOW_STEPS = [
   { id: "how-soar-works", label: "How SOAR Works", shortLabel: "How" },
-  { id: "vark", label: "Learning Style", shortLabel: "Style" },
+  { id: "vark", label: "Session Style", shortLabel: "Style" },
   { id: "interests", label: "Interests", shortLabel: "Interests" },
   { id: "commitment", label: "Rhythm", shortLabel: "Rhythm" },
   { id: "curriculum", label: "Subjects", shortLabel: "Subjects" },
 ];
 
 const STEP_ORDER = ONBOARDING_FLOW_STEPS.map((flowStep) => flowStep.id);
+
+const SOAR_LOOP_STEPS = [
+  {
+    phase: "01",
+    title: "You joined as a peer",
+    body: "You are part of a peer-owned platform where one peer has one vote and your contribution supports shared progress.",
+    icon: Route,
+  },
+  {
+    phase: "02",
+    title: "Onboarding sets your direction",
+    body: "You choose interests and your preferred learning style so SOAR can shape your first curriculum around what matters to you.",
+    icon: Milestone,
+  },
+  {
+    phase: "03",
+    title: "You build your first curriculum",
+    body: "You choose your availability, your subjects, and enter focused sessions with clear outcomes instead of endless feed behaviour.",
+    icon: BookOpenText,
+  },
+  {
+    phase: "04",
+    title: "Contribute with peers",
+    body: "You produce work, review progress monthly, connect with peers, and influence platform direction through shared governance.",
+    icon: SmilePlus,
+  },
+];
+
+const SETUP_OUTCOMES = [
+  { label: "Session style", value: "Guidance tuned to you", icon: Layers },
+  { label: "Weekly rhythm", value: "A realistic pace", icon: CalendarDays },
+  {
+    label: "First subjects",
+    value: "A dashboard with direction",
+    icon: CircleCheck,
+  },
+];
 
 export default function Onboarding() {
   const state = useSOARState();
@@ -95,16 +144,17 @@ export default function Onboarding() {
   return (
     <div className="relative isolate min-h-dvh bg-page">
       <div className="fixed inset-x-0 top-0 z-20 bg-page/85 backdrop-blur-sm">
-        <div className="mx-auto max-w-5xl px-6 py-5">
+        <div className="mx-auto max-w-360 px-6 py-5">
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-4">
-              <p className="font-ui text-[0.72rem] tracking-[0.16em] text-brand/58">
+              <p className="font-ui text-[0.72rem] tracking-[0.16em] text-brand/82">
                 PEER SETUP
               </p>
-              <p className="font-body text-xs text-brand/62">
+              <p className="font-body text-xs text-brand/82">
                 Step {stepIndex + 1} of {ONBOARDING_FLOW_STEPS.length}
               </p>
             </div>
+
             <div className="grid grid-cols-5 gap-2">
               {ONBOARDING_FLOW_STEPS.map((flowStep, index) => {
                 const isActive = flowStep.id === step;
@@ -123,15 +173,11 @@ export default function Onboarding() {
                           ? "text-brand"
                           : isComplete
                             ? "text-brand/78"
-                            : "text-brand/52"
+                            : "text-brand/78"
                       }`}
                     >
-                      <span className="sm:hidden">
-                        {flowStep.shortLabel}
-                      </span>
-                      <span className="hidden sm:inline">
-                        {flowStep.label}
-                      </span>
+                      <span className="sm:hidden">{flowStep.shortLabel}</span>
+                      <span className="hidden sm:inline">{flowStep.label}</span>
                     </p>
                   </div>
                 );
@@ -142,7 +188,7 @@ export default function Onboarding() {
       </div>
 
       <main className="mx-auto w-full max-w-360 px-6 pb-24 pt-28 md:pb-32 md:pt-34">
-        <div className="mx-auto max-w-4xl rounded-4xl border border-brand/15 p-6 shadow-[0_24px_48px_rgba(75,81,149,0.08)] backdrop-blur-sm md:p-8">
+        <div className="mx-auto sm:rounded-4xl sm:border sm:border-brand/15 sm:p-6 sm:shadow-[0_24px_48px_rgba(75,81,149,0.08)] sm:backdrop-blur-sm">
           {step === "how-soar-works" ? (
             <OnboardingHowSOARWorks onNext={() => goToStep("vark")} />
           ) : null}
@@ -192,55 +238,45 @@ export default function Onboarding() {
 
 const OnboardingHowSOARWorks = ({ onNext }) => (
   <article className="space-y-8">
-    <header className="space-y-3">
-      <p className="font-ui text-sm tracking-[0.16em] text-brand/58">
-        How SOAR works
-      </p>
-      <h1 className="font-display text-[clamp(2.8rem,7vw,5rem)] leading-[0.92] text-brand">
-        Your SOAR loop starts here.
-      </h1>
-      <p className="max-w-3xl font-body text-base leading-relaxed text-brand/82 md:text-lg">
-        SOAR is not an infinite feed. It gives you a focused loop: choose a
-        direction, learn in sessions, make something, reflect monthly, and
-        shape the community with peers.
-      </p>
-    </header>
+    <div className="grid gap-8 ">
+      <div className="space-y-6">
+        <header className="space-y-3">
+          <p className="font-ui text-sm tracking-[0.16em] text-brand/82">
+            How SOAR works
+          </p>
+          <h1 className="font-display text-[clamp(2.8rem,7vw,5rem)] leading-[0.92] text-brand">
+            Welcome
+          </h1>
+          <p className="max-w-3xl font-body text-base leading-relaxed text-brand/75">
+            You are now a peer. This is one continous journey from joining
+            through onboarding and into your first session.
+          </p>
+        </header>
 
-    <div className="grid gap-4 md:grid-cols-2">
-      <JourneyItem
-        phase="01"
-        title="Set your direction"
-        body="Choose a learning style, interests, and weekly rhythm so recommendations are grounded in your real context."
-      />
-      <JourneyItem
-        phase="02"
-        title="Build a first curriculum"
-        body="Pick one or two subjects and leave onboarding with a concrete next session, not a blank dashboard."
-      />
-      <JourneyItem
-        phase="03"
-        title="Learn, create, reflect"
-        body="Sessions lead into saved creations and monthly reflection so progress becomes visible."
-      />
-      <JourneyItem
-        phase="04"
-        title="Contribute with peers"
-        body="Use Connect and Forum to discuss, vote, and help shape SOAR as a member of the network."
-      />
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {SOAR_LOOP_STEPS.map((item) => (
+            <JourneyItem key={item.phase} {...item} />
+          ))}
+        </div>
+      </div>
+
+      <aside className="rounded-3xl bg-brand p-5 text-cream shadow-[0_20px_42px_rgba(75,81,149,0.16)] md:rounded-3xl md:p-6">
+        <p className="font-ui text-xs uppercase tracking-[0.16em] text-cream/72">
+          Your setup creates
+        </p>
+        <h2 className="mt-3 font-display text-[clamp(2.1rem,5vw,3.3rem)] leading-[0.92] text-cream">
+          Your curriculum
+        </h2>
+        <p className="mt-6 font-body text-sm leading-relaxed text-cream/82">
+          The next screens only collect signal SOAR can use immediately: session
+          style, interests, weekly rhythm, and first subjects.
+        </p>
+      </aside>
     </div>
 
-    <div className="rounded-3xl border border-brand/12 bg-page p-5">
-      <p className="font-ui text-xs uppercase tracking-[0.14em] text-brand/55">
-        What this setup changes
-      </p>
-      <p className="mt-2 font-body text-sm leading-relaxed text-brand/78">
-        The next screens only collect signal SOAR can use immediately: how you
-        prefer to learn, what you care about, how often you can return, and
-        which subject you want first.
-      </p>
-    </div>
-
-    <Button fullWidth={false} text="Start Setup" onClick={onNext} />
+    <StepActions>
+      <Button fullWidth={false} text="Start Setup" onClick={onNext} />
+    </StepActions>
   </article>
 );
 
@@ -321,15 +357,14 @@ const OnboardingVARK = ({ onBack, onNext }) => {
   return (
     <article className="space-y-8">
       <header className="space-y-3">
-        <p className="font-ui text-sm tracking-[0.16em] text-brand/58">
-          Learning style
+        <p className="font-ui text-sm tracking-[0.16em] text-brand/82">
+          Session style
         </p>
         <h1 className="font-display text-[clamp(2.6rem,6vw,4.2rem)] leading-[0.94] text-brand">
-          How do you like to learn?
+          How should sessions be shaped for you?
         </h1>
-        <p className="max-w-3xl font-body text-base leading-relaxed text-brand/78">
-          This is a lightweight preference check, not a fixed identity. We use
-          it to shape how a subject room introduces practice and reflection.
+        <p className="max-w-3xl font-body text-base leading-relaxed text-brand/82">
+          Choose what helps when a topic is new.
         </p>
       </header>
 
@@ -339,7 +374,7 @@ const OnboardingVARK = ({ onBack, onNext }) => {
             <legend className="font-ui text-lg text-brand">
               {question.question}
             </legend>
-            <div className="grid gap-3">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {question.options.map((option) => (
                 <label
                   key={option.value}
@@ -372,7 +407,7 @@ const OnboardingVARK = ({ onBack, onNext }) => {
         ))}
       </div>
 
-      <div className="flex flex-wrap gap-3">
+      <StepActions>
         <Button
           variant="secondary"
           fullWidth={false}
@@ -381,11 +416,11 @@ const OnboardingVARK = ({ onBack, onNext }) => {
         />
         <Button
           fullWidth={false}
-          text="Save And Continue"
+          text="Save Preferences"
           onClick={handleContinue}
           disabled={!allAnswered}
         />
-      </div>
+      </StepActions>
     </article>
   );
 };
@@ -435,13 +470,13 @@ const OnboardingInterests = ({ onBack, onComplete }) => {
   return (
     <article className="space-y-8">
       <header className="space-y-3">
-        <p className="font-ui text-sm tracking-[0.16em] text-brand/58">
+        <p className="font-ui text-sm tracking-[0.16em] text-brand/82">
           Interests
         </p>
         <h1 className="font-display text-[clamp(2.6rem,6vw,4.2rem)] leading-[0.94] text-brand">
           What do you want more time for?
         </h1>
-        <p className="max-w-3xl font-body text-base leading-relaxed text-brand/78">
+        <p className="max-w-3xl font-body text-base leading-relaxed text-brand/82">
           Choose at least three interests. We will use them to prioritize
           subjects and make the learn library feel less generic on day one.
         </p>
@@ -456,10 +491,11 @@ const OnboardingInterests = ({ onBack, onComplete }) => {
               key={interest}
               type="button"
               onClick={() => toggleInterest(interest)}
+              aria-pressed={isSelected}
               className={`rounded-[1.25rem] border px-4 py-3 text-left font-body text-sm transition ${
                 isSelected
-                  ? "border-brand bg-brand/8 text-brand"
-                  : "border-brand/12 bg-page text-brand/72 hover:border-brand/24"
+                  ? "border-brand bg-brand text-cream shadow-[0_10px_20px_rgba(75,81,149,0.12)]"
+                  : "border-brand/12 bg-page text-brand/78 hover:border-brand/28 hover:text-brand"
               }`}
             >
               {interest}
@@ -468,12 +504,12 @@ const OnboardingInterests = ({ onBack, onComplete }) => {
         })}
       </div>
 
-      <p className="font-body text-sm text-brand/65">
+      <p className="font-body text-sm text-brand/78">
         {selected.size} selected. Choose at least 3 to unlock your
         recommendations.
       </p>
 
-      <div className="flex flex-wrap gap-3">
+      <StepActions>
         <Button
           variant="secondary"
           fullWidth={false}
@@ -488,7 +524,7 @@ const OnboardingInterests = ({ onBack, onComplete }) => {
           onClick={finish}
           disabled={selected.size < 3}
         />
-      </div>
+      </StepActions>
     </article>
   );
 };
@@ -508,13 +544,13 @@ const OnboardingCommitment = ({ initialDays, onBack, onComplete }) => {
   return (
     <article className="space-y-8">
       <header className="space-y-3">
-        <p className="font-ui text-sm tracking-[0.16em] text-brand/58">
+        <p className="font-ui text-sm tracking-[0.16em] text-brand/82">
           Commitment
         </p>
         <h1 className="font-display text-[clamp(2.6rem,6vw,4.2rem)] leading-[0.94] text-brand">
           How many days a week can you commit?
         </h1>
-        <p className="max-w-3xl font-body text-base leading-relaxed text-brand/78">
+        <p className="max-w-3xl font-body text-base leading-relaxed text-brand/82">
           Pick a number that feels honest, not aspirational. You can change this
           later. Missing a day is fine.
         </p>
@@ -537,7 +573,7 @@ const OnboardingCommitment = ({ initialDays, onBack, onComplete }) => {
               className={`rounded-2xl border px-2 py-4 font-ui text-lg transition ${
                 active
                   ? "border-brand bg-brand text-cream shadow-[0_8px_18px_rgba(75,81,149,0.18)]"
-                  : "border-brand/15 bg-page text-brand/75 hover:border-brand/35 hover:text-brand"
+                  : "border-brand/15 bg-page text-brand/78 hover:border-brand/35 hover:text-brand"
               }`}
             >
               {value}
@@ -547,19 +583,19 @@ const OnboardingCommitment = ({ initialDays, onBack, onComplete }) => {
       </div>
 
       <div className="rounded-3xl border border-brand/12 bg-page p-5">
-        <p className="font-ui text-xs uppercase tracking-[0.14em] text-brand/55">
+        <p className="font-ui text-xs uppercase tracking-[0.14em] text-brand/82">
           Projection
         </p>
         <p className="mt-2 font-body text-base leading-relaxed text-brand/82">
           {formatProjection(days, projection)}
         </p>
-        <p className="mt-2 font-body text-xs text-brand/55">
+        <p className="mt-2 font-body text-xs text-brand/78">
           This is approximate. Sessions vary in length and some subjects are
           shorter than others.
         </p>
       </div>
 
-      <div className="flex flex-wrap gap-3">
+      <StepActions>
         <Button
           variant="secondary"
           fullWidth={false}
@@ -571,7 +607,7 @@ const OnboardingCommitment = ({ initialDays, onBack, onComplete }) => {
           text="Continue"
           onClick={() => onComplete(days)}
         />
-      </div>
+      </StepActions>
     </article>
   );
 };
@@ -633,13 +669,13 @@ const OnboardingCurriculum = ({
   return (
     <article className="space-y-8">
       <header className="space-y-3">
-        <p className="font-ui text-sm tracking-[0.16em] text-brand/58">
+        <p className="font-ui text-sm tracking-[0.16em] text-brand/82">
           Curriculum
         </p>
         <h1 className="font-display text-[clamp(2.6rem,6vw,4.2rem)] leading-[0.94] text-brand">
           Now let&rsquo;s build your curriculum.
         </h1>
-        <p className="max-w-3xl font-body text-base leading-relaxed text-brand/78">
+        <p className="max-w-3xl font-body text-base leading-relaxed text-brand/82">
           Pick one or two subjects to start. You can add more from Learn at any
           time.
         </p>
@@ -647,7 +683,7 @@ const OnboardingCurriculum = ({
 
       {filteredSubjects.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-brand/25 bg-page p-8 text-center">
-          <p className="font-body text-sm text-brand/72">
+          <p className="font-body text-sm text-brand/78">
             No subjects available yet. You can pick one later from Learn.
           </p>
         </div>
@@ -676,11 +712,11 @@ const OnboardingCurriculum = ({
         </div>
       )}
 
-      <p className="font-body text-sm text-brand/65">
+      <p className="font-body text-sm text-brand/78">
         {selectedIds.size} of 2 selected.
       </p>
 
-      <div className="flex flex-wrap gap-3">
+      <StepActions>
         <Button
           variant="secondary"
           fullWidth={false}
@@ -693,7 +729,7 @@ const OnboardingCurriculum = ({
           onClick={handleStart}
           disabled={selectedIds.size === 0}
         />
-      </div>
+      </StepActions>
     </article>
   );
 };
@@ -741,7 +777,7 @@ const SubjectSelectCard = ({
         {subject.description}
       </p>
 
-      <div className="flex flex-wrap gap-x-3 gap-y-1 font-body text-xs text-brand/65">
+      <div className="flex flex-wrap gap-x-3 gap-y-1 font-body text-xs text-brand/82">
         {sessions ? (
           <span>
             {sessions} session{sessions === 1 ? "" : "s"}
@@ -756,7 +792,7 @@ const SubjectSelectCard = ({
           {(subject.interestTags ?? []).slice(0, 3).map((tag) => (
             <span
               key={tag}
-              className="rounded-full border border-brand/12 px-2.5 py-0.5 font-body text-[0.68rem] text-brand/72"
+              className="rounded-full border border-brand/12 px-2.5 py-0.5 font-body text-[0.68rem] text-brand/82"
             >
               {tag}
             </span>
@@ -767,16 +803,26 @@ const SubjectSelectCard = ({
   );
 };
 
-const JourneyItem = ({ phase, title, body }) => (
-  <article className="rounded-3xl border border-brand/12 bg-page p-5 transition duration-300 hover:-translate-y-0.5 hover:border-brand/24">
-    <p className="font-ui text-[0.7rem] uppercase tracking-[0.15em] text-brand/58">
-      {phase}
-    </p>
-    <h2 className="mt-2 font-ui text-xl text-brand">{title}</h2>
-    <p className="mt-2 font-body text-sm leading-relaxed text-brand/72">
+const JourneyItem = ({ phase, title, body, icon: Icon }) => (
+  <article className="rounded-2xl border border-brand/12 bg-page p-5 transition duration-300 hover:-translate-y-0.5 hover:border-brand/24">
+    <div className="flex items-center justify-between gap-3">
+      <p className="font-ui text-[0.7rem] uppercase tracking-[0.15em] text-brand/82">
+        {phase}
+      </p>
+      {createElement(Icon, {
+        className: "size-5 text-brand/82",
+        "aria-hidden": "true",
+      })}
+    </div>
+    <h2 className="mt-3 font-ui text-xl text-brand">{title}</h2>
+    <p className="mt-2 font-body text-sm leading-relaxed text-brand/78">
       {body}
     </p>
   </article>
+);
+
+const StepActions = ({ children }) => (
+  <div className="flex flex-col gap-2 md:flex-row">{children}</div>
 );
 
 // ---------- helpers ----------

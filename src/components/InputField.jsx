@@ -26,7 +26,7 @@ export const InputField = ({
 
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={inputId} className="font-body text-navy/60">
+      <label htmlFor={inputId} className="font-body text-navy/78">
         {label}
       </label>
       <input
