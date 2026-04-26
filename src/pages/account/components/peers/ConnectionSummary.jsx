@@ -78,7 +78,7 @@ export const ConnectionSummary = ({ connections = [], currentUserId }) => {
 
       <div className="flex justify-end border-t border-brand/10 pt-4">
         <Link
-          to="/connect/peers"
+          to="/connect/find-peers"
           className="inline-flex items-center gap-1.5 font-ui text-sm tracking-[0.04em] text-brand transition hover:text-brand/80"
         >
           Find more peers
@@ -95,7 +95,7 @@ const ConnectionRow = ({ connection, muted }) => {
   return (
     <li>
       <Link
-        to={`/connect/peers?peerId=${connection.peerId}`}
+        to={`/connect/my-peers?peerId=${connection.peerId}`}
         className={`flex items-center gap-3 rounded-2xl border p-3 transition ${
           muted
             ? "border-brand/10 bg-page/50 hover:border-brand/25"
@@ -114,7 +114,7 @@ const ConnectionRow = ({ connection, muted }) => {
           ) : null}
         </div>
         {muted ? (
-          <span className="shrink-0 rounded-full bg-yellow/30 px-2 py-0.5 font-body text-[0.62rem] font-medium uppercase tracking-[0.1em] text-brand/80">
+          <span className="shrink-0 rounded-full bg-yellow/30 px-2 py-0.5 font-body text-[0.62rem] font-medium uppercase tracking-widest text-brand/80">
             Pending
           </span>
         ) : null}
