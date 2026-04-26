@@ -1,4 +1,5 @@
 import { calculateSubjectProgress, getSubjectById } from "../../data/subjects";
+import { mergeInitialProposals } from "../../data/proposals";
 import { createEnrollment, createPeer, nowIso } from "../factories";
 import { normalizeReflections } from "../normalizers";
 import { updateCurrentPeer } from "./helpers";
@@ -15,6 +16,7 @@ export const reducePeerActions = (state, action) => {
       return {
         ...state,
         peers: [...state.peers, peer],
+        forum: mergeInitialProposals(state.forum),
         session: { currentUserId: peer.id },
       };
     }

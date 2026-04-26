@@ -1,4 +1,5 @@
 import { SUBJECTS } from "../data/subjects";
+import { createInitialProposals } from "../data/proposals";
 import { createDefaultStore } from "./defaultState";
 import {
   createEnrollment,
@@ -175,7 +176,7 @@ export const normalizeStore = (candidate = {}) => {
     subjects: SUBJECTS,
     forum: Array.isArray(candidate?.forum)
       ? candidate.forum.map(normalizeProposal)
-      : [],
+      : createInitialProposals().map(normalizeProposal),
     connections: Array.isArray(candidate?.connections)
       ? candidate.connections.map(normalizeConnection)
       : [],

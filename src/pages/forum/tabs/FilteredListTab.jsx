@@ -4,6 +4,7 @@ import { useSOARState } from "../../../store";
 import { ProposalCard } from "../components/shared/ProposalCard";
 import { EmptyState } from "../components/shared/EmptyState";
 import { getPhaseFilter } from "../utils/phase";
+import { buildForumAuthorMap } from "../utils/authors";
 
 /**
  * One tab component, four routes. The `:filter` path param determines
@@ -19,20 +20,15 @@ export default function FilteredListTab({ routeFilter }) {
   const state = useSOARState();
   const filter = routeFilter ?? paramFilter ?? "all";
 
-  const proposals = state.forum ?? [];
   const predicate = getPhaseFilter(filter);
 
   const peersById = useMemo(() => {
-    const map = {};
-    (state.peers ?? []).forEach((p) => {
-      map[p.id] = p;
-    });
-    return map;
+    return buildForumAuthorMap(state.peers);
   }, [state.peers]);
 
   const filtered = useMemo(
-    () => proposals.filter(predicate),
-    [proposals, predicate],
+    () => (state.forum ?? []).filter(predicate),
+    [state.forum, predicate],
   );
 
   const sorted = useMemo(() => {

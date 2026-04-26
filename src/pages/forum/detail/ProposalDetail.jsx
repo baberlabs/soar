@@ -21,6 +21,7 @@ import {
   decodeDataUrlText,
   getAttachmentKind,
 } from "../utils/attachments";
+import { buildForumAuthorMap } from "../utils/authors";
 import { PHASES } from "../utils/phase";
 import { formatDeadline } from "../utils/voting";
 
@@ -40,10 +41,8 @@ export default function ProposalDetail() {
 
   // Lookup table for comment + vote author names.
   const peersById = useMemo(() => {
-    const map = { [user.id]: user };
-    (state.peers ?? []).forEach((peer) => {
-      map[peer.id] = peer;
-    });
+    const map = buildForumAuthorMap(state.peers);
+    map[user.id] = user;
     return map;
   }, [state.peers, user]);
 

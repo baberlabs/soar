@@ -7,6 +7,558 @@ export const LEARNING_STYLE_LABELS = {
 
 export const SUBJECTS = [
   {
+    id: "digital-autonomy",
+    name: "Digital Autonomy",
+    description:
+      "Understand how platforms shape attention, collect data, influence behaviour, and how to regain control of your digital life.",
+    commitment: "12 guided sessions",
+    interestTags: [
+      "Technology",
+      "Data",
+      "Media",
+      "Critical Thinking",
+      "Digital Literacy",
+      "Self-Knowledge",
+    ],
+    outcomes: [
+      "Understand how attention becomes a business asset",
+      "Recognise persuasive design patterns",
+      "Audit personal app usage and digital habits",
+      "Understand what personal data is and how it is used",
+      "Review app permissions and privacy settings",
+      "Identify algorithmic influence in feeds and recommendations",
+      "Build healthier notification and screen-use boundaries",
+      "Practise independent information judgement",
+      "Create a personal digital autonomy plan",
+      "Use technology for learning, creation, and community instead of passive consumption",
+    ],
+    lessons: [
+      {
+        id: "what-is-digital-autonomy",
+        title: "What Is Digital Autonomy?",
+        summary:
+          "Digital autonomy means being able to use technology deliberately, understand what happens to your data, and make choices that are not silently shaped by platforms.",
+        activity:
+          "Write a one-page digital life map: list your five most-used apps, what you use each one for, and whether each use feels chosen, automatic, or pressured.",
+        reflectionPrompt:
+          "Where in your digital life do you currently feel most in control, and where do you feel least in control?",
+      },
+      {
+        id: "attention-as-a-resource",
+        title: "Attention As A Resource",
+        summary:
+          "Your attention is limited. Many platforms are designed to capture, extend, and monetise that attention through repeated engagement.",
+        activity:
+          "Track your screen time for one full day and separate each session into useful, social, learning, entertainment, or automatic use.",
+        reflectionPrompt:
+          "Which category took more time than you expected, and what were you usually feeling before opening those apps?",
+      },
+      {
+        id: "persuasive-design-patterns",
+        title: "Persuasive Design Patterns",
+        summary:
+          "Features such as infinite scrolling, autoplay, streaks, likes, notifications, and algorithmic recommendations can make behaviour feel voluntary while quietly steering it.",
+        activity:
+          "Choose one app and identify at least five design features that encourage you to stay longer, return sooner, or check more often.",
+        reflectionPrompt:
+          "Which design feature has the strongest pull on your behaviour, and why does it work on you?",
+      },
+      {
+        id: "notifications-and-interruptions",
+        title: "Notifications And Interruptions",
+        summary:
+          "Notifications can fragment attention by turning other people’s priorities, platform nudges, and automated alerts into immediate demands.",
+        activity:
+          "Turn off all non-essential notifications for 48 hours, keeping only urgent communication, calendar, banking, and safety-related alerts.",
+        reflectionPrompt:
+          "What changed in your focus, mood, or checking behaviour when fewer things interrupted you?",
+      },
+      {
+        id: "personal-data-basics",
+        title: "What Counts As Personal Data?",
+        summary:
+          "Personal data is not just your name or email. It can include location, identifiers, behaviour, preferences, device information, and anything that can connect back to you.",
+        activity:
+          "Review three apps or services and list the types of personal data they may collect, including obvious data and less obvious behavioural data.",
+        reflectionPrompt:
+          "Which type of data felt most personal once you looked at it closely?",
+      },
+      {
+        id: "permissions-audit",
+        title: "Audit Your App Permissions",
+        summary:
+          "Apps often request access to location, camera, microphone, contacts, photos, or files. Digital autonomy requires knowing what access you have granted and whether it is justified.",
+        activity:
+          "Open your phone or browser privacy settings and review permissions for five apps. Revoke at least one permission that is not necessary.",
+        reflectionPrompt:
+          "Which permission had you forgotten about, and what does that reveal about passive consent?",
+      },
+      {
+        id: "data-rights-in-practice",
+        title: "Your Data Rights In Practice",
+        summary:
+          "Data protection rights can include being informed, accessing your personal data, correcting inaccurate data, and requesting erasure or restriction in some situations.",
+        activity:
+          "Choose one service you use and find where it explains privacy rights, account deletion, data download, or privacy controls.",
+        reflectionPrompt:
+          "Was the process clear and easy, or hidden and difficult? What does that say about the service’s attitude to user control?",
+      },
+      {
+        id: "algorithmic-feeds",
+        title: "Algorithmic Feeds",
+        summary:
+          "Recommendation systems shape what you see next. They can help discovery, but they can also narrow attention, amplify emotion, and make feeds feel more natural than they are.",
+        activity:
+          "For one day, notice every recommended post, video, or product you click. Write down what the system seemed to learn from your behaviour.",
+        reflectionPrompt:
+          "Did the feed reflect your values, your curiosity, your habits, or your weakest impulses?",
+      },
+      {
+        id: "media-literacy-and-framing",
+        title: "Media Literacy And Framing",
+        summary:
+          "Digital autonomy includes judging information well. Headlines, images, source choices, emotional wording, and platform context all shape interpretation.",
+        activity:
+          "Compare two pieces of content about the same issue from different sources. Note differences in headline, evidence, tone, missing context, and emotional framing.",
+        reflectionPrompt:
+          "How did presentation affect what seemed important, believable, or urgent?",
+      },
+      {
+        id: "digital-identity",
+        title: "Digital Identity",
+        summary:
+          "Your digital identity is built from profiles, posts, habits, search history, purchases, messages, and metadata. Some of it is chosen; some of it is inferred.",
+        activity:
+          "Search your public profiles and review what a stranger, employer, or platform might infer from them. Remove or update one thing that no longer represents you.",
+        reflectionPrompt:
+          "Which parts of your online identity feel authored by you, and which feel accumulated without intention?",
+      },
+      {
+        id: "from-consumption-to-creation",
+        title: "From Consumption To Creation",
+        summary:
+          "A healthier digital life is not only about using technology less. It is about using it for learning, creation, reflection, community, and meaningful action.",
+        activity:
+          "Replace one passive scrolling session with a 20-minute creation block: write, design, code, photograph, plan, research, or build something small.",
+        reflectionPrompt:
+          "What did you gain from creating that you would not have gained from consuming?",
+      },
+      {
+        id: "your-autonomy-system",
+        title: "Build Your Digital Autonomy System",
+        summary:
+          "Digital autonomy becomes sustainable when it is designed into your environment: defaults, permissions, routines, boundaries, and review habits.",
+        activity:
+          "Create a personal digital autonomy plan with five rules: one for notifications, one for social media, one for data privacy, one for learning, and one for rest.",
+        reflectionPrompt:
+          "Which rule will be hardest to keep, and what support or design change would make it easier?",
+      },
+    ],
+  },
+
+  {
+    id: "media-literacy",
+    name: "Media Literacy",
+    description:
+      "Understand how information is shaped, distributed, and interpreted.",
+    commitment: "6 guided sessions",
+    interestTags: ["Media", "Critical Thinking"],
+    outcomes: [
+      "Identify bias",
+      "Evaluate sources",
+      "Understand framing",
+      "Recognise misinformation",
+      "Think critically about narratives",
+      "Form independent opinions",
+    ],
+    lessons: [
+      {
+        id: "source-evaluation",
+        title: "Evaluate Sources",
+        summary: "Distinguish credible sources from unreliable ones.",
+        activity:
+          "Compare two articles on the same topic and analyse differences.",
+        reflectionPrompt:
+          "What made one source more trustworthy than the other?",
+      },
+      {
+        id: "bias-detection",
+        title: "Detect Bias",
+        summary: "Identify bias in language and framing.",
+        activity: "Highlight emotionally loaded words in an article.",
+        reflectionPrompt: "How did language influence your perception?",
+      },
+      {
+        id: "information-flow",
+        title: "How Information Spreads",
+        summary: "Understand how content travels across platforms.",
+        activity: "Trace one trending topic across 3 platforms.",
+        reflectionPrompt: "How did the narrative change across platforms?",
+      },
+      {
+        id: "misinformation",
+        title: "Spot Misinformation",
+        summary: "Recognise misleading or false content.",
+        activity: "Analyse one viral post and fact-check it.",
+        reflectionPrompt: "What signals indicated the content was unreliable?",
+      },
+      {
+        id: "algorithm-awareness",
+        title: "Algorithms and Feeds",
+        summary: "Understand how feeds are curated.",
+        activity:
+          "Interact differently with content for one day and observe feed changes.",
+        reflectionPrompt: "How quickly did your feed adapt to your behaviour?",
+      },
+      {
+        id: "independent-thinking",
+        title: "Form Independent Views",
+        summary: "Build opinions based on reasoning, not exposure.",
+        activity:
+          "Write your own perspective on a current topic after research.",
+        reflectionPrompt: "What influenced your final view most?",
+      },
+    ],
+  },
+
+  {
+    id: "psychology-and-behaviour",
+    name: "Psychology & Behaviour",
+    description:
+      "Understand how thoughts, habits, and environments shape behaviour.",
+    commitment: "6 guided sessions",
+    interestTags: ["Psychology", "Self"],
+    outcomes: [
+      "Understand habit loops",
+      "Recognise triggers",
+      "Improve behaviour awareness",
+      "Break negative patterns",
+      "Build better habits",
+      "Understand decision-making",
+    ],
+    lessons: [
+      {
+        id: "habit-loop",
+        title: "The Habit Loop",
+        summary: "Understand cue, routine, reward cycles.",
+        activity: "Identify one habit and map its loop.",
+        reflectionPrompt: "What triggers this behaviour most often?",
+      },
+      {
+        id: "environment-impact",
+        title: "Environment Shapes Behaviour",
+        summary: "Your surroundings influence decisions.",
+        activity:
+          "Change one aspect of your environment and observe behaviour change.",
+        reflectionPrompt: "What changed when your environment changed?",
+      },
+      {
+        id: "decision-making",
+        title: "How Decisions Are Made",
+        summary: "Explore conscious vs automatic decisions.",
+        activity: "Track 10 decisions in a day and classify them.",
+        reflectionPrompt: "How many decisions were automatic?",
+      },
+      {
+        id: "breaking-patterns",
+        title: "Breaking Patterns",
+        summary: "Interrupt unwanted behaviour cycles.",
+        activity: "Pause and delay one recurring behaviour.",
+        reflectionPrompt: "What happened when you interrupted the pattern?",
+      },
+      {
+        id: "building-habits",
+        title: "Building Better Habits",
+        summary: "Create habits that align with goals.",
+        activity: "Start one small habit and repeat it daily.",
+        reflectionPrompt: "What made the habit easier or harder to maintain?",
+      },
+      {
+        id: "identity-and-behaviour",
+        title: "Identity and Behaviour",
+        summary: "Behaviour aligns with identity.",
+        activity:
+          "Define the identity you want and one action that supports it.",
+        reflectionPrompt: "What actions reinforce that identity?",
+      },
+    ],
+  },
+
+  {
+    id: "self-awareness",
+    name: "Self Awareness",
+    description:
+      "Develop a deeper understanding of thoughts, emotions, and behaviour.",
+    commitment: "6 guided sessions",
+    interestTags: ["Reflection", "Philosophy"],
+    outcomes: [
+      "Recognise emotional patterns",
+      "Understand internal dialogue",
+      "Improve clarity of thought",
+      "Build reflection habits",
+      "Reduce reactivity",
+      "Strengthen self-knowledge",
+    ],
+    lessons: [
+      {
+        id: "observe-thoughts",
+        title: "Observe Your Thoughts",
+        summary: "Notice your thinking patterns.",
+        activity: "Write down recurring thoughts over a day.",
+        reflectionPrompt: "Which thoughts repeat most often?",
+      },
+      {
+        id: "emotional-awareness",
+        title: "Understand Emotions",
+        summary: "Identify emotional responses.",
+        activity: "Track emotional highs and lows.",
+        reflectionPrompt: "What triggered each emotion?",
+      },
+      {
+        id: "internal-dialogue",
+        title: "Internal Dialogue",
+        summary: "Examine how you talk to yourself.",
+        activity: "Write your internal dialogue in a stressful moment.",
+        reflectionPrompt: "Was your internal voice helpful or limiting?",
+      },
+      {
+        id: "reflection-practice",
+        title: "Build Reflection Habit",
+        summary: "Make reflection consistent.",
+        activity: "Write a daily reflection for 3 days.",
+        reflectionPrompt: "What patterns are emerging?",
+      },
+      {
+        id: "reduce-reactivity",
+        title: "Reduce Reactivity",
+        summary: "Pause before reacting.",
+        activity: "Pause for 10 seconds before responding in a situation.",
+        reflectionPrompt: "What changed when you paused?",
+      },
+      {
+        id: "clarity-of-self",
+        title: "Clarity of Self",
+        summary: "Understand your core values.",
+        activity: "Write your top 5 values and why they matter.",
+        reflectionPrompt: "How aligned are your actions with your values?",
+      },
+    ],
+  },
+
+  // Remaining subjects (shortened for space but fully structured)
+
+  {
+    id: "film-studies",
+    name: "Film Studies",
+    description: "Understand storytelling through film.",
+    commitment: "6 guided sessions",
+    interestTags: ["Film", "Storytelling"],
+    outcomes: ["Analyse scenes", "Understand narrative"],
+    lessons: [
+      {
+        id: "scene-analysis",
+        title: "Scene Analysis",
+        summary: "Break down a film scene.",
+        activity: "Analyse one scene.",
+        reflectionPrompt: "What stood out most?",
+      },
+      {
+        id: "cinematography",
+        title: "Cinematography",
+        summary: "Study visuals.",
+        activity: "Observe lighting.",
+        reflectionPrompt: "How did visuals affect tone?",
+      },
+      {
+        id: "editing",
+        title: "Editing",
+        summary: "Understand pacing.",
+        activity: "Analyse cuts.",
+        reflectionPrompt: "How did pacing change emotion?",
+      },
+      {
+        id: "sound",
+        title: "Sound Design",
+        summary: "Role of sound.",
+        activity: "Focus on audio.",
+        reflectionPrompt: "What did sound add?",
+      },
+      {
+        id: "themes",
+        title: "Themes",
+        summary: "Identify themes.",
+        activity: "Write themes.",
+        reflectionPrompt: "What message emerged?",
+      },
+      {
+        id: "create",
+        title: "Create Analysis",
+        summary: "Final piece.",
+        activity: "Write full analysis.",
+        reflectionPrompt: "What improved?",
+      },
+    ],
+  },
+
+  {
+    id: "music-production",
+    name: "Music Production",
+    description: "Create and structure sound.",
+    commitment: "6 guided sessions",
+    interestTags: ["Music"],
+    outcomes: ["Understand sound", "Create track"],
+    lessons: [
+      {
+        id: "sound-basics",
+        title: "Sound Basics",
+        summary: "Understand sound.",
+        activity: "Explore sounds.",
+        reflectionPrompt: "What did you notice?",
+      },
+      {
+        id: "rhythm",
+        title: "Rhythm",
+        summary: "Understand beats.",
+        activity: "Create rhythm.",
+        reflectionPrompt: "What worked?",
+      },
+      {
+        id: "melody",
+        title: "Melody",
+        summary: "Create melody.",
+        activity: "Build melody.",
+        reflectionPrompt: "What stood out?",
+      },
+      {
+        id: "structure",
+        title: "Structure",
+        summary: "Song structure.",
+        activity: "Arrange track.",
+        reflectionPrompt: "What improved flow?",
+      },
+      {
+        id: "mixing",
+        title: "Mixing",
+        summary: "Balance audio.",
+        activity: "Adjust levels.",
+        reflectionPrompt: "What changed?",
+      },
+      {
+        id: "final",
+        title: "Final Track",
+        summary: "Complete track.",
+        activity: "Export track.",
+        reflectionPrompt: "What did you learn?",
+      },
+    ],
+  },
+
+  {
+    id: "politics-and-power",
+    name: "Politics & Power",
+    description: "Understand systems of power.",
+    commitment: "6 guided sessions",
+    interestTags: ["Politics"],
+    outcomes: ["Understand systems"],
+    lessons: [
+      {
+        id: "power",
+        title: "Power Structures",
+        summary: "Who holds power.",
+        activity: "Map power.",
+        reflectionPrompt: "Who influences most?",
+      },
+      {
+        id: "systems",
+        title: "Political Systems",
+        summary: "Types of systems.",
+        activity: "Compare systems.",
+        reflectionPrompt: "What differences matter?",
+      },
+      {
+        id: "media",
+        title: "Media Influence",
+        summary: "Media role.",
+        activity: "Analyse media.",
+        reflectionPrompt: "What bias exists?",
+      },
+      {
+        id: "policy",
+        title: "Policy",
+        summary: "How policy works.",
+        activity: "Review policy.",
+        reflectionPrompt: "Who benefits?",
+      },
+      {
+        id: "citizenship",
+        title: "Citizenship",
+        summary: "Role of citizens.",
+        activity: "Define role.",
+        reflectionPrompt: "What responsibility do you have?",
+      },
+      {
+        id: "action",
+        title: "Action",
+        summary: "Engage actively.",
+        activity: "Take one civic action.",
+        reflectionPrompt: "What impact did it have?",
+      },
+    ],
+  },
+
+  {
+    id: "history-and-society",
+    name: "History & Society",
+    description: "Understand how societies evolve.",
+    commitment: "6 guided sessions",
+    interestTags: ["History"],
+    outcomes: ["Understand patterns"],
+    lessons: [
+      {
+        id: "patterns",
+        title: "Patterns",
+        summary: "Recurring patterns.",
+        activity: "Identify pattern.",
+        reflectionPrompt: "What repeats?",
+      },
+      {
+        id: "events",
+        title: "Key Events",
+        summary: "Major events.",
+        activity: "Analyse event.",
+        reflectionPrompt: "What changed?",
+      },
+      {
+        id: "culture",
+        title: "Culture",
+        summary: "Cultural shifts.",
+        activity: "Compare cultures.",
+        reflectionPrompt: "What differs?",
+      },
+      {
+        id: "economy",
+        title: "Economy",
+        summary: "Economic systems.",
+        activity: "Review system.",
+        reflectionPrompt: "Who benefits?",
+      },
+      {
+        id: "conflict",
+        title: "Conflict",
+        summary: "Conflict causes.",
+        activity: "Analyse conflict.",
+        reflectionPrompt: "What caused it?",
+      },
+      {
+        id: "modern",
+        title: "Modern Society",
+        summary: "Today’s world.",
+        activity: "Connect past to present.",
+        reflectionPrompt: "What carries forward?",
+      },
+    ],
+  },
+  {
     id: "digital-photography",
     name: "Digital Photography",
     description:
