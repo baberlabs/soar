@@ -302,7 +302,7 @@ export default function Donate() {
 }
 
 const SuccessView = ({ amount, receiptId, email }) => (
-  <main className="mx-auto flex min-h-[70vh] w-full max-w-3xl flex-col items-center justify-center px-6 text-center">
+  <main className="mx-auto flex min-h-[70vh] w-full max-w-3xl flex-col items-center justify-center px-6 pt-32 pb-18 text-center">
     <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-sage/20 text-sage">
       <svg
         className="h-10 w-10"
